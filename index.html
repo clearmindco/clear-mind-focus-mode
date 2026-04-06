@@ -178,9 +178,50 @@ hr.sep{border:none; border-top:1px solid var(--border); margin:16px 0}
 .payoff-chip .order-num{width:28px; height:28px; border-radius:999px; background:var(--soft); display:grid; place-items:center; font-weight:700; flex:0 0 auto}
 
 @media (max-width:760px){
-  .feature-grid,.grid3,.week-grid{grid-template-columns:1fr}
-  .grid2,.month-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .topbar{
+    padding:calc(env(safe-area-inset-top) + 8px) 10px 8px;
+  }
+  .brand{font-size:22px}
+  .content{padding:0 10px 18px}
+  .hero{margin:10px; padding:18px 14px; border-radius:20px}
+  .card{padding:14px; border-radius:18px}
+  .feature-grid,.grid3,.grid2{grid-template-columns:1fr}
+  .week-grid{grid-template-columns:1fr; gap:8px}
   .form-row{grid-template-columns:1fr}
+  .nav-tabs button,.subtabs button{padding:10px 12px; font-size:14px}
+  .modal{
+    align-items:flex-start;
+    padding:calc(env(safe-area-inset-top) + 8px) 10px calc(env(safe-area-inset-bottom) + 12px);
+  }
+  .modal-card{
+    width:100%;
+    max-height:calc(100svh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 20px);
+    border-radius:20px;
+    padding:14px;
+    margin-top:0;
+  }
+  .month-grid{
+    grid-template-columns:repeat(7,minmax(0,1fr));
+    gap:4px;
+  }
+  .month-day{
+    min-height:54px;
+    padding:6px 4px;
+    border-radius:12px;
+    font-size:12px;
+  }
+  .month-day .num{font-size:12px}
+  .note-dot{width:6px; height:6px; margin-top:4px}
+  #monthEntryPanel{margin-top:10px}
+}
+@media (max-width:420px){
+  .brand{font-size:20px}
+  .month-day{
+    min-height:48px;
+    padding:5px 3px;
+    font-size:11px;
+  }
+  .month-day .num{font-size:11px}
 }
 </style>
 </head>
