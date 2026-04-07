@@ -936,12 +936,18 @@ document.addEventListener('DOMContentLoaded', function(){
     document.getElementById('brainDumpText').value = U.brainDump || '';
     var wrap = document.getElementById('brainDumpResults');
     wrap.innerHTML = '';
+
     (U.brainDumpOrganized || []).forEach(function(item, idx){
       var div = document.createElement('div');
       div.className = 'item';
-      div.innerHTML = '<button type="button" class="check '+(item.done?'on':'')+'" data-bd="'+idx+'">'+(item.done?'✓':'')+'</button><div>'+esc(item.text)+'</div><div class="pill '+esc(item.pri)+'">'+esc(labelPri(item.pri))+'</div><div></div>';
+      div.innerHTML =
+        '<button type="button" class="check ' + (item.done ? 'on' : '') + '" data-bd="' + idx + '">' + (item.done ? '✓' : '') + '</button>' +
+        '<div class="' + (item.done ? 'strike' : '') + '">' + esc(item.text) + '</div>' +
+        '<div class="pill ' + esc(item.pri) + '">' + esc(labelPri(item.pri)) + '</div>' +
+        '<button type="button" class="soft" data-bd-add="' + idx + '">' + (item.done ? 'Added' : 'Add to Planner') + '</button>';
       wrap.appendChild(div);
     });
+
     wrap.querySelectorAll('.check[data-bd]').forEach(function(btn){
       btn.addEventListener('click', function(){
         var idx = Number(btn.getAttribute('data-bd'));
@@ -950,6 +956,24 @@ document.addEventListener('DOMContentLoaded', function(){
           save();
           renderHome();
         }
+      });
+    });
+
+    wrap.querySelectorAll('[data-bd-add]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var idx = Number(btn.getAttribute('data-bd-add'));
+        var item = U.brainDumpOrganized[idx];
+        if(!item) return;
+
+        U.tasks.push({
+          name: item.text,
+          done: false,
+          pri: item.pri || 'should'
+        });
+
+        U.brainDumpOrganized.splice(idx, 1);
+        save();
+        renderAll();
       });
     });
   }
