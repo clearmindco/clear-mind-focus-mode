@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 300" role="img" aria-label="Rivera's Express Painting and Flooring Logo">
+  <defs>
+    <linearGradient id="goldH" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#7A5A10"/>
+      <stop offset="20%" stop-color="#C9963F"/>
+      <stop offset="45%" stop-color="#F8E070"/>
+      <stop offset="65%" stop-color="#D4A840"/>
+      <stop offset="85%" stop-color="#F0C060"/>
+      <stop offset="100%" stop-color="#8B6914"/>
+    </linearGradient>
+    <linearGradient id="goldV" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#F8E070"/>
+      <stop offset="35%" stop-color="#D4A840"/>
+      <stop offset="70%" stop-color="#C9963F"/>
+      <stop offset="100%" stop-color="#7A5A10"/>
+    </linearGradient>
+    <linearGradient id="silverH" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4A4A4A"/>
+      <stop offset="30%" stop-color="#C0C0C0"/>
+      <stop offset="55%" stop-color="#F0F0F0"/>
+      <stop offset="80%" stop-color="#C0C0C0"/>
+      <stop offset="100%" stop-color="#4A4A4A"/>
+    </linearGradient>
+    <linearGradient id="brushBody" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5A5A5A"/>
+      <stop offset="50%" stop-color="#7A7A7A"/>
+      <stop offset="100%" stop-color="#3A3A3A"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Left House (larger) — apex 115,12 | base 28,135 to 202,135 -->
+  <polygon points="28,135 115,12 202,135" fill="url(#goldV)"/>
+
+  <!-- Right House (smaller) — apex 272,42 | base 182,135 to 362,135 -->
+  <polygon points="182,135 272,42 362,135" fill="url(#goldV)"/>
+
+  <!-- Left window: 2×2 grid -->
+  <rect x="87"  y="86"  width="17" height="17" rx="2" fill="#D8D8D8"/>
+  <rect x="108" y="86"  width="17" height="17" rx="2" fill="#D8D8D8"/>
+  <rect x="87"  y="107" width="17" height="17" rx="2" fill="#D8D8D8"/>
+  <rect x="108" y="107" width="17" height="17" rx="2" fill="#D8D8D8"/>
+
+  <!-- Right window: 2×2 grid -->
+  <rect x="249" y="94"  width="14" height="14" rx="1.5" fill="#D8D8D8"/>
+  <rect x="267" y="94"  width="14" height="14" rx="1.5" fill="#D8D8D8"/>
+  <rect x="249" y="112" width="14" height="14" rx="1.5" fill="#D8D8D8"/>
+  <rect x="267" y="112" width="14" height="14" rx="1.5" fill="#D8D8D8"/>
+
+  <!-- Paint Brush — positioned upper-right, rotated ~-22 deg -->
+  <g transform="translate(340,10) rotate(22)">
+    <!-- Handle cap -->
+    <ellipse cx="9" cy="4" rx="6" ry="4" fill="#5A5A5A"/>
+    <!-- Handle shaft -->
+    <rect x="3" y="4" width="12" height="58" rx="3" fill="url(#brushBody)"/>
+    <!-- Ferrule (gold band) -->
+    <rect x="1" y="60" width="16" height="11" rx="2" fill="url(#goldH)"/>
+    <!-- Bristles -->
+    <path d="M0,71 Q-3,88 4,104 Q7,110 9,104 Q11,110 14,104 Q21,88 18,71 Z" fill="#4A4A4A"/>
+    <path d="M2,100 Q6,114 9,108 Q12,114 16,100" stroke="#333" stroke-width="1.5" fill="none"/>
+  </g>
+
+  <!-- Gold base beam -->
+  <rect x="18" y="136" width="336" height="5" rx="2.5" fill="url(#goldH)" filter="url(#glow)"/>
+
+  <!-- RIVERA'S — large gold text -->
+  <text x="190" y="205"
+    font-family="'Georgia','Times New Roman',serif"
+    font-size="74"
+    font-weight="900"
+    fill="url(#goldH)"
+    text-anchor="middle"
+    letter-spacing="3">RIVERA&#x2019;S</text>
+
+  <!-- Decorative lines flanking subtitle -->
+  <line x1="18"  y1="223" x2="76"  y2="223" stroke="url(#silverH)" stroke-width="1.5"/>
+  <line x1="304" y1="223" x2="362" y2="223" stroke="url(#silverH)" stroke-width="1.5"/>
+  <!-- Small diamond accents -->
+  <polygon points="79,219 83,223 79,227 75,223" fill="#C0C0C0"/>
+  <polygon points="301,219 305,223 301,227 297,223" fill="#C0C0C0"/>
+
+  <!-- EXPRESS PAINTING subtitle -->
+  <text x="190" y="229"
+    font-family="'Arial','Helvetica',sans-serif"
+    font-size="19"
+    font-weight="400"
+    fill="url(#silverH)"
+    text-anchor="middle"
+    letter-spacing="9">EXPRESS PAINTING</text>
+
+  <!-- Bottom rule -->
+  <rect x="18" y="235" width="336" height="1.5" rx="0.75" fill="url(#silverH)"/>
+</svg>
