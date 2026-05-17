@@ -1,5 +1,7 @@
 "use client";
 
+import { LESSONS } from "./lessons";
+
 export interface LessonProgress {
   lessonId: string;
   checklistCompleted: string[];
@@ -45,16 +47,22 @@ function defaultLessonProgress(lessonId: string): LessonProgress {
   };
 }
 
+const emptyProgress = (): AppProgress => ({
+  lessons: {},
+  tradeLogs: [],
+  finalTestScore: null,
+  finalTestPassed: false,
+  finalTestCompletedAt: null,
+});
+
 export function loadProgress(): AppProgress {
-  if (typeof window === "undefined") {
-    return { lessons: {}, tradeLogs: [], finalTestScore: null, finalTestPassed: false, finalTestCompletedAt: null };
-  }
+  if (typeof window === "undefined") return emptyProgress();
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return { lessons: {}, tradeLogs: [], finalTestScore: null, finalTestPassed: false, finalTestCompletedAt: null };
+    if (!raw) return emptyProgress();
     return JSON.parse(raw);
   } catch {
-    return { lessons: {}, tradeLogs: [], finalTestScore: null, finalTestPassed: false, finalTestCompletedAt: null };
+    return emptyProgress();
   }
 }
 
@@ -103,8 +111,7 @@ export function recordFinalTest(score: number, passed: boolean): void {
 export function isModuleUnlocked(moduleNumber: number): boolean {
   if (moduleNumber === 1) return true;
   const p = loadProgress();
-  const { LESSONS } = require("./lessons");
-  const prevLesson = LESSONS.find((l: { moduleNumber: number }) => l.moduleNumber === moduleNumber - 1);
+  const prevLesson = LESSONS.find(l => l.moduleNumber === moduleNumber - 1);
   if (!prevLesson) return false;
   return p.lessons[prevLesson.id]?.passed ?? false;
 }
@@ -113,20 +120,6 @@ export function addTradeLog(log: Omit<TradeLog, "id">): void {
   const p = loadProgress();
   p.tradeLogs = [{ ...log, id: Date.now().toString() }, ...p.tradeLogs];
   saveProgress(p);
-}
-
-export function getOverallStats() {
-  const p = loadProgress();
-  const { LESSONS } = require("./lessons");
-  const completedCount = Object.values(p.lessons).filter((l: LessonProgress) => l.passed).length;
-  const totalLessons = LESSONS.length;
-  const avgScore = completedCount > 0
-    ? Math.round(Object.values(p.lessons)
-        .filter((l: LessonProgress) => l.quizScore !== null)
-        .reduce((sum: number, l: LessonProgress) => sum + (l.quizScore ?? 0), 0) /
-        Object.values(p.lessons).filter((l: LessonProgress) => l.quizScore !== null).length)
-    : 0;
-  return { completedCount, totalLessons, avgScore, finalTestPassed: p.finalTestPassed };
 }
 
 export function resetAllProgress(): void {
