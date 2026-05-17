@@ -587,12 +587,12 @@ body.dark-mode .yt-hint{background:rgba(140,80,255,.1); border-color:rgba(140,80
       <div class="card yt-hero">
         <div style="font-size:30px; margin-bottom:6px">▶</div>
         <h2 style="color:#fff; font-size:26px">YouTube Channel Planner</h2>
-        <p>8 AI agents run in sequence — each one building on the last — to deliver a complete channel strategy: niche validation, content pillars, 10 video ideas with hooks, SEO, visual identity, upload schedule, and a 90-day launch plan.</p>
+        <p>8 AI agents run in sequence — each one building on the last — to deliver a complete channel strategy: niche validation, content pillars, 10 video ideas with hooks, SEO, visual identity, upload schedule, and a 7-day sprint to get your first video live.</p>
         <div class="badges" style="margin-top:10px">
           <div class="badge" style="background:rgba(255,255,255,.18); color:#fff">Niche Validator</div>
           <div class="badge" style="background:rgba(255,255,255,.18); color:#fff">Channel Position</div>
           <div class="badge" style="background:rgba(255,255,255,.18); color:#fff">10 Video Ideas</div>
-          <div class="badge" style="background:rgba(255,255,255,.18); color:#fff">90-Day Plan</div>
+          <div class="badge" style="background:rgba(255,255,255,.18); color:#fff">Launch This Week</div>
         </div>
       </div>
 
@@ -1413,7 +1413,7 @@ document.addEventListener('DOMContentLoaded', function(){
     {id:'seo',      icon:'🔍', title:'SEO Strategy',        desc:'Keywords, tags & description template'},
     {id:'visual',   icon:'🎨', title:'Visual Identity',     desc:'Thumbnail formula, color palette & face rule'},
     {id:'schedule', icon:'📅', title:'Upload Schedule',     desc:'Optimal posting frequency & batch strategy'},
-    {id:'plan',     icon:'🚀', title:'90-Day Launch Plan',  desc:'Monthly goals, tasks & your Day 1 action'}
+    {id:'plan',     icon:'🚀', title:'Launch This Week',     desc:'Today, days 2–3, and days 4–7 to get your first video live'}
   ];
   var YT_NICHE_SUGGESTION = 'Simple animated educational cartoon videos for toddlers & babies (ages 1–5) — teaching ABCs, numbers, colors, shapes, and everyday life skills through original catchy songs and bright 2D cartoon characters.';
 
@@ -1425,7 +1425,7 @@ document.addEventListener('DOMContentLoaded', function(){
     seo: {primary_keywords:['ABC song for kids','educational videos for toddlers','nursery rhymes','learn colors for babies','numbers song for kids'], long_tail:['abc song for toddlers and babies','learn colors with cartoon characters','educational cartoon for 2 year olds','kids learning songs playlist','toddler learning videos free'], channel_tags:['kids','toddlers','educational','nursery rhymes','ABC','babies','learning','cartoon','kids songs','preschool'], description_template:'Fun animated educational cartoons for toddlers and babies! Learn ABCs, numbers, colors, and shapes with [Character Names]. New videos every week! #KidsLearning #NurseryRhymes #ToddlerVideos #ABCSong', seo_tip:'Title formula: [Concept] + Song or for Kids + | [Channel Name] — for example "ABC Song for Kids | Tiny Bright World". YouTube Kids surfaces content by topic cluster, so keeping your title format consistent trains the algorithm to categorize and recommend your full channel correctly.'},
     visual: {thumbnail_style:'Bright character close-up showing a relevant happy expression + bold title text in a child-friendly rounded font + clean solid-color background + one key learning visual (letter block, number, or color swatch)', color_palette:['#FF6B6B','#FFE66D','#4ECDC4'], font_style:'Rounded bubbly sans-serif — Nunito or Baloo style. No sharp edges. Minimum 48pt equivalent. High contrast. Letters must be readable on a phone screen 3 feet away.', face_rule:'No human face — fully character-based channel. Consistent animated characters build brand recognition faster with toddlers and are safe for YouTube Kids distribution.', template:'[Character face showing excitement — 50% of frame] + [Bright solid background from palette] + [Bold subject word in large rounded text] + [1–2 colorful learning icons at bottom]'},
     schedule: {frequency:'2 videos per week minimum', days:['Wednesday','Saturday'], time:'Publish 8am–10am EST — parents search for screen time during morning routines and weekend mornings when they need their toddler occupied', batch_strategy:'Plan 8 videos as a themed batch (e.g., All About Colors). Script all 8 first. Record all voiceovers in one 2-hour session. Animate using a reusable character template in Canva, Adobe Express, or Vyond. Export and schedule all 8 at once.', minimum_viable:'1 video per week — never miss 2 weeks in a row or the algorithm deprioritizes your channel. Consistency over quantity always.'},
-    plan: {month1:{goal:'Channel foundation — create your characters and post 8 core concept videos',tasks:['Design your 3 main characters: give each a name, color, and one personality trait. Simple 2D is fine.','Set up channel with full metadata, YouTube Kids eligibility settings, and a consistent banner','Post 8 videos: ABC Song, Counting 1–10, Colors Song, Shapes Song, Animals Sounds, Good Morning Song, Bath Time Song, Goodnight Song','Build a reusable thumbnail template with your character art in Canva']},month2:{goal:'Volume and playlist strategy — reach your first 10,000 views',tasks:['Post 8 more videos expanding Month 1 topics — Colors Part 2, ABC Part 2, Numbers 10–20, etc.','Create 4 themed playlists: ABCs, Numbers, Colors and Shapes, Bedtime Songs','Submit channel for YouTube Kids review through YouTube Studio','Optimize every video title with "for Kids", "for Babies", "Toddler Learning" — these are how parents search']},month3:{goal:'Story episodes and first growth milestone',tasks:['Launch 3 story-based episodes where your main character goes on an adventure that teaches a concept','Analyze your top 3 videos and make 4 more in that exact format and length','Post in 2 parenting Facebook groups sharing your most educational video','Apply for monetization if eligible — 1,000 subs and 4,000 watch hours']}, first_milestone:'1 million total views — this is where the YouTube algorithm begins actively recommending your content to new viewers and auto-play starts working in your favor. Ad revenue starts here.', day1_action:'Right now: sketch your 3 main characters on paper or in Canva. Name them. Pick their colors. Then write the lyrics for your ABC Song — 26 lines, one per letter, something a 2-year-old can sing. This one video will define your entire channel. Do it today.'}
+    plan: {today:{goal:'Channel created and first video scripted',tasks:['Open YouTube Studio right now — create your channel, fill in the name and description from Agent 2','Sketch your 3 characters on paper or in Canva — name them, pick their colors, done in 20 min','Write your ABC Song lyrics: 26 lines, one per letter, keep each line under 6 words','Record your voiceover in one take using your phone — it does not need to be perfect']},day2_3:{goal:'Animation done and thumbnail built',tasks:['Build your animated video in Canva, Adobe Express, or CapCut using your character art and song audio','Export the video at 1080p — do not wait to make it perfect, ship it','Design your thumbnail using the formula from Agent 6 — character face + bold text + bright background','Write your video title, description, and tags using the keywords from Agent 5']},day4_7:{goal:'First video live and second one scripted',tasks:['Upload and publish your ABC Song — set it to Public, not Unlisted','Add end screen and cards pointing to a playlist (even if it only has one video)','Script your second video: Colors Song — same format, different concept','Post your channel link in one parenting group or share with one person today'],},right_now:'Open YouTube Studio in a new tab and create your channel right now — it takes 3 minutes. Do not close this app until that tab is open.'}
   };
 
   function ensureYtChannel(){
@@ -1557,16 +1557,16 @@ document.addEventListener('DOMContentLoaded', function(){
       html += '<p style="margin-top:8px"><strong>Batch strategy:</strong> ' + esc(d.batch_strategy || '') + '</p>';
       html += '<p style="margin-top:8px; color:var(--muted)"><strong>Minimum viable:</strong> ' + esc(d.minimum_viable || '') + '</p>';
     } else if(r.id === 'plan'){
-      ['month1','month2','month3'].forEach(function(m, i){
-        var mo = d[m] || {};
-        html += '<div style="margin-bottom:12px"><div class="small" style="margin-bottom:4px">Month ' + (i+1) + '</div>';
-        html += '<strong>' + esc(mo.goal || '') + '</strong>';
+      var phases = [{key:'today',label:'Today'},{key:'day2_3',label:'Days 2–3'},{key:'day4_7',label:'Days 4–7'}];
+      phases.forEach(function(ph){
+        var mo = d[ph.key] || {};
+        html += '<div style="margin-bottom:14px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="yt-tag">' + esc(ph.label) + '</span><strong>' + esc(mo.goal || '') + '</strong></div>';
         var tasks = Array.isArray(mo.tasks) ? mo.tasks : [];
         tasks.forEach(function(t){ html += '<div class="yt-task">→ ' + esc(t) + '</div>'; });
         html += '</div>';
       });
-      if(d.day1_action){
-        html += '<div class="yt-hint" style="margin-top:10px"><strong>Your Day 1 Action:</strong> ' + esc(d.day1_action) + '</div>';
+      if(d.right_now){
+        html += '<div class="yt-hint" style="margin-top:10px; border-color:#6c2bd9"><strong>Do this right now:</strong> ' + esc(d.right_now) + '</div>';
       }
     }
     return html;
@@ -1587,7 +1587,7 @@ document.addEventListener('DOMContentLoaded', function(){
       seo: {sys:'You are a YouTube SEO specialist. Return JSON: {primary_keywords:[5],long_tail:[5],channel_tags:[10],description_template,seo_tip}', user:base},
       visual: {sys:'You are a YouTube thumbnail and visual brand designer. Return JSON: {thumbnail_style,color_palette:[3 hex],font_style,face_rule,template}', user:base},
       schedule: {sys:'You are a YouTube growth strategist. Return JSON: {frequency,days:[array],time,batch_strategy,minimum_viable}', user:base},
-      plan: {sys:'You are a YouTube launch strategist. Return JSON: {month1:{goal,tasks:[4]},month2:{goal,tasks:[4]},month3:{goal,tasks:[4]},first_milestone,day1_action}', user:base}
+      plan: {sys:'You are a YouTube launch strategist focused on immediate action. Return JSON: {today:{goal,tasks:[4]},day2_3:{goal,tasks:[4]},day4_7:{goal,tasks:[4]},right_now}. No long-term planning. Get the first video live within 7 days.', user:base}
     };
     return prompts[id] || {sys:'Return JSON only.', user:base};
   }
