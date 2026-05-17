@@ -225,6 +225,45 @@ hr.sep{border:none; border-top:1px solid var(--border); margin:16px 0}
   }
   .month-day .num{font-size:11px}
 }
+
+/* YouTube Channel Planner */
+.yt-hero{
+  background:linear-gradient(135deg,#1a0a2e 0%,#3d1878 55%,#6c2bd9 100%);
+  color:#fff; border:0;
+}
+.yt-hero p{color:rgba(255,255,255,.85)}
+.yt-step{
+  display:grid; grid-template-columns:34px 1fr auto; gap:10px; align-items:center;
+  padding:12px 14px; border:1px solid var(--border); border-radius:16px; background:var(--card-2);
+}
+.yt-step.yt-run{border-color:#6c2bd9; animation:ytPulse 1.2s ease-in-out infinite}
+.yt-step.yt-done{border-color:#5e3da8; background:rgba(108,43,217,.06)}
+.yt-dot{
+  width:30px; height:30px; border-radius:50%; border:2px solid var(--border); background:transparent;
+  display:grid; place-items:center; font-size:15px; flex:0 0 auto;
+}
+.yt-dot.run{background:#6c2bd9; border-color:transparent; color:#fff}
+.yt-dot.done{background:#5e3da8; border-color:transparent; color:#fff}
+@keyframes ytPulse{0%,100%{opacity:1}50%{opacity:.6}}
+.yt-rcard{padding:14px; border-radius:18px; background:var(--card-2); border:1px solid var(--border); margin-bottom:12px}
+.yt-rcard h3{font-family:'Cormorant Garamond',serif; font-size:20px; margin-bottom:10px; color:var(--text)}
+.yt-tag{
+  display:inline-block; padding:4px 10px; border-radius:999px;
+  background:rgba(108,43,217,.12); color:#6c2bd9; font-size:12px; font-weight:700; margin:3px 3px 3px 0;
+}
+body.dark-mode .yt-tag{background:rgba(140,80,255,.18); color:#c4a0ff}
+.yt-video{
+  padding:12px; border-radius:14px; background:var(--page-bg); border:1px solid var(--border); margin-bottom:8px;
+}
+.yt-vnum{font-size:22px; font-weight:700; font-family:'Cormorant Garamond',serif; color:#6c2bd9}
+.yt-hint{
+  padding:12px 14px; border-radius:14px; background:rgba(108,43,217,.08);
+  border:1px solid rgba(108,43,217,.2); margin-top:10px;
+}
+body.dark-mode .yt-hint{background:rgba(140,80,255,.1); border-color:rgba(140,80,255,.25)}
+.yt-task{padding:6px 0; border-bottom:1px solid var(--border); font-size:14px}
+.yt-task:last-child{border-bottom:0}
+.yt-swatch{width:28px; height:28px; border-radius:8px; display:inline-block; margin-right:6px; border:1px solid rgba(0,0,0,.1)}
 </style>
 </head>
 <body>
@@ -250,6 +289,7 @@ hr.sep{border:none; border-top:1px solid var(--border); margin:16px 0}
       <button type="button" data-page="coach">Coach</button>
       <button type="button" data-page="money">Money</button>
       <button type="button" data-page="guide">Guide</button>
+      <button type="button" data-page="youtube">YouTube</button>
     </div>
   </div>
 
@@ -542,6 +582,53 @@ hr.sep{border:none; border-top:1px solid var(--border); margin:16px 0}
         <button type="button" id="startTourBtn" class="soft">Start Tour — 2 min ▶</button>
       </div>
     </section>
+
+    <section id="pg-youtube" class="pg">
+      <div class="card yt-hero">
+        <div style="font-size:30px; margin-bottom:6px">▶</div>
+        <h2 style="color:#fff; font-size:26px">YouTube Channel Planner</h2>
+        <p>8 AI agents run in sequence — each one building on the last — to give you a complete channel strategy: niche, content pillars, 10 video ideas, SEO, visual identity, upload schedule, and a 90-day launch plan.</p>
+        <div class="badges" style="margin-top:10px">
+          <div class="badge" style="background:rgba(255,255,255,.18); color:#fff">Niche Validator</div>
+          <div class="badge" style="background:rgba(255,255,255,.18); color:#fff">Channel Position</div>
+          <div class="badge" style="background:rgba(255,255,255,.18); color:#fff">10 Video Ideas</div>
+          <div class="badge" style="background:rgba(255,255,255,.18); color:#fff">90-Day Plan</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="small">Step 1 — Define your niche</div>
+        <h2>What's your channel about?</h2>
+        <p>Be as specific as you can. The agents will refine it.</p>
+        <textarea id="ytNicheInput" maxlength="400" placeholder="Example: productivity tips for people with ADHD who struggle to stay consistent..." style="min-height:88px"></textarea>
+        <div class="yt-hint" id="ytNicheHint" style="display:none">
+          <div class="small" style="margin-bottom:4px">Smart pick for your brand</div>
+          <strong id="ytNicheHintText"></strong>
+        </div>
+        <div class="row wrap" style="margin-top:12px; gap:10px">
+          <button type="button" id="ytFillNicheBtn" class="soft">Use Smart Recommendation</button>
+          <button type="button" id="ytRunBtn">Run 8 Agents ▶</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Workflow</h2>
+        <p class="small">Each agent hands its output to the next. The final report assembles everything.</p>
+        <div id="ytWorkflowSteps" class="list" style="margin-top:10px"></div>
+      </div>
+
+      <div id="ytResults" class="hidden">
+        <div class="card" style="background:linear-gradient(135deg,#1a0a2e,#3d1878);color:#fff;border:0">
+          <div style="font-size:32px; margin-bottom:6px">✅</div>
+          <h2 style="color:#fff">Channel Strategy Report</h2>
+          <p style="color:rgba(255,255,255,.85)">All 8 agents complete. Your full YouTube strategy is below.</p>
+        </div>
+        <div id="ytReportCards"></div>
+        <div class="card">
+          <button type="button" id="ytResetBtn" class="soft">Reset &amp; Start New Strategy</button>
+        </div>
+      </div>
+    </section>
   </div>
 </div>
 
@@ -662,7 +749,8 @@ document.addEventListener('DOMContentLoaded', function(){
     name:'', goal:'', why:'', challenges:[], push:'medium', growthStyle:'flower',
     tasks:[], goals:[], jEntries:[], habits:[], calNotes:{}, growthScore:0, currentStreak:0,
     lastOpenDate:'', setupStep:0, mood:'', coachMessages:[], align:{a:'',b:'',c:''}, brainDump:'', brainDumpOrganized:[],
-    focus:{avoid:'',steps:['','','','','']}, monthView:{y:0,m:0}, debts:[]
+    focus:{avoid:'',steps:['','','','','']}, monthView:{y:0,m:0}, debts:[],
+    ytChannel:{niche:'', results:[], lastRun:''}
   };
   var quoteSession = "";
   var timerSecs = 1500, timerInt = null, timerRunning = false, selectedMonthKey = '';
@@ -724,7 +812,7 @@ document.addEventListener('DOMContentLoaded', function(){
   }
   function applyLoadedData(obj){
     if(!obj || typeof obj !== 'object') return;
-    var allowed = ['name','goal','why','challenges','push','growthStyle','tasks','goals','jEntries','habits','calNotes','growthScore','currentStreak','lastOpenDate','setupStep','mood','coachMessages','align','brainDump','brainDumpOrganized','focus','monthView','debts'];
+    var allowed = ['name','goal','why','challenges','push','growthStyle','tasks','goals','jEntries','habits','calNotes','growthScore','currentStreak','lastOpenDate','setupStep','mood','coachMessages','align','brainDump','brainDumpOrganized','focus','monthView','debts','ytChannel'];
     allowed.forEach(function(k){
       if(Object.prototype.hasOwnProperty.call(obj,k)){
         U[k] = obj[k];
@@ -902,6 +990,7 @@ document.addEventListener('DOMContentLoaded', function(){
     renderMoney();
     renderWeek();
     renderMonth();
+    renderYouTube();
     save();
   }
   function renderHero(){
@@ -1314,6 +1403,280 @@ document.addEventListener('DOMContentLoaded', function(){
     });
     save(); renderHome();
   }
+
+  /* ── YouTube Channel Planner ─────────────────────────────── */
+  var YT_AGENTS = [
+    {id:'niche',    icon:'🎯', title:'Niche Validator',     desc:'Validates market size, competition & verdict'},
+    {id:'position', icon:'🏆', title:'Channel Position',    desc:'Unique angle, channel name options & tagline'},
+    {id:'pillars',  icon:'🏛️', title:'Content Pillars',     desc:'5 core content themes with examples'},
+    {id:'videos',   icon:'🎬', title:'First 10 Videos',     desc:'SEO titles, hooks & video type for each'},
+    {id:'seo',      icon:'🔍', title:'SEO Strategy',        desc:'Keywords, tags & description template'},
+    {id:'visual',   icon:'🎨', title:'Visual Identity',     desc:'Thumbnail formula, color palette & face rule'},
+    {id:'schedule', icon:'📅', title:'Upload Schedule',     desc:'Optimal posting frequency & batch strategy'},
+    {id:'plan',     icon:'🚀', title:'90-Day Launch Plan',  desc:'Monthly goals, tasks & your Day 1 action'}
+  ];
+  var YT_NICHE_SUGGESTION = 'ADHD-friendly productivity & mental clarity systems — for overwhelmed people who have tried generic advice and need something that actually fits their brain.';
+
+  var YT_FALLBACKS = {
+    niche: {refined_niche:'ADHD-Friendly Productivity & Mental Clarity for Overwhelmed Minds', market_size:'Large — 400M+ people worldwide have ADHD; anxiety and burnout audiences overlap significantly', competition:'Medium — generic productivity is saturated but ADHD-specific, shame-free content is underserved', monetization:'Digital courses, app subscriptions, community membership, brand sponsorships, coaching', verdict:'Green light', why:'The intersection of ADHD, productivity, and mental wellness is one of the fastest-growing YouTube niches. Audiences are highly engaged and loyal because they feel genuinely seen. Clear Mind Co. already owns a brand identity that perfectly matches this niche.'},
+    position: {channel_name:['Clear Mind Co.','The Clarity Method','Brain Fit Life'], tagline:'Systems that fit your brain — not the other way around.', unique_angle:'Unlike generic productivity channels that assume neurotypical brains, this channel builds systems around how ADHD and overwhelmed minds actually work. No toxic positivity, no hustle culture — just real, tested frameworks.', target_viewer:'Adults 22–40 recently diagnosed with ADHD or chronically overwhelmed, who have tried productivity gurus and still feel like failures. They want systems without shame.'},
+    pillars: {pillars:[{name:'ADHD Systems',description:'Practical systems designed for ADHD brains — task management, focus techniques, anti-procrastination tools',example:'The Only Task System That Works When Your Brain Won\'t Cooperate'},{name:'Mental Clarity',description:'Decluttering mental overwhelm, decision fatigue, and anxiety through structure and mindset shifts',example:'How I Stopped Feeling Overwhelmed in 10 Minutes Every Morning'},{name:'Habit Building',description:'Habit formation methods that account for inconsistency, forgetting, and low motivation days',example:'Why Your Habits Keep Breaking (And the Fix That Actually Sticks)'},{name:'Digital Tools & Workflows',description:'App reviews, workflow setups, and digital systems for neurodivergent productivity',example:'The 5-App Stack I Use to Run My Life With ADHD'},{name:'Real Talk & Stories',description:'Honest stories, struggles, and wins from the ADHD and overwhelmed community',example:'I Tried Every Productivity Method for 60 Days — Here\'s What Actually Worked'}]},
+    videos: {videos:[{title:'The ADHD Productivity System That Actually Works (No Willpower Needed)',hook:'Every productivity system I tried assumed I had willpower. I don\'t. So I built one that doesn\'t need it. Here\'s the exact system.',pillar:'ADHD Systems',type:'Tutorial'},{title:'Why You Can\'t Focus (It\'s Not Laziness — Here\'s the Science)',hook:'If you\'ve been told you just need more discipline, this video will change how you see yourself.',pillar:'Mental Clarity',type:'Education'},{title:'I Tracked My Productivity for 30 Days With ADHD — Here\'s What I Found',hook:'I logged every hour for 30 days to find out when my ADHD brain actually works. The results shocked me.',pillar:'Real Talk',type:'Documentary'},{title:'5 Habits That Are Actually ADHD-Friendly (And Won\'t Break After Day 3)',hook:'Forget the morning routine videos. These habits were designed for brains that lose streaks and forget.',pillar:'Habit Building',type:'List'},{title:'The Only App Stack You Need to Manage ADHD in 2025',hook:'I\'ve tested 47 apps. These 5 are the only ones that survived my chaotic ADHD workflow.',pillar:'Digital Tools',type:'List'},{title:'How I Stop Procrastinating in Under 2 Minutes (ADHD Brain Hack)',hook:'This isn\'t "just start" advice. This is a neurological trick that lowers your brain\'s threat response to tasks.',pillar:'ADHD Systems',type:'Tutorial'},{title:'What Toxic Productivity Culture Does to ADHD Brains',hook:'The productivity industry is built for neurotypical people. Here\'s the damage it does to ours — and what to do instead.',pillar:'Real Talk',type:'Opinion'},{title:'The Morning Routine That Works When You Have ADHD',hook:'I don\'t have a 5am routine. I have a 3-step system that works even when I woke up 4 times last night.',pillar:'Habit Building',type:'Tutorial'},{title:'How to Actually Finish Projects With ADHD (The Bridge Method)',hook:'Starting is easy. Finishing is where ADHD brains lose it. I\'ll show you the exact technique I use to bridge that gap.',pillar:'ADHD Systems',type:'Tutorial'},{title:'I Replaced Willpower With Systems — Here\'s My Entire Setup',hook:'I stopped trying to be disciplined and started building systems that work without discipline. Full walkthrough.',pillar:'Digital Tools',type:'Documentary'}]},
+    seo: {primary_keywords:['ADHD productivity','focus tips ADHD','productivity for ADHD adults','ADHD systems','mental clarity tips'], long_tail:['how to be productive with ADHD','ADHD productivity system that works','focus when you have ADHD','ADHD planning methods','productivity tips overwhelmed adults'], channel_tags:['ADHD','productivity','ADHD productivity','focus tips','mental clarity','neurodivergent','ADHD adults','time management ADHD','habit building','ADHD systems'], description_template:'Systems for ADHD brains and overwhelmed minds. New videos every [day]. Subscribe for ADHD-friendly productivity tips, mental clarity techniques, and real-world systems that don\'t require willpower.', seo_tip:'Title formula: [Specific Problem] + (ADHD/For Overwhelmed Brains) — e.g., "Why You Can\'t Focus (ADHD Version)" outperforms generic titles by 3–5x in this niche because it signals the viewer is exactly who you\'re talking to.'},
+    visual: {thumbnail_style:'High-contrast face with strong emotion (shock, curiosity, realization) + bold 3–5 word text + one supporting visual element (brain icon, phone, checklist)', color_palette:['#1C140E','#8C5E38','#F2EAE0'], font_style:'Bold sans-serif headline (Impact or Bebas Neue) with clean supporting body text — warm, not clinical', face_rule:'Show face — ADHD audiences connect deeply with creators they trust. Consistent face = faster community building.', template:'[Emotion face — filling 60% of frame] + [Bold text top-right] + [Warm background color from palette] + [Small icon or contrast element bottom-left]'},
+    schedule: {frequency:'2 videos per week', days:['Tuesday','Friday'], time:'Publish at 9–11am in your primary audience timezone. Set it and batch so you never miss.', batch_strategy:'Record 4 videos in one session every 2 weeks. Script → Record → Edit in batches of 2. Use the Focus timer in Clear Mind Co. to protect recording blocks.', minimum_viable:'1 video per week minimum to sustain algorithmic momentum. Drop to 1 before going on a complete break.'},
+    plan: {month1:{goal:'Channel foundation — set up and post first 4 videos',tasks:['Set up channel: banner, description, profile photo using brand palette','Script and record your 3 pillar intro videos','Post Video 1: The ADHD system video (highest search volume)','Set up end screen template and consistent thumbnail template']},month2:{goal:'Content rhythm — publish consistently and study data',tasks:['Post 8 videos total (2/week), focus on Pillar 1 and 2','Study your top 2 videos — double down on what worked','Create one "real talk" video to build community trust','Respond to every comment in first 48 hours']},month3:{goal:'Growth acceleration — optimize, collaborate, expand',tasks:['Pitch 2 ADHD creators for cross-promotion or collabs','Optimize your 5 lowest-performing videos (new thumbnails, titles)','Launch a community post or poll to start engagement loop','Activate first monetization path: digital download or waitlist']}, first_milestone:'1,000 subscribers — the first trust signal that tells YouTube to start distributing your content more broadly', day1_action:'Create your channel page right now with the name, description, and one banner — then script your first video before bed tonight. Speed beats perfection.'}
+  };
+
+  function ensureYtChannel(){
+    if(!U.ytChannel || typeof U.ytChannel !== 'object') U.ytChannel = {niche:'', results:[], lastRun:''};
+    if(!Array.isArray(U.ytChannel.results)) U.ytChannel.results = [];
+    if(!U.ytChannel.niche) U.ytChannel.niche = '';
+  }
+
+  function renderYouTube(){
+    ensureYtChannel();
+    var nicheEl = document.getElementById('ytNicheInput');
+    if(nicheEl && !nicheEl.value && U.ytChannel.niche) nicheEl.value = U.ytChannel.niche;
+
+    var hintEl = document.getElementById('ytNicheHint');
+    var hintTxt = document.getElementById('ytNicheHintText');
+    if(hintEl && hintTxt){
+      hintEl.style.display = 'block';
+      hintTxt.textContent = YT_NICHE_SUGGESTION;
+    }
+
+    var stepsEl = document.getElementById('ytWorkflowSteps');
+    if(!stepsEl) return;
+    stepsEl.innerHTML = '';
+    YT_AGENTS.forEach(function(agent, i){
+      var result = (U.ytChannel.results || []).find(function(r){ return r.id === agent.id; });
+      var isDone = !!result;
+      var div = document.createElement('div');
+      div.className = 'yt-step' + (isDone ? ' yt-done' : '');
+      var dotClass = isDone ? 'done' : '';
+      div.innerHTML =
+        '<div class="yt-dot ' + dotClass + '">' + (isDone ? '✓' : esc(agent.icon)) + '</div>' +
+        '<div><strong>' + esc(agent.title) + '</strong><div class="small" style="margin-top:2px">' + esc(agent.desc) + '</div></div>' +
+        '<div class="small">' + (isDone ? '<span style="color:#6c2bd9; font-weight:700">Done</span>' : '<span style="color:var(--muted)">Waiting</span>') + '</div>';
+      stepsEl.appendChild(div);
+    });
+
+    var resultsEl = document.getElementById('ytResults');
+    var reportEl = document.getElementById('ytReportCards');
+    if(!resultsEl || !reportEl) return;
+
+    var hasResults = U.ytChannel.results && U.ytChannel.results.length === YT_AGENTS.length;
+    resultsEl.classList.toggle('hidden', !hasResults);
+
+    if(hasResults){
+      reportEl.innerHTML = '';
+      U.ytChannel.results.forEach(function(r){
+        var card = document.createElement('div');
+        card.className = 'yt-rcard';
+        card.innerHTML = ytRenderResult(r);
+        reportEl.appendChild(card);
+      });
+    }
+  }
+
+  function ytRenderResult(r){
+    var agent = YT_AGENTS.find(function(a){ return a.id === r.id; });
+    var label = agent ? (agent.icon + ' ' + agent.title) : r.id;
+    var d = r.data || {};
+    var html = '<h3>' + esc(label) + '</h3>';
+
+    if(r.id === 'niche'){
+      html += '<div class="grid2" style="gap:10px; margin-bottom:10px">';
+      html += ytStat('Verdict', esc(d.verdict || ''));
+      html += ytStat('Market', esc(d.market_size || ''));
+      html += '</div>';
+      html += '<p><strong>Refined niche:</strong> ' + esc(d.refined_niche || '') + '</p>';
+      html += '<p style="margin-top:8px"><strong>Monetization:</strong> ' + esc(d.monetization || '') + '</p>';
+      html += '<p style="margin-top:8px; color:var(--muted)">' + esc(d.why || '') + '</p>';
+    } else if(r.id === 'position'){
+      html += '<p><strong>Channel names to consider:</strong></p>';
+      html += '<div style="margin:8px 0">';
+      var names = Array.isArray(d.channel_name) ? d.channel_name : [d.channel_name || ''];
+      names.forEach(function(n){ html += '<span class="yt-tag">' + esc(n) + '</span>'; });
+      html += '</div>';
+      html += '<p><strong>Tagline:</strong> ' + esc(d.tagline || '') + '</p>';
+      html += '<p style="margin-top:8px"><strong>Unique angle:</strong> ' + esc(d.unique_angle || '') + '</p>';
+      html += '<p style="margin-top:8px; color:var(--muted)"><strong>Target viewer:</strong> ' + esc(d.target_viewer || '') + '</p>';
+    } else if(r.id === 'pillars'){
+      var pillars = Array.isArray(d.pillars) ? d.pillars : [];
+      pillars.forEach(function(p, i){
+        html += '<div class="yt-task" style="padding:10px 0">';
+        html += '<span class="yt-tag">Pillar ' + (i+1) + '</span> ';
+        html += '<strong>' + esc(p.name || '') + '</strong>';
+        html += '<div style="margin:4px 0 4px 0; color:var(--text-2)">' + esc(p.description || '') + '</div>';
+        html += '<div class="small" style="color:var(--muted)">Example: ' + esc(p.example || '') + '</div>';
+        html += '</div>';
+      });
+    } else if(r.id === 'videos'){
+      var videos = Array.isArray(d.videos) ? d.videos : [];
+      videos.forEach(function(v, i){
+        html += '<div class="yt-video">';
+        html += '<div class="row" style="gap:10px; align-items:flex-start; margin-bottom:6px">';
+        html += '<div class="yt-vnum">' + (i+1) + '</div>';
+        html += '<div><strong>' + esc(v.title || '') + '</strong>';
+        html += '<div style="margin-top:2px"><span class="yt-tag">' + esc(v.type || '') + '</span><span class="yt-tag">' + esc(v.pillar || '') + '</span></div></div></div>';
+        html += '<div class="small" style="color:var(--muted); font-style:italic">"' + esc(v.hook || '') + '"</div>';
+        html += '</div>';
+      });
+    } else if(r.id === 'seo'){
+      html += '<p><strong>Primary keywords:</strong></p><div style="margin:6px 0">';
+      (Array.isArray(d.primary_keywords) ? d.primary_keywords : []).forEach(function(k){ html += '<span class="yt-tag">' + esc(k) + '</span>'; });
+      html += '</div>';
+      html += '<p style="margin-top:8px"><strong>Long-tail phrases:</strong></p><div style="margin:6px 0">';
+      (Array.isArray(d.long_tail) ? d.long_tail : []).forEach(function(k){ html += '<span class="yt-tag">' + esc(k) + '</span>'; });
+      html += '</div>';
+      html += '<p style="margin-top:8px"><strong>Channel tags:</strong></p><div style="margin:6px 0">';
+      (Array.isArray(d.channel_tags) ? d.channel_tags : []).forEach(function(k){ html += '<span class="yt-tag">' + esc(k) + '</span>'; });
+      html += '</div>';
+      if(d.seo_tip) html += '<div class="yt-hint" style="margin-top:10px"><strong>Pro tip:</strong> ' + esc(d.seo_tip) + '</div>';
+    } else if(r.id === 'visual'){
+      html += '<p><strong>Thumbnail formula:</strong> ' + esc(d.thumbnail_style || '') + '</p>';
+      html += '<p style="margin-top:8px"><strong>Face rule:</strong> ' + esc(d.face_rule || '') + '</p>';
+      html += '<p style="margin-top:8px"><strong>Template:</strong> ' + esc(d.template || '') + '</p>';
+      if(Array.isArray(d.color_palette) && d.color_palette.length){
+        html += '<div style="margin-top:10px"><strong>Color palette:</strong><div style="margin-top:6px; display:flex; gap:8px; align-items:center">';
+        d.color_palette.forEach(function(c){
+          var safeC = /^#[0-9a-fA-F]{3,8}$/.test(c) ? c : '#888888';
+          html += '<span class="yt-swatch" style="background:' + safeC + '"></span><span class="small">' + esc(safeC) + '</span>';
+        });
+        html += '</div></div>';
+      }
+      if(d.font_style) html += '<p style="margin-top:8px; color:var(--muted)"><strong>Font style:</strong> ' + esc(d.font_style) + '</p>';
+    } else if(r.id === 'schedule'){
+      html += '<div class="grid2" style="gap:10px; margin-bottom:10px">';
+      html += ytStat('Frequency', esc(d.frequency || ''));
+      html += ytStat('Best days', Array.isArray(d.days) ? esc(d.days.join(' & ')) : esc(d.days || ''));
+      html += '</div>';
+      html += '<p><strong>Publish time:</strong> ' + esc(d.time || '') + '</p>';
+      html += '<p style="margin-top:8px"><strong>Batch strategy:</strong> ' + esc(d.batch_strategy || '') + '</p>';
+      html += '<p style="margin-top:8px; color:var(--muted)"><strong>Minimum viable:</strong> ' + esc(d.minimum_viable || '') + '</p>';
+    } else if(r.id === 'plan'){
+      ['month1','month2','month3'].forEach(function(m, i){
+        var mo = d[m] || {};
+        html += '<div style="margin-bottom:12px"><div class="small" style="margin-bottom:4px">Month ' + (i+1) + '</div>';
+        html += '<strong>' + esc(mo.goal || '') + '</strong>';
+        var tasks = Array.isArray(mo.tasks) ? mo.tasks : [];
+        tasks.forEach(function(t){ html += '<div class="yt-task">→ ' + esc(t) + '</div>'; });
+        html += '</div>';
+      });
+      if(d.day1_action){
+        html += '<div class="yt-hint" style="margin-top:10px"><strong>Your Day 1 Action:</strong> ' + esc(d.day1_action) + '</div>';
+      }
+    }
+    return html;
+  }
+
+  function ytStat(label, val){
+    return '<div class="stat"><div class="kpi" style="font-size:16px; line-height:1.2">' + val + '</div><div class="small">' + esc(label) + '</div></div>';
+  }
+
+  function ytAgentPrompt(id, niche, prevResults){
+    var ctx = prevResults.map(function(r){ return r.id + ': ' + JSON.stringify(r.data).slice(0,600); }).join('\n');
+    var base = 'YouTube channel niche: ' + niche + '\nPrevious agent outputs:\n' + ctx + '\nReturn ONLY valid JSON. No markdown, no explanation.';
+    var prompts = {
+      niche: {sys:'You are a YouTube niche strategist. Analyze the niche. Return JSON: {refined_niche,market_size,competition,monetization,verdict,why}', user:base},
+      position: {sys:'You are a YouTube brand strategist. Create channel positioning. Return JSON: {channel_name:[3 options as array],tagline,unique_angle,target_viewer}', user:base},
+      pillars: {sys:'You are a YouTube content strategist. Define 5 content pillars. Return JSON: {pillars:[{name,description,example}]}', user:base},
+      videos: {sys:'You are a YouTube video strategist. Create 10 video ideas. Return JSON: {videos:[{title,hook,pillar,type}]}', user:base},
+      seo: {sys:'You are a YouTube SEO specialist. Return JSON: {primary_keywords:[5],long_tail:[5],channel_tags:[10],description_template,seo_tip}', user:base},
+      visual: {sys:'You are a YouTube thumbnail and visual brand designer. Return JSON: {thumbnail_style,color_palette:[3 hex],font_style,face_rule,template}', user:base},
+      schedule: {sys:'You are a YouTube growth strategist. Return JSON: {frequency,days:[array],time,batch_strategy,minimum_viable}', user:base},
+      plan: {sys:'You are a YouTube launch strategist. Return JSON: {month1:{goal,tasks:[4]},month2:{goal,tasks:[4]},month3:{goal,tasks:[4]},first_milestone,day1_action}', user:base}
+    };
+    return prompts[id] || {sys:'Return JSON only.', user:base};
+  }
+
+  async function callYouTubeAgent(id, niche, prevResults){
+    var apiKey = getApiKey();
+    if(!validApiKey(apiKey)) return YT_FALLBACKS[id] || {};
+    if(!rateLimitOK()) return YT_FALLBACKS[id] || {};
+    var p = ytAgentPrompt(id, niche, prevResults);
+    try{
+      var res = await fetch('https://api.anthropic.com/v1/messages',{
+        method:'POST',
+        headers:{
+          'content-type':'application/json',
+          'x-api-key':apiKey,
+          'anthropic-version':'2023-06-01'
+        },
+        body: JSON.stringify({
+          model:'claude-sonnet-4-20250514',
+          max_tokens:1200,
+          system: p.sys,
+          messages:[{role:'user', content:p.user}]
+        })
+      });
+      if(!res.ok) throw new Error('API error');
+      var data = await res.json();
+      var txt = (((data||{}).content||[])[0]||{}).text || '';
+      var match = txt.match(/\{[\s\S]*\}/);
+      if(match){ var parsed = JSON.parse(match[0]); return parsed; }
+    }catch(e){}
+    return YT_FALLBACKS[id] || {};
+  }
+
+  function ytMarkStepRunning(idx){
+    var steps = document.querySelectorAll('#ytWorkflowSteps .yt-step');
+    if(steps[idx]){
+      steps[idx].classList.add('yt-run');
+      var dot = steps[idx].querySelector('.yt-dot');
+      if(dot){ dot.className='yt-dot run'; dot.textContent='…'; }
+      var status = steps[idx].querySelectorAll('.small');
+      if(status[1]) status[1].innerHTML = '<span style="color:#6c2bd9; font-weight:700">Running…</span>';
+    }
+  }
+
+  function ytMarkStepDone(idx){
+    var steps = document.querySelectorAll('#ytWorkflowSteps .yt-step');
+    if(steps[idx]){
+      steps[idx].classList.remove('yt-run');
+      steps[idx].classList.add('yt-done');
+      var dot = steps[idx].querySelector('.yt-dot');
+      if(dot){ dot.className='yt-dot done'; dot.textContent='✓'; }
+      var status = steps[idx].querySelectorAll('.small');
+      if(status[1]) status[1].innerHTML = '<span style="color:#6c2bd9; font-weight:700">Done</span>';
+    }
+  }
+
+  async function runYouTubeWorkflow(){
+    var nicheEl = document.getElementById('ytNicheInput');
+    var niche = sanitizeInput(nicheEl ? nicheEl.value : '', 400);
+    if(!niche){ celebrate('⚠️','Add your niche first','Describe what your YouTube channel is about, then run the workflow.','',0); return; }
+
+    ensureYtChannel();
+    U.ytChannel.niche = niche;
+    U.ytChannel.results = [];
+    U.ytChannel.lastRun = new Date().toISOString();
+
+    document.getElementById('ytResults').classList.add('hidden');
+    var runBtn = document.getElementById('ytRunBtn');
+    if(runBtn){ runBtn.disabled = true; runBtn.textContent = 'Agents Running…'; }
+
+    save(); renderYouTube();
+
+    var prevResults = [];
+    for(var i = 0; i < YT_AGENTS.length; i++){
+      var agent = YT_AGENTS[i];
+      ytMarkStepRunning(i);
+      var data = await callYouTubeAgent(agent.id, niche, prevResults);
+      var result = {id:agent.id, data:data};
+      U.ytChannel.results.push(result);
+      prevResults.push(result);
+      ytMarkStepDone(i);
+      save();
+    }
+
+    if(runBtn){ runBtn.disabled = false; runBtn.textContent = 'Run 8 Agents ▶'; }
+    renderYouTube();
+    celebrate('▶','Channel strategy complete','All 8 agents finished. Your full YouTube plan is ready below.','Review the report and take your Day 1 action today.',50);
+  }
+  /* ── End YouTube Channel Planner ─────────────────────────── */
 
   function debtMonthKeyNow(){
     var d = new Date();
@@ -2095,6 +2458,20 @@ document.addEventListener('DOMContentLoaded', function(){
         }
       };
       reader.readAsText(file);
+    });
+
+    document.getElementById('ytRunBtn').addEventListener('click', function(){ runYouTubeWorkflow(); });
+    document.getElementById('ytFillNicheBtn').addEventListener('click', function(){
+      var el = document.getElementById('ytNicheInput');
+      if(el){ el.value = YT_NICHE_SUGGESTION; el.focus(); }
+    });
+    document.getElementById('ytResetBtn').addEventListener('click', function(){
+      ensureYtChannel();
+      U.ytChannel.results = [];
+      U.ytChannel.niche = '';
+      var el = document.getElementById('ytNicheInput');
+      if(el) el.value = '';
+      save(); renderYouTube();
     });
 
     document.getElementById('startTourBtn').addEventListener('click', function(){ startTour(); });
