@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Fragment } from "react";
 import Navbar from "@/components/Navbar";
 import { loadProgress, addTradeLog, updateTradeLog, type TradeLog, type AppProgress } from "@/lib/progress";
 
@@ -667,8 +667,8 @@ export default function PaperLab() {
                     const isEditing = editingId === log.id;
 
                     return (
-                      <>
-                        <tr key={log.id} style={{ borderBottom: isEditing ? "none" : "1px solid #1e2433" }}>
+                      <Fragment key={log.id}>
+                        <tr style={{ borderBottom: isEditing ? "none" : "1px solid #1e2433" }}>
                           <td className="px-3 py-3 whitespace-nowrap" style={{ color: "#9aa0b4" }}>{log.date}</td>
                           <td className="px-3 py-3 font-bold" style={{ color: "#e8eaf0" }}>{log.ticker}</td>
                           <td className="px-3 py-3 whitespace-nowrap" style={{ color: "#5a6075" }}>{log.assetType || "—"}</td>
@@ -790,7 +790,7 @@ export default function PaperLab() {
                             </td>
                           </tr>
                         )}
-                      </>
+                      </Fragment>
                     );
                   })}
                 </tbody>

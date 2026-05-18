@@ -5,8 +5,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
-  title: "EDGE OS Trading School",
-  description: "Learn to trade before you risk a dollar. Beginner-first trading education.",
+  title: "EDGE OS — Trading Education + Market Intelligence",
+  description: "The complete trading development platform. Learn, analyze smart money, paper trade, and build discipline before risking real capital.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
