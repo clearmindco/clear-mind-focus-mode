@@ -1,13 +1,19 @@
 /**
  * EDGE OS Data Provider Layer
  *
- * Safe fetch wrappers for all external APIs.
+ * Safe fetch wrappers for external APIs.
  * Rules:
- *  - Only NEXT_PUBLIC_* keys are used here (browser-safe, embedded at build time).
- *  - Server-only keys (OPENAI, SUPABASE_SERVICE_ROLE) are NOT used here.
- *  - If a key is missing or invalid, return clearly labeled placeholder data.
+ *  - Only NEXT_PUBLIC_* keys used here (browser-safe, inlined at build time).
+ *  - Missing or placeholder keys → return clearly labeled placeholder data.
  *  - Never pretend placeholder data is live.
  *  - Never log or expose key values.
+ *
+ * Currently wired to live features:
+ *  - Finnhub → Terminal live price cards
+ *
+ * Defined but not yet called from UI (future features):
+ *  - Alpha Vantage → getTechnicalIndicators (Terminal overlays, coming soon)
+ *  - NewsAPI       → getMarketNews (Research Lab feed, coming soon)
  */
 
 // ─── Key presence checks (values inlined at build time) ──────────────────────
@@ -15,8 +21,6 @@
 const _finnhubKey = process.env.NEXT_PUBLIC_FINNHUB_API_KEY;
 const _alphaVantageKey = process.env.NEXT_PUBLIC_ALPHA_VANTAGE_API_KEY;
 const _newsApiKey = process.env.NEXT_PUBLIC_NEWS_API_KEY;
-const _supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const _supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 function isRealKey(val: string | undefined): boolean {
   return !!val && !val.startsWith("your_") && val.length > 10;
@@ -25,9 +29,6 @@ function isRealKey(val: string | undefined): boolean {
 export function isFinnhubConnected(): boolean { return isRealKey(_finnhubKey); }
 export function isAlphaVantageConnected(): boolean { return isRealKey(_alphaVantageKey); }
 export function isNewsApiConnected(): boolean { return isRealKey(_newsApiKey); }
-export function isSupabaseConnected(): boolean {
-  return isRealKey(_supabaseUrl) && isRealKey(_supabaseAnonKey);
-}
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
