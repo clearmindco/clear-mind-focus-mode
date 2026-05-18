@@ -61,7 +61,7 @@ export default function FinalTest() {
               You must pass the quiz in every module before taking the Final Readiness Test.
             </p>
             <Link
-              href="/"
+              href="/academy"
               className="inline-block px-5 py-2.5 rounded-xl text-sm font-semibold"
               style={{ background: "#1e2433", color: "#9aa0b4", border: "1px solid #2a3048" }}
             >

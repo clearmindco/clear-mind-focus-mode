@@ -44,7 +44,7 @@ export default function ModuleClient({ id }: { id: string }) {
         <Navbar />
         <div className="max-w-4xl mx-auto px-4 py-20 text-center">
           <p className="text-2xl mb-4">Module not found</p>
-          <Link href="/" style={{ color: "#00d4ff" }}>← Back to Dashboard</Link>
+          <Link href="/academy" style={{ color: "#00d4ff" }}>← Back to Academy</Link>
         </div>
       </div>
     );
@@ -60,7 +60,7 @@ export default function ModuleClient({ id }: { id: string }) {
           <p className="text-sm mb-6" style={{ color: "#9aa0b4" }}>
             Complete the previous module to unlock {lesson.title}.
           </p>
-          <Link href="/" className="text-sm" style={{ color: "#00d4ff" }}>← Back to Dashboard</Link>
+          <Link href="/academy" className="text-sm" style={{ color: "#00d4ff" }}>← Back to Academy</Link>
         </div>
       </div>
     );
@@ -100,8 +100,8 @@ export default function ModuleClient({ id }: { id: string }) {
       {/* Module Header */}
       <div style={{ background: "#0f1117", borderBottom: "1px solid #1e2433" }}>
         <div className="max-w-4xl mx-auto px-4 py-6">
-          <Link href="/" className="text-xs mb-3 inline-flex items-center gap-1" style={{ color: "#5a6075" }}>
-            ← Dashboard
+          <Link href="/academy" className="text-xs mb-3 inline-flex items-center gap-1" style={{ color: "#5a6075" }}>
+            ← Academy
           </Link>
           <div className="flex items-start gap-4">
             <div

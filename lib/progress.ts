@@ -15,12 +15,14 @@ export interface TradeLog {
   id: string;
   date: string;
   ticker: string;
+  direction?: string;
   setupType: string;
   entry: string;
   stop: string;
   target1: string;
   target2: string;
   result: string;
+  exitReason?: string;
   thesis: string;
   followedPlan: boolean;
   notes: string;

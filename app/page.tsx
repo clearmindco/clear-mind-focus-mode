@@ -1,256 +1,189 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
-import ProgressBar from "@/components/ProgressBar";
-import { MODULES } from "@/lib/lessons";
-import { loadProgress, isModuleUnlocked, type AppProgress } from "@/lib/progress";
 
-export default function Home() {
-  const [progress, setProgress] = useState<AppProgress | null>(null);
+const SECTIONS = [
+  {
+    id: "academy",
+    href: "/academy",
+    icon: "🎓",
+    label: "EDGE Academy",
+    sub: "Trading Education",
+    desc: "10 structured modules from trading basics to advanced setups. Gated quizzes, checklists, and a Final Readiness Test before you risk real capital.",
+    color: "#00d4ff",
+    stats: ["10 Modules", "Quizzes + Checklists", "Final Readiness Test"],
+    badge: "LIVE",
+    badgeColor: "#10b981",
+    badgeBg: "rgba(16,185,129,0.1)",
+  },
+  {
+    id: "terminal",
+    href: "/terminal",
+    icon: "📡",
+    label: "EDGE Terminal",
+    sub: "Market Intelligence",
+    desc: "Curated watchlist with trend analysis, catalyst tracking, entry zones, and confidence scores. SPY, QQQ, TLT, XLE, NVDA, TSLA and more.",
+    color: "#10b981",
+    stats: ["6 Tickers", "Bias Scores", "Setups + Levels"],
+    badge: "PREVIEW",
+    badgeColor: "#f59e0b",
+    badgeBg: "rgba(245,158,11,0.1)",
+  },
+  {
+    id: "research",
+    href: "/research",
+    icon: "🔬",
+    label: "EDGE Research Lab",
+    sub: "Macro & Flow Analysis",
+    desc: "Structured research across Fed policy, bonds, energy, China, AI/semis, congressional trades, insider activity, and small-cap catalysts.",
+    color: "#8b5cf6",
+    stats: ["8 Research Areas", "Macro + Flow", "Catalyst Tracking"],
+    badge: "PREVIEW",
+    badgeColor: "#f59e0b",
+    badgeBg: "rgba(245,158,11,0.1)",
+  },
+  {
+    id: "paper-lab",
+    href: "/paper-lab",
+    icon: "📊",
+    label: "EDGE Paper Lab",
+    sub: "Paper Trade Tracker",
+    desc: "Document every simulated trade with full thesis, R:R calculation, and outcome tracking. Build your edge log before risking real capital.",
+    color: "#f59e0b",
+    stats: ["Trade Journal", "R:R Calculator", "Thesis Builder"],
+    badge: "LIVE",
+    badgeColor: "#10b981",
+    badgeBg: "rgba(16,185,129,0.1)",
+  },
+];
 
-  useEffect(() => {
-    setProgress(loadProgress());
-  }, []);
-
-  const completedCount = progress
-    ? Object.values(progress.lessons).filter(l => l.passed).length
-    : 0;
-  const overallPct = Math.round((completedCount / MODULES.length) * 100);
-
+export default function PlatformHub() {
   return (
     <div style={{ minHeight: "100vh", background: "#0a0b0d" }}>
       <Navbar />
 
-      <div className="max-w-6xl mx-auto px-4 pt-12 pb-16">
+      <div className="max-w-7xl mx-auto px-4 pt-16 pb-24">
         {/* Hero */}
-        <div className="text-center mb-10">
+        <div className="text-center mb-16">
           <div
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium mb-5"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium mb-6"
             style={{ background: "rgba(0,212,255,0.08)", color: "#00d4ff", border: "1px solid rgba(0,212,255,0.2)" }}
           >
             <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
-            Beginner-First Trading Education
+            Full Trading Development Platform
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 tracking-tight" style={{ color: "#e8eaf0" }}>
-            EDGE<span style={{ color: "#00d4ff" }}>OS</span>{" "}
-            <span style={{ color: "#9aa0b4" }}>Trading School</span>
+          <h1 className="text-5xl md:text-7xl font-bold mb-5 tracking-tight" style={{ color: "#e8eaf0" }}>
+            EDGE<span style={{ color: "#00d4ff" }}>OS</span>
           </h1>
-          <p className="text-lg max-w-xl mx-auto mb-2" style={{ color: "#9aa0b4" }}>
-            Learn everything you need before placing your first real trade in Webull.
+          <p className="text-xl md:text-2xl max-w-2xl mx-auto mb-4" style={{ color: "#9aa0b4" }}>
+            Learn. Analyze. Research. Practice.
           </p>
           <p className="text-sm" style={{ color: "#5a6075" }}>
-            9 modules · Quizzes · Paper Trading Lab · Final Readiness Test
+            The complete platform for developing your trading edge — before risking real capital.
           </p>
         </div>
 
-        {/* Overall Progress Card */}
-        <div
-          className="rounded-2xl p-6 mb-6"
-          style={{ background: "#0f1117", border: "1px solid #1e2433" }}
-        >
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <p className="font-semibold" style={{ color: "#e8eaf0" }}>Your Progress</p>
-              <p className="text-sm mt-0.5" style={{ color: "#5a6075" }}>
-                {completedCount} of {MODULES.length} modules completed
-              </p>
-            </div>
-            <div
-              className="text-3xl font-bold"
-              style={{ color: "#00d4ff" }}
+        {/* Section cards */}
+        <div className="grid md:grid-cols-2 gap-5 mb-12">
+          {SECTIONS.map(s => (
+            <Link
+              key={s.id}
+              href={s.href}
+              className="group block rounded-2xl p-6 transition-all duration-200"
+              style={{
+                background: "#0f1117",
+                border: "1px solid #1e2433",
+              }}
             >
-              {overallPct}%
-            </div>
-          </div>
-          <ProgressBar value={overallPct} />
-          {progress?.finalTestPassed && (
-            <div
-              className="mt-4 p-3 rounded-xl text-sm text-center font-semibold"
-              style={{ background: "rgba(16,185,129,0.08)", color: "#10b981", border: "1px solid rgba(16,185,129,0.2)" }}
-            >
-              🎓 Congratulations — Final Test Passed. You are Trade-Ready!
-            </div>
-          )}
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div
+                    className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0"
+                    style={{ background: `${s.color}10`, border: `1px solid ${s.color}25` }}
+                  >
+                    {s.icon}
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 mb-0.5">
+                      <span className="font-bold text-base" style={{ color: "#e8eaf0" }}>{s.label}</span>
+                      <span
+                        className="text-xs px-1.5 py-0.5 rounded font-medium"
+                        style={{ background: s.badgeBg, color: s.badgeColor }}
+                      >
+                        {s.badge}
+                      </span>
+                    </div>
+                    <p className="text-xs" style={{ color: s.color }}>{s.sub}</p>
+                  </div>
+                </div>
+                <span className="text-lg transition-transform duration-200 group-hover:translate-x-1" style={{ color: "#5a6075" }}>→</span>
+              </div>
+
+              <p className="text-sm leading-relaxed mb-4" style={{ color: "#9aa0b4" }}>{s.desc}</p>
+
+              <div className="flex gap-2 flex-wrap">
+                {s.stats.map(stat => (
+                  <span
+                    key={stat}
+                    className="text-xs px-2.5 py-1 rounded-full"
+                    style={{ background: "#141720", color: "#5a6075", border: "1px solid #1e2433" }}
+                  >
+                    {stat}
+                  </span>
+                ))}
+              </div>
+            </Link>
+          ))}
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-3 gap-3 mb-8">
-          {[
-            {
-              label: "Modules Done",
-              value: completedCount,
-              suffix: `/ ${MODULES.length}`,
-              color: "#10b981",
-            },
-            {
-              label: "Avg Quiz Score",
-              value:
-                progress && Object.values(progress.lessons).filter(l => l.quizScore !== null).length > 0
-                  ? Math.round(
-                      Object.values(progress.lessons)
-                        .filter(l => l.quizScore !== null)
-                        .reduce((s, l) => s + (l.quizScore ?? 0), 0) /
-                        Object.values(progress.lessons).filter(l => l.quizScore !== null).length
-                    )
-                  : null,
-              suffix: progress && Object.values(progress.lessons).filter(l => l.quizScore !== null).length > 0 ? "%" : "",
-              color: "#00d4ff",
-            },
-            {
-              label: "Paper Trades",
-              value: progress?.tradeLogs.length ?? 0,
-              suffix: "",
-              color: "#f59e0b",
-            },
-          ].map(stat => (
-            <div
-              key={stat.label}
-              className="rounded-xl p-4 text-center"
-              style={{ background: "#0f1117", border: "1px solid #1e2433" }}
-            >
-              <div className="text-2xl font-bold mb-1" style={{ color: stat.color }}>
-                {stat.value !== null ? stat.value : "—"}
-                <span className="text-sm font-normal ml-0.5" style={{ color: "#5a6075" }}>{stat.suffix}</span>
-              </div>
-              <div className="text-xs" style={{ color: "#5a6075" }}>{stat.label}</div>
-            </div>
-          ))}
+        {/* Workflow bar */}
+        <div
+          className="rounded-2xl p-6 mb-8"
+          style={{ background: "#0f1117", border: "1px solid #1e2433" }}
+        >
+          <p className="text-xs font-semibold uppercase tracking-widest mb-4 text-center" style={{ color: "#5a6075" }}>
+            Your Development Path
+          </p>
+          <div className="flex items-center justify-center gap-2 flex-wrap">
+            {[
+              { step: "1", label: "Academy", color: "#00d4ff" },
+              { step: "→", label: "", color: "#2a3048" },
+              { step: "2", label: "Research Lab", color: "#8b5cf6" },
+              { step: "→", label: "", color: "#2a3048" },
+              { step: "3", label: "Terminal", color: "#10b981" },
+              { step: "→", label: "", color: "#2a3048" },
+              { step: "4", label: "Paper Lab", color: "#f59e0b" },
+              { step: "→", label: "", color: "#2a3048" },
+              { step: "5", label: "Live Trading", color: "#ef4444" },
+            ].map((item, i) =>
+              item.label ? (
+                <div key={i} className="flex flex-col items-center gap-1">
+                  <div
+                    className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
+                    style={{ background: `${item.color}15`, color: item.color, border: `1px solid ${item.color}30` }}
+                  >
+                    {item.step}
+                  </div>
+                  <span className="text-xs" style={{ color: "#5a6075" }}>{item.label}</span>
+                </div>
+              ) : (
+                <span key={i} className="text-lg font-light mb-4" style={{ color: "#2a3048" }}>→</span>
+              )
+            )}
+          </div>
         </div>
 
         {/* Disclaimer */}
         <div
-          className="rounded-xl p-4 mb-8 flex gap-3 items-start"
+          className="rounded-xl p-4 flex gap-3 items-start"
           style={{ background: "rgba(245,158,11,0.05)", border: "1px solid rgba(245,158,11,0.15)" }}
         >
           <span className="text-lg flex-shrink-0">⚠️</span>
           <p className="text-xs leading-relaxed" style={{ color: "#9aa0b4" }}>
-            <strong style={{ color: "#f59e0b" }}>Educational content only.</strong> This course teaches trading concepts and does not provide investment advice or guarantees of any kind. Trading involves substantial risk of loss. Complete all modules and paper trade before using real capital.
+            <strong style={{ color: "#f59e0b" }}>Educational platform only.</strong> EDGE OS provides educational content and does not provide investment advice, financial recommendations, or guarantees of any kind. All terminal data and research content are clearly labeled as placeholder or educational material. Trading involves substantial risk of loss. Complete the Academy and paper trade extensively before using real capital.
           </p>
         </div>
-
-        {/* Modules */}
-        <h2 className="text-base font-semibold mb-3" style={{ color: "#e8eaf0" }}>Course Modules</h2>
-        <div className="space-y-2">
-          {MODULES.map(mod => {
-            const lessonProg = progress?.lessons[mod.lessonId];
-            const passed = lessonProg?.passed ?? false;
-            const unlocked = progress ? isModuleUnlocked(mod.number) : mod.number === 1;
-            const score = lessonProg?.quizScore ?? null;
-            const checklistCount = lessonProg?.checklistCompleted.length ?? 0;
-            void checklistCount;
-
-            const card = (
-              <div
-                className="rounded-xl p-4 flex items-center gap-4 transition-all duration-150"
-                style={{
-                  background: passed ? "rgba(16,185,129,0.04)" : unlocked ? "#0f1117" : "#0a0b0d",
-                  border: `1px solid ${passed ? "rgba(16,185,129,0.2)" : unlocked ? "#1e2433" : "#141720"}`,
-                  opacity: unlocked ? 1 : 0.45,
-                }}
-              >
-                <div
-                  className="w-11 h-11 rounded-xl flex items-center justify-center text-lg flex-shrink-0"
-                  style={{
-                    background: passed ? "rgba(16,185,129,0.08)" : `${mod.color}0d`,
-                    border: `1px solid ${passed ? "rgba(16,185,129,0.2)" : `${mod.color}20`}`,
-                  }}
-                >
-                  {mod.icon}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-0.5 flex-wrap">
-                    <span className="text-xs" style={{ color: "#5a6075" }}>Module {mod.number}</span>
-                    {passed && (
-                      <span
-                        className="text-xs px-1.5 py-0.5 rounded font-medium"
-                        style={{ background: "rgba(16,185,129,0.1)", color: "#10b981" }}
-                      >
-                        ✓ Done
-                      </span>
-                    )}
-                    {!unlocked && (
-                      <span className="text-xs" style={{ color: "#5a6075" }}>🔒</span>
-                    )}
-                  </div>
-                  <p className="font-semibold text-sm truncate" style={{ color: unlocked ? "#e8eaf0" : "#5a6075" }}>
-                    {mod.title}
-                  </p>
-                  <p className="text-xs truncate" style={{ color: "#5a6075" }}>{mod.subtitle}</p>
-                </div>
-                <div className="flex-shrink-0 text-right">
-                  {score !== null ? (
-                    <span className="text-sm font-bold" style={{ color: score >= 80 ? "#10b981" : "#f59e0b" }}>
-                      {score}%
-                    </span>
-                  ) : unlocked ? (
-                    <span className="text-xs" style={{ color: "#00d4ff" }}>Start →</span>
-                  ) : null}
-                </div>
-              </div>
-            );
-
-            if (!unlocked) return <div key={mod.id}>{card}</div>;
-            return (
-              <Link key={mod.id} href={`/module/${mod.lessonId}`} className="block group hover:scale-[1.005] transition-transform">
-                {card}
-              </Link>
-            );
-          })}
-
-          {/* Final Test */}
-          {(() => {
-            const allDone = completedCount >= MODULES.length;
-            const ftPassed = progress?.finalTestPassed ?? false;
-            const ftScore = progress?.finalTestScore ?? null;
-            const card = (
-              <div
-                className="rounded-xl p-4 flex items-center gap-4 transition-all duration-150"
-                style={{
-                  background: ftPassed ? "rgba(16,185,129,0.04)" : allDone ? "rgba(0,212,255,0.04)" : "#0a0b0d",
-                  border: `1px solid ${ftPassed ? "rgba(16,185,129,0.2)" : allDone ? "rgba(0,212,255,0.2)" : "#141720"}`,
-                  opacity: allDone ? 1 : 0.45,
-                }}
-              >
-                <div
-                  className="w-11 h-11 rounded-xl flex items-center justify-center text-lg flex-shrink-0"
-                  style={{ background: "rgba(0,212,255,0.08)", border: "1px solid rgba(0,212,255,0.2)" }}
-                >
-                  🎓
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-0.5">
-                    <span className="text-xs" style={{ color: "#5a6075" }}>Module 10</span>
-                    {ftPassed && (
-                      <span className="text-xs px-1.5 py-0.5 rounded font-medium" style={{ background: "rgba(16,185,129,0.1)", color: "#10b981" }}>
-                        ✓ Trade-Ready
-                      </span>
-                    )}
-                    {!allDone && <span className="text-xs" style={{ color: "#5a6075" }}>🔒 Complete all modules first</span>}
-                  </div>
-                  <p className="font-semibold text-sm" style={{ color: allDone ? "#e8eaf0" : "#5a6075" }}>
-                    Final Readiness Test
-                  </p>
-                  <p className="text-xs" style={{ color: "#5a6075" }}>25 questions · Must score 80%+ · Unlocks your trade-ready status</p>
-                </div>
-                <div className="flex-shrink-0">
-                  {ftScore !== null ? (
-                    <span className="text-sm font-bold" style={{ color: ftScore >= 80 ? "#10b981" : "#ef4444" }}>{ftScore}%</span>
-                  ) : allDone ? (
-                    <span className="text-xs" style={{ color: "#00d4ff" }}>Take Test →</span>
-                  ) : null}
-                </div>
-              </div>
-            );
-            if (!allDone) return <div key="final">{card}</div>;
-            return <Link key="final" href="/final-test" className="block hover:scale-[1.005] transition-transform">{card}</Link>;
-          })()}
-        </div>
-
-        <p className="text-center text-xs mt-10" style={{ color: "#5a6075" }}>
-          Your progress is automatically saved in this browser.
-        </p>
       </div>
     </div>
   );
