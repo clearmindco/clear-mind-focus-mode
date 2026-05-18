@@ -7,6 +7,7 @@ const NAV = [
   { label: "Academy", href: "/academy", match: ["/academy", "/module", "/final-test"] },
   { label: "Terminal", href: "/terminal", match: ["/terminal"] },
   { label: "Research Lab", href: "/research", match: ["/research"] },
+  { label: "Whale Tracker", href: "/whale-tracker", match: ["/whale-tracker"] },
   { label: "Paper Lab", href: "/paper-lab", match: ["/paper-lab"] },
   { label: "API Setup", href: "/api-setup", match: ["/api-setup"], icon: "⚙️" },
 ];

@@ -15,7 +15,9 @@ export interface TradeLog {
   id: string;
   date: string;
   ticker: string;
+  assetType?: string;
   direction?: string;
+  emotionalState?: string;
   setupType: string;
   catalyst?: string;
   entry: string;
@@ -125,6 +127,12 @@ export function isModuleUnlocked(moduleNumber: number): boolean {
 export function addTradeLog(log: Omit<TradeLog, "id">): void {
   const p = loadProgress();
   p.tradeLogs = [{ ...log, id: Date.now().toString() }, ...p.tradeLogs];
+  saveProgress(p);
+}
+
+export function updateTradeLog(id: string, updates: Partial<Omit<TradeLog, "id">>): void {
+  const p = loadProgress();
+  p.tradeLogs = p.tradeLogs.map(t => t.id === id ? { ...t, ...updates } : t);
   saveProgress(p);
 }
 

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
-import { loadProgress, addTradeLog, type TradeLog, type AppProgress } from "@/lib/progress";
+import { loadProgress, addTradeLog, updateTradeLog, type TradeLog, type AppProgress } from "@/lib/progress";
 
 const SETUP_TYPES = [
   "Breakout", "Pullback", "Bull Flag", "Bear Flag",
@@ -10,19 +10,24 @@ const SETUP_TYPES = [
   "TLT/Rates Trade", "Energy/Oil Trade", "Earnings Play", "Other",
 ];
 
-const DIRECTIONS = ["Long", "Short"];
+const ASSET_TYPES = ["Stock", "ETF", "Option (Call)", "Option (Put)", "Crypto", "Other"];
+
+const DIRECTIONS = ["Long", "Short", "Call", "Put"];
+
+const EMOTIONAL_STATES = [
+  { value: "calm", label: "Calm — I feel clear-headed and objective" },
+  { value: "excited", label: "Excited — I have strong conviction in this trade" },
+  { value: "fearful", label: "Fearful — I'm nervous but taking the trade anyway" },
+  { value: "revenge", label: "Revenge — recovering from a loss and feeling pressure" },
+  { value: "fomo", label: "FOMO — afraid of missing a move already in progress" },
+  { value: "unsure", label: "Unsure — I'm not fully confident in the setup" },
+];
 
 const EXIT_REASONS = [
   "Hit Target 1", "Hit Target 2", "Stopped Out", "Trailing Stop",
   "Manual Exit — Plan Changed", "Manual Exit — News", "End of Day", "Other",
 ];
 
-const TRADE_STATUSES = [
-  { value: "open", label: "Open" },
-  { value: "closed", label: "Closed" },
-];
-
-// Pre-trade checklist — must be completed before submitting
 const PRETRADE_ITEMS = [
   { id: "understand", label: "I understand why this trade exists — the setup is clear to me" },
   { id: "stop", label: "I know my exact stop loss price before entering" },
@@ -32,16 +37,27 @@ const PRETRADE_ITEMS = [
   { id: "paper", label: "This is a paper trade only — no real capital at risk" },
 ];
 
+const EMOTIONAL_WARNING: Record<string, string> = {
+  revenge: "⚠️ Revenge trading is one of the most common ways beginners blow up accounts. Take a break before this trade.",
+  fomo: "⚠️ FOMO trades typically mean you're entering too late. Ask: is the best entry still available, or has it already moved?",
+  fearful: "⚠️ Fear can cause premature exits. Make sure your stop is placed correctly and commit to your plan.",
+  unsure: "⚠️ Unsure setups are low-quality. If you can't clearly articulate why you're taking this trade, consider skipping it.",
+};
+
 const emptyForm = {
   date: new Date().toISOString().split("T")[0],
   ticker: "",
+  assetType: "",
   direction: "",
+  emotionalState: "",
   setupType: "",
   catalyst: "",
   entry: "",
   stop: "",
   target1: "",
   target2: "",
+  accountSize: "",
+  maxRiskPct: "2",
   tradeStatus: "open" as "open" | "closed",
   exitPrice: "",
   result: "",
@@ -52,6 +68,71 @@ const emptyForm = {
   notes: "",
 };
 
+// ─── Calculations ─────────────────────────────────────────────────────────────
+
+function calcRR(entry: string, stop: string, target: string) {
+  const e = parseFloat(entry), s = parseFloat(stop), t = parseFloat(target);
+  if (!e || !s || !t || e === s) return null;
+  return (Math.abs(t - e) / Math.abs(e - s)).toFixed(2);
+}
+
+function calcPositionSize(entry: string, stop: string, accountSize: string, maxRiskPct: string) {
+  const e = parseFloat(entry), s = parseFloat(stop);
+  const acct = parseFloat(accountSize), pct = parseFloat(maxRiskPct);
+  if (!e || !s || !acct || !pct || e === s) return null;
+  const riskPerShare = Math.abs(e - s);
+  const dollarRisk = acct * (pct / 100);
+  const shares = Math.floor(dollarRisk / riskPerShare);
+  return { riskPerShare: riskPerShare.toFixed(2), dollarRisk: dollarRisk.toFixed(2), shares };
+}
+
+// ─── Performance dashboard ────────────────────────────────────────────────────
+
+function buildDashboard(logs: TradeLog[]) {
+  const closed = logs.filter(l => {
+    const r = parseFloat(l.result);
+    return !isNaN(r) && r !== 0;
+  });
+  if (closed.length < 3) return null;
+
+  // Win/loss by setup type
+  const bySetup: Record<string, { wins: number; losses: number }> = {};
+  for (const l of closed) {
+    if (!l.setupType) continue;
+    if (!bySetup[l.setupType]) bySetup[l.setupType] = { wins: 0, losses: 0 };
+    if (parseFloat(l.result) > 0) bySetup[l.setupType].wins++;
+    else bySetup[l.setupType].losses++;
+  }
+
+  const setupEntries = Object.entries(bySetup).filter(([, v]) => v.wins + v.losses >= 2);
+  const bestSetup = setupEntries.sort(([, a], [, b]) => {
+    const wr = (x: typeof a) => x.wins / (x.wins + x.losses);
+    return wr(b) - wr(a);
+  })[0]?.[0] ?? null;
+  const worstSetup = setupEntries.sort(([, a], [, b]) => {
+    const wr = (x: typeof a) => x.wins / (x.wins + x.losses);
+    return wr(a) - wr(b);
+  })[0]?.[0] ?? null;
+
+  // Emotional state on losses
+  const lossTrades = closed.filter(l => parseFloat(l.result) < 0);
+  const emotionOnLoss: Record<string, number> = {};
+  for (const l of lossTrades) {
+    if (l.emotionalState) {
+      emotionOnLoss[l.emotionalState] = (emotionOnLoss[l.emotionalState] ?? 0) + 1;
+    }
+  }
+  const topLossEmotion = Object.entries(emotionOnLoss).sort(([, a], [, b]) => b - a)[0]?.[0] ?? null;
+
+  // Plan followed rate
+  const followedCount = closed.filter(l => l.followedPlan).length;
+  const planRate = Math.round((followedCount / closed.length) * 100);
+
+  return { bestSetup, worstSetup, topLossEmotion, planRate, totalClosed: closed.length };
+}
+
+// ─── Main component ───────────────────────────────────────────────────────────
+
 export default function PaperLab() {
   const [progress, setProgress] = useState<AppProgress | null>(null);
   const [form, setForm] = useState(emptyForm);
@@ -60,10 +141,11 @@ export default function PaperLab() {
   const [pretradeChecked, setPretradeChecked] = useState<Set<string>>(new Set());
   const [showForm, setShowForm] = useState(false);
   const [filterStatus, setFilterStatus] = useState<"all" | "open" | "closed">("all");
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editForm, setEditForm] = useState<Partial<TradeLog>>({});
+  const [showDashboard, setShowDashboard] = useState(false);
 
-  useEffect(() => {
-    setProgress(loadProgress());
-  }, []);
+  useEffect(() => { setProgress(loadProgress()); }, []);
 
   const allPretradeChecked = PRETRADE_ITEMS.every(i => pretradeChecked.has(i.id));
 
@@ -92,7 +174,9 @@ export default function PaperLab() {
     if (!allPretradeChecked) return;
     const errs = validate();
     if (Object.keys(errs).length > 0) { setErrors(errs); return; }
-    addTradeLog(form);
+    const { accountSize, maxRiskPct, ...logData } = form;
+    void accountSize; void maxRiskPct;
+    addTradeLog(logData);
     setSubmitted(true);
     setProgress(loadProgress());
     setForm({ ...emptyForm, date: new Date().toISOString().split("T")[0] });
@@ -102,15 +186,28 @@ export default function PaperLab() {
     setTimeout(() => setSubmitted(false), 4000);
   }
 
-  const riskReward = (() => {
-    const entry = parseFloat(form.entry);
-    const stop = parseFloat(form.stop);
-    const t1 = parseFloat(form.target1);
-    if (!entry || !stop || !t1 || entry === stop) return null;
-    const risk = Math.abs(entry - stop);
-    const reward = Math.abs(t1 - entry);
-    return (reward / risk).toFixed(2);
-  })();
+  function startEdit(log: TradeLog) {
+    setEditingId(log.id);
+    setEditForm({
+      tradeStatus: log.tradeStatus,
+      exitPrice: log.exitPrice ?? "",
+      result: log.result,
+      exitReason: log.exitReason ?? "",
+      followedPlan: log.followedPlan,
+      lessonLearned: log.lessonLearned ?? "",
+      notes: log.notes,
+    });
+  }
+
+  function saveEdit(id: string) {
+    updateTradeLog(id, editForm);
+    setEditingId(null);
+    setProgress(loadProgress());
+  }
+
+  const rr1 = calcRR(form.entry, form.stop, form.target1);
+  const rr2 = calcRR(form.entry, form.stop, form.target2);
+  const posSize = calcPositionSize(form.entry, form.stop, form.accountSize, form.maxRiskPct);
 
   const logs = progress?.tradeLogs ?? [];
   const closedLogs = logs.filter(l => l.tradeStatus === "closed" || (!l.tradeStatus && l.result));
@@ -118,30 +215,26 @@ export default function PaperLab() {
   const positiveCount = logs.filter(l => parseFloat(l.result) > 0).length;
   const negativeCount = logs.filter(l => parseFloat(l.result) < 0).length;
   const winRate = (positiveCount + negativeCount) > 0
-    ? Math.round((positiveCount / (positiveCount + negativeCount)) * 100)
-    : null;
+    ? Math.round((positiveCount / (positiveCount + negativeCount)) * 100) : null;
 
-  // Average R calculation
   const avgR = (() => {
     const tradesWithRR = logs.filter(l => {
-      const e = parseFloat(l.entry);
-      const s = parseFloat(l.stop);
-      const r = parseFloat(l.result);
+      const e = parseFloat(l.entry), s = parseFloat(l.stop), r = parseFloat(l.result);
       return e && s && r && e !== s;
     });
     if (!tradesWithRR.length) return null;
-    const rValues = tradesWithRR.map(l => {
+    const rVals = tradesWithRR.map(l => {
       const risk = Math.abs(parseFloat(l.entry) - parseFloat(l.stop));
       return parseFloat(l.result) / risk;
     });
-    return (rValues.reduce((a, b) => a + b, 0) / rValues.length).toFixed(2);
+    return (rVals.reduce((a, b) => a + b, 0) / rVals.length).toFixed(2);
   })();
 
-  const displayedLogs = filterStatus === "all"
-    ? logs
-    : filterStatus === "open"
-    ? openLogs
-    : closedLogs;
+  const displayedLogs = filterStatus === "all" ? logs
+    : filterStatus === "open" ? openLogs : closedLogs;
+
+  const dashboard = buildDashboard(logs);
+  const emotionWarning = EMOTIONAL_WARNING[form.emotionalState] ?? null;
 
   return (
     <div style={{ minHeight: "100vh", background: "#0a0b0d" }}>
@@ -149,17 +242,32 @@ export default function PaperLab() {
       <div className="max-w-5xl mx-auto px-4 py-8">
 
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-1" style={{ color: "#e8eaf0" }}>
-            EDGE <span style={{ color: "#f59e0b" }}>Paper Lab</span>
-          </h1>
-          <p className="text-sm" style={{ color: "#9aa0b4" }}>
-            Document every simulated trade. Write your thesis first. Build discipline before risking real capital.
-          </p>
+        <div className="mb-6 flex items-start justify-between flex-wrap gap-3">
+          <div>
+            <h1 className="text-3xl font-bold mb-1" style={{ color: "#e8eaf0" }}>
+              EDGE <span style={{ color: "#f59e0b" }}>Paper Lab</span>
+            </h1>
+            <p className="text-sm" style={{ color: "#9aa0b4" }}>
+              Document every simulated trade. Write your thesis first. Build discipline before risking real capital.
+            </p>
+          </div>
+          {logs.length >= 3 && (
+            <button
+              onClick={() => setShowDashboard(v => !v)}
+              className="text-xs px-3 py-2 rounded-xl font-medium transition-all"
+              style={{
+                background: showDashboard ? "rgba(245,158,11,0.12)" : "#0f1117",
+                color: showDashboard ? "#f59e0b" : "#9aa0b4",
+                border: `1px solid ${showDashboard ? "rgba(245,158,11,0.3)" : "#1e2433"}`,
+              }}
+            >
+              📊 Performance Dashboard
+            </button>
+          )}
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-5">
           {[
             { label: "Total", value: logs.length, color: "#00d4ff" },
             { label: "Open", value: openLogs.length, color: "#f59e0b" },
@@ -167,16 +275,44 @@ export default function PaperLab() {
             { label: "Win Rate", value: winRate !== null ? `${winRate}%` : "—", color: "#10b981" },
             { label: "Avg R", value: avgR !== null ? `${avgR}R` : "—", color: parseFloat(avgR ?? "0") >= 0 ? "#10b981" : "#ef4444" },
           ].map(s => (
-            <div
-              key={s.label}
-              className="rounded-xl p-3 text-center"
-              style={{ background: "#0f1117", border: "1px solid #1e2433" }}
-            >
+            <div key={s.label} className="rounded-xl p-3 text-center" style={{ background: "#0f1117", border: "1px solid #1e2433" }}>
               <div className="text-xl font-bold mb-0.5" style={{ color: s.color }}>{s.value}</div>
               <div className="text-xs" style={{ color: "#5a6075" }}>{s.label}</div>
             </div>
           ))}
         </div>
+
+        {/* Performance Dashboard */}
+        {showDashboard && dashboard && (
+          <div className="rounded-2xl p-5 mb-5" style={{ background: "#0f1117", border: "1px solid rgba(245,158,11,0.25)" }}>
+            <p className="text-sm font-semibold mb-4" style={{ color: "#f59e0b" }}>📊 Performance Dashboard</p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="rounded-xl p-3" style={{ background: "rgba(16,185,129,0.06)", border: "1px solid rgba(16,185,129,0.15)" }}>
+                <p className="text-xs mb-1" style={{ color: "#5a6075" }}>Best Setup</p>
+                <p className="text-sm font-semibold" style={{ color: "#10b981" }}>{dashboard.bestSetup ?? "Not enough data"}</p>
+              </div>
+              <div className="rounded-xl p-3" style={{ background: "rgba(239,68,68,0.06)", border: "1px solid rgba(239,68,68,0.15)" }}>
+                <p className="text-xs mb-1" style={{ color: "#5a6075" }}>Worst Setup</p>
+                <p className="text-sm font-semibold" style={{ color: "#ef4444" }}>{dashboard.worstSetup ?? "Not enough data"}</p>
+              </div>
+              <div className="rounded-xl p-3" style={{ background: "rgba(245,158,11,0.06)", border: "1px solid rgba(245,158,11,0.15)" }}>
+                <p className="text-xs mb-1" style={{ color: "#5a6075" }}>Most Common Loss Emotion</p>
+                <p className="text-sm font-semibold" style={{ color: "#f59e0b" }}>
+                  {dashboard.topLossEmotion
+                    ? dashboard.topLossEmotion.charAt(0).toUpperCase() + dashboard.topLossEmotion.slice(1)
+                    : "No emotion data"}
+                </p>
+              </div>
+              <div className="rounded-xl p-3" style={{ background: "rgba(0,212,255,0.06)", border: "1px solid rgba(0,212,255,0.15)" }}>
+                <p className="text-xs mb-1" style={{ color: "#5a6075" }}>Plan Follow Rate</p>
+                <p className="text-sm font-semibold" style={{ color: "#00d4ff" }}>{dashboard.planRate}%</p>
+              </div>
+            </div>
+            <p className="text-xs mt-3" style={{ color: "#5a6075" }}>
+              Based on {dashboard.totalClosed} closed trades with P&L recorded. Log more trades for a more reliable picture.
+            </p>
+          </div>
+        )}
 
         {/* Disclaimer */}
         <div
@@ -185,20 +321,17 @@ export default function PaperLab() {
         >
           <span className="text-base flex-shrink-0">⚠️</span>
           <p className="text-xs leading-relaxed" style={{ color: "#9aa0b4" }}>
-            <strong style={{ color: "#f59e0b" }}>Paper trading only.</strong> Log simulated trades here. Aim for 30+ consistent, profitable paper trades before moving to real capital. The discipline you build here is your real edge. Users are responsible for all trading decisions.
+            <strong style={{ color: "#f59e0b" }}>Paper trading only.</strong> Log simulated trades here. Aim for 30+ consistent, profitable paper trades before moving to real capital. The discipline you build here is your real edge. Users are responsible for all trading decisions. This tool does not constitute financial advice.
           </p>
         </div>
 
-        {/* Log new trade CTA */}
         {submitted && (
-          <div
-            className="rounded-xl p-3 mb-4 text-sm text-center font-medium"
-            style={{ background: "rgba(16,185,129,0.08)", color: "#10b981", border: "1px solid rgba(16,185,129,0.2)" }}
-          >
+          <div className="rounded-xl p-3 mb-4 text-sm text-center font-medium" style={{ background: "rgba(16,185,129,0.08)", color: "#10b981", border: "1px solid rgba(16,185,129,0.2)" }}>
             ✓ Trade logged successfully
           </div>
         )}
 
+        {/* Log new trade button / form */}
         {!showForm ? (
           <button
             onClick={() => setShowForm(true)}
@@ -224,7 +357,7 @@ export default function PaperLab() {
               </button>
             </div>
 
-            {/* ── Pre-trade checklist ── */}
+            {/* Pre-trade checklist */}
             <div
               className="rounded-xl p-4 mb-5"
               style={{
@@ -232,10 +365,7 @@ export default function PaperLab() {
                 border: `1px solid ${allPretradeChecked ? "rgba(16,185,129,0.2)" : "rgba(0,212,255,0.15)"}`,
               }}
             >
-              <p
-                className="text-xs font-semibold uppercase tracking-widest mb-3"
-                style={{ color: allPretradeChecked ? "#10b981" : "#00d4ff" }}
-              >
+              <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: allPretradeChecked ? "#10b981" : "#00d4ff" }}>
                 {allPretradeChecked ? "✓ Pre-trade checklist complete" : "Before you log — confirm all items"}
               </p>
               <div className="space-y-2">
@@ -258,33 +388,31 @@ export default function PaperLab() {
                           </svg>
                         )}
                       </div>
-                      <span className="text-xs leading-snug" style={{ color: checked ? "#9aa0b4" : "#5a6075" }}>
-                        {item.label}
-                      </span>
+                      <span className="text-xs leading-snug" style={{ color: checked ? "#9aa0b4" : "#5a6075" }}>{item.label}</span>
                     </label>
                   );
                 })}
               </div>
             </div>
 
-            {/* ── Trade Form ── */}
-            <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Trade form */}
+            <form onSubmit={handleSubmit} className="space-y-5">
+
               {/* Row 1: Identity */}
               <div>
-                <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "#5a6075" }}>
-                  Trade Identification
-                </p>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "#5a6075" }}>Trade Identification</p>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   <Field label="Date" error={errors.date}>
                     <input type="date" value={form.date} onChange={e => setForm(p => ({ ...p, date: e.target.value }))} style={inputStyle} />
                   </Field>
                   <Field label="Ticker" error={errors.ticker}>
-                    <input
-                      type="text" placeholder="NVDA"
-                      value={form.ticker}
-                      onChange={e => setForm(p => ({ ...p, ticker: e.target.value.toUpperCase() }))}
-                      style={inputStyle}
-                    />
+                    <input type="text" placeholder="NVDA" value={form.ticker} onChange={e => setForm(p => ({ ...p, ticker: e.target.value.toUpperCase() }))} style={inputStyle} />
+                  </Field>
+                  <Field label="Asset Type" error={errors.assetType}>
+                    <select value={form.assetType} onChange={e => setForm(p => ({ ...p, assetType: e.target.value }))} style={inputStyle}>
+                      <option value="">Select…</option>
+                      {ASSET_TYPES.map(a => <option key={a} value={a}>{a}</option>)}
+                    </select>
                   </Field>
                   <Field label="Direction" error={errors.direction}>
                     <select value={form.direction} onChange={e => setForm(p => ({ ...p, direction: e.target.value }))} style={inputStyle}>
@@ -298,14 +426,23 @@ export default function PaperLab() {
                       {SETUP_TYPES.map(s => <option key={s} value={s}>{s}</option>)}
                     </select>
                   </Field>
+                  <Field label="Emotional State" error={errors.emotionalState}>
+                    <select value={form.emotionalState} onChange={e => setForm(p => ({ ...p, emotionalState: e.target.value }))} style={inputStyle}>
+                      <option value="">Select…</option>
+                      {EMOTIONAL_STATES.map(es => <option key={es.value} value={es.value}>{es.label}</option>)}
+                    </select>
+                  </Field>
                 </div>
+                {emotionWarning && (
+                  <div className="mt-2 rounded-lg px-3 py-2 text-xs" style={{ background: "rgba(245,158,11,0.06)", color: "#f59e0b", border: "1px solid rgba(245,158,11,0.2)" }}>
+                    {emotionWarning}
+                  </div>
+                )}
               </div>
 
               {/* Row 2: Price levels */}
               <div>
-                <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "#5a6075" }}>
-                  Price Levels
-                </p>
+                <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "#5a6075" }}>Price Levels</p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   <Field label="Entry ($)" error={errors.entry}>
                     <input type="number" step="0.01" placeholder="0.00" value={form.entry} onChange={e => setForm(p => ({ ...p, entry: e.target.value }))} style={inputStyle} />
@@ -323,39 +460,92 @@ export default function PaperLab() {
               </div>
 
               {/* R:R live calc */}
-              {riskReward && (
-                <div
-                  className="rounded-lg p-3 flex items-center gap-3"
-                  style={{
-                    background: parseFloat(riskReward) >= 2 ? "rgba(16,185,129,0.06)" : "rgba(245,158,11,0.06)",
-                    border: `1px solid ${parseFloat(riskReward) >= 2 ? "rgba(16,185,129,0.2)" : "rgba(245,158,11,0.2)"}`,
-                  }}
-                >
-                  <span className="text-xs" style={{ color: "#9aa0b4" }}>Live R:R</span>
-                  <span className="font-bold text-sm" style={{ color: parseFloat(riskReward) >= 2 ? "#10b981" : "#f59e0b" }}>
-                    1:{riskReward}
-                  </span>
-                  {parseFloat(riskReward) < 2 && (
-                    <span className="text-xs" style={{ color: "#f59e0b" }}>⚠ Below 1:2 minimum — document your reason below</span>
+              {(rr1 || rr2) && (
+                <div className="grid grid-cols-2 gap-3">
+                  {rr1 && (
+                    <div
+                      className="rounded-lg p-3 flex items-center gap-3"
+                      style={{
+                        background: parseFloat(rr1) >= 2 ? "rgba(16,185,129,0.06)" : "rgba(245,158,11,0.06)",
+                        border: `1px solid ${parseFloat(rr1) >= 2 ? "rgba(16,185,129,0.2)" : "rgba(245,158,11,0.2)"}`,
+                      }}
+                    >
+                      <span className="text-xs" style={{ color: "#9aa0b4" }}>R:R to T1</span>
+                      <span className="font-bold text-sm" style={{ color: parseFloat(rr1) >= 2 ? "#10b981" : "#f59e0b" }}>1:{rr1}</span>
+                      {parseFloat(rr1) < 2 && <span className="text-xs" style={{ color: "#f59e0b" }}>⚠ Below 1:2</span>}
+                    </div>
+                  )}
+                  {rr2 && form.target2 && (
+                    <div className="rounded-lg p-3 flex items-center gap-3" style={{ background: "rgba(16,185,129,0.06)", border: "1px solid rgba(16,185,129,0.2)" }}>
+                      <span className="text-xs" style={{ color: "#9aa0b4" }}>R:R to T2</span>
+                      <span className="font-bold text-sm" style={{ color: "#10b981" }}>1:{rr2}</span>
+                    </div>
                   )}
                 </div>
               )}
 
-              {/* Catalyst + Thesis */}
+              {/* Position sizing calculator */}
               <div>
                 <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "#5a6075" }}>
-                  Thesis & Catalyst
+                  Position Sizing Calculator <span style={{ color: "#3a4060", fontWeight: 400 }}>— optional but recommended</span>
                 </p>
-                <Field label="Catalyst (what triggered this setup?)" error={errors.catalyst} className="mb-3">
+                <div className="grid grid-cols-2 gap-3 mb-3">
+                  <Field label="Account Size ($)">
+                    <input
+                      type="number" step="100" placeholder="e.g. 10000"
+                      value={form.accountSize}
+                      onChange={e => setForm(p => ({ ...p, accountSize: e.target.value }))}
+                      style={inputStyle}
+                    />
+                  </Field>
+                  <Field label="Max Risk per Trade (%)">
+                    <input
+                      type="number" step="0.5" min="0.5" max="10" placeholder="2"
+                      value={form.maxRiskPct}
+                      onChange={e => setForm(p => ({ ...p, maxRiskPct: e.target.value }))}
+                      style={inputStyle}
+                    />
+                  </Field>
+                </div>
+                {posSize && (
+                  <div
+                    className="rounded-xl p-4 grid grid-cols-3 gap-4"
+                    style={{ background: "rgba(0,212,255,0.04)", border: "1px solid rgba(0,212,255,0.15)" }}
+                  >
+                    <div className="text-center">
+                      <p className="text-xs mb-1" style={{ color: "#5a6075" }}>Risk / Share</p>
+                      <p className="font-bold" style={{ color: "#ef4444" }}>${posSize.riskPerShare}</p>
+                      <p className="text-xs" style={{ color: "#5a6075" }}>|entry − stop|</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-xs mb-1" style={{ color: "#5a6075" }}>Max $ Risk</p>
+                      <p className="font-bold" style={{ color: "#f59e0b" }}>${posSize.dollarRisk}</p>
+                      <p className="text-xs" style={{ color: "#5a6075" }}>acct × {form.maxRiskPct}%</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-xs mb-1" style={{ color: "#5a6075" }}>Suggested Shares</p>
+                      <p className="font-bold" style={{ color: "#00d4ff" }}>{posSize.shares}</p>
+                      <p className="text-xs" style={{ color: "#5a6075" }}>max risk ÷ risk/share</p>
+                    </div>
+                  </div>
+                )}
+                {!posSize && form.accountSize && (
+                  <p className="text-xs" style={{ color: "#5a6075" }}>Enter entry and stop prices above to see position sizing.</p>
+                )}
+              </div>
+
+              {/* Catalyst + Thesis */}
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "#5a6075" }}>Thesis & Catalyst</p>
+                <Field label="Catalyst — what is driving this setup?" error={errors.catalyst} className="mb-3">
                   <input
-                    type="text"
-                    placeholder="e.g. Earnings beat, breakout above resistance, Fed rate cut news…"
+                    type="text" placeholder="e.g. Earnings beat, breakout above resistance, Fed rate cut news…"
                     value={form.catalyst}
                     onChange={e => setForm(p => ({ ...p, catalyst: e.target.value }))}
                     style={inputStyle}
                   />
                 </Field>
-                <Field label="Trade Thesis — why did you take this trade? (min 30 chars)" error={errors.thesis}>
+                <Field label="Trade Thesis — why are you taking this trade? (min 30 chars)" error={errors.thesis}>
                   <textarea
                     rows={4}
                     placeholder="Describe the setup, your entry reason, what you expect to happen, and your plan if it goes against you…"
@@ -369,21 +559,22 @@ export default function PaperLab() {
               {/* Exit section */}
               <div>
                 <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "#5a6075" }}>
-                  Exit Details (fill in when trade is closed)
+                  Exit Details <span style={{ color: "#3a4060", fontWeight: 400 }}>— fill in when trade closes</span>
                 </p>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  <Field label="Status" error={errors.tradeStatus}>
+                  <Field label="Status">
                     <select value={form.tradeStatus} onChange={e => setForm(p => ({ ...p, tradeStatus: e.target.value as "open" | "closed" }))} style={inputStyle}>
-                      {TRADE_STATUSES.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
+                      <option value="open">Open</option>
+                      <option value="closed">Closed</option>
                     </select>
                   </Field>
-                  <Field label="Exit Price ($)" error={errors.exitPrice}>
+                  <Field label="Exit Price ($)">
                     <input type="number" step="0.01" placeholder="0.00" value={form.exitPrice} onChange={e => setForm(p => ({ ...p, exitPrice: e.target.value }))} style={inputStyle} />
                   </Field>
-                  <Field label="Result ($ P&L)" error={errors.result}>
+                  <Field label="Result ($ P&L)">
                     <input type="number" step="0.01" placeholder="+50 or -25" value={form.result} onChange={e => setForm(p => ({ ...p, result: e.target.value }))} style={inputStyle} />
                   </Field>
-                  <Field label="Exit Reason" error={errors.exitReason}>
+                  <Field label="Exit Reason">
                     <select value={form.exitReason} onChange={e => setForm(p => ({ ...p, exitReason: e.target.value }))} style={inputStyle}>
                       <option value="">Select…</option>
                       {EXIT_REASONS.map(r => <option key={r} value={r}>{r}</option>)}
@@ -394,17 +585,12 @@ export default function PaperLab() {
 
               {/* Review */}
               <div>
-                <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "#5a6075" }}>
-                  Review & Lessons
-                </p>
+                <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "#5a6075" }}>Review & Lessons</p>
                 <div className="flex items-center gap-3 mb-3">
                   <div
                     className="w-5 h-5 rounded flex items-center justify-center cursor-pointer transition-all flex-shrink-0"
                     onClick={() => setForm(p => ({ ...p, followedPlan: !p.followedPlan }))}
-                    style={{
-                      background: form.followedPlan ? "#10b981" : "transparent",
-                      border: `2px solid ${form.followedPlan ? "#10b981" : "#2a3048"}`,
-                    }}
+                    style={{ background: form.followedPlan ? "#10b981" : "transparent", border: `2px solid ${form.followedPlan ? "#10b981" : "#2a3048"}` }}
                   >
                     {form.followedPlan && (
                       <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
@@ -415,23 +601,11 @@ export default function PaperLab() {
                   <span className="text-sm" style={{ color: "#9aa0b4" }}>I followed my plan on this trade</span>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <Field label="Lesson Learned" error={errors.lessonLearned}>
-                    <input
-                      type="text"
-                      placeholder="What would you do differently?"
-                      value={form.lessonLearned}
-                      onChange={e => setForm(p => ({ ...p, lessonLearned: e.target.value }))}
-                      style={inputStyle}
-                    />
+                  <Field label="Lesson Learned">
+                    <input type="text" placeholder="What would you do differently?" value={form.lessonLearned} onChange={e => setForm(p => ({ ...p, lessonLearned: e.target.value }))} style={inputStyle} />
                   </Field>
-                  <Field label="Notes" error={errors.notes}>
-                    <input
-                      type="text"
-                      placeholder="Any other context or observations"
-                      value={form.notes}
-                      onChange={e => setForm(p => ({ ...p, notes: e.target.value }))}
-                      style={inputStyle}
-                    />
+                  <Field label="Notes">
+                    <input type="text" placeholder="Any other context or observations" value={form.notes} onChange={e => setForm(p => ({ ...p, notes: e.target.value }))} style={inputStyle} />
                   </Field>
                 </div>
               </div>
@@ -441,9 +615,7 @@ export default function PaperLab() {
                 disabled={!allPretradeChecked}
                 className="w-full py-3 rounded-xl font-semibold text-sm transition-all"
                 style={{
-                  background: allPretradeChecked
-                    ? "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)"
-                    : "#141720",
+                  background: allPretradeChecked ? "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)" : "#141720",
                   color: allPretradeChecked ? "#0a0b0d" : "#5a6075",
                   boxShadow: allPretradeChecked ? "0 0 20px rgba(245,158,11,0.2)" : "none",
                   cursor: allPretradeChecked ? "pointer" : "not-allowed",
@@ -457,9 +629,7 @@ export default function PaperLab() {
 
         {/* Trade History */}
         <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
-          <h2 className="text-sm font-semibold" style={{ color: "#e8eaf0" }}>
-            Trade History ({logs.length} trades)
-          </h2>
+          <h2 className="text-sm font-semibold" style={{ color: "#e8eaf0" }}>Trade History ({logs.length} trades)</h2>
           <div className="flex gap-1">
             {(["all", "open", "closed"] as const).map(f => (
               <button
@@ -484,68 +654,143 @@ export default function PaperLab() {
               <table className="w-full text-xs">
                 <thead>
                   <tr style={{ background: "#0a0b0d" }}>
-                    {["Date", "Ticker", "Dir", "Setup", "Catalyst", "Entry", "Stop", "T1", "R:R", "Status", "Exit $", "Result", "Exit Reason", "Plan"].map(h => (
+                    {["Date", "Ticker", "Type", "Dir", "Setup", "Emotion", "Entry", "Stop", "T1", "R:R T1", "Status", "Exit $", "Result", "Plan", "Actions"].map(h => (
                       <th key={h} className="px-3 py-3 text-left font-medium whitespace-nowrap" style={{ color: "#5a6075" }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {displayedLogs.map((log: TradeLog) => {
-                    const rr = (() => {
-                      const e = parseFloat(log.entry);
-                      const s = parseFloat(log.stop);
-                      const t = parseFloat(log.target1);
-                      if (!e || !s || !t || e === s) return "—";
-                      return `1:${(Math.abs(t - e) / Math.abs(e - s)).toFixed(1)}`;
-                    })();
+                    const rr = calcRR(log.entry, log.stop, log.target1) ? `1:${calcRR(log.entry, log.stop, log.target1)}` : "—";
                     const resultNum = parseFloat(log.result);
                     const statusLabel = log.tradeStatus ?? (log.result ? "closed" : "open");
+                    const isEditing = editingId === log.id;
+
                     return (
-                      <tr key={log.id} style={{ borderBottom: "1px solid #1e2433" }}>
-                        <td className="px-3 py-3 whitespace-nowrap" style={{ color: "#9aa0b4" }}>{log.date}</td>
-                        <td className="px-3 py-3 font-bold" style={{ color: "#e8eaf0" }}>{log.ticker}</td>
-                        <td className="px-3 py-3">
-                          {log.direction ? (
-                            <span
-                              className="px-1.5 py-0.5 rounded font-semibold"
-                              style={{
-                                background: log.direction === "Long" ? "rgba(16,185,129,0.1)" : "rgba(239,68,68,0.1)",
-                                color: log.direction === "Long" ? "#10b981" : "#ef4444",
-                              }}
-                            >
-                              {log.direction}
-                            </span>
-                          ) : "—"}
-                        </td>
-                        <td className="px-3 py-3 whitespace-nowrap" style={{ color: "#9aa0b4" }}>{log.setupType}</td>
-                        <td className="px-3 py-3 max-w-[120px] truncate" style={{ color: "#9aa0b4" }} title={log.catalyst}>{log.catalyst || "—"}</td>
-                        <td className="px-3 py-3" style={{ color: "#9aa0b4" }}>${log.entry}</td>
-                        <td className="px-3 py-3" style={{ color: "#ef4444" }}>${log.stop}</td>
-                        <td className="px-3 py-3" style={{ color: "#10b981" }}>${log.target1}</td>
-                        <td className="px-3 py-3" style={{ color: "#00d4ff" }}>{rr}</td>
-                        <td className="px-3 py-3">
-                          <span
-                            className="px-1.5 py-0.5 rounded"
-                            style={{
+                      <>
+                        <tr key={log.id} style={{ borderBottom: isEditing ? "none" : "1px solid #1e2433" }}>
+                          <td className="px-3 py-3 whitespace-nowrap" style={{ color: "#9aa0b4" }}>{log.date}</td>
+                          <td className="px-3 py-3 font-bold" style={{ color: "#e8eaf0" }}>{log.ticker}</td>
+                          <td className="px-3 py-3 whitespace-nowrap" style={{ color: "#5a6075" }}>{log.assetType || "—"}</td>
+                          <td className="px-3 py-3">
+                            {log.direction ? (
+                              <span className="px-1.5 py-0.5 rounded font-semibold" style={{
+                                background: ["Long", "Call"].includes(log.direction) ? "rgba(16,185,129,0.1)" : "rgba(239,68,68,0.1)",
+                                color: ["Long", "Call"].includes(log.direction) ? "#10b981" : "#ef4444",
+                              }}>{log.direction}</span>
+                            ) : "—"}
+                          </td>
+                          <td className="px-3 py-3 whitespace-nowrap" style={{ color: "#9aa0b4" }}>{log.setupType}</td>
+                          <td className="px-3 py-3 whitespace-nowrap" style={{ color: "#9aa0b4" }}>
+                            {log.emotionalState
+                              ? log.emotionalState.charAt(0).toUpperCase() + log.emotionalState.slice(1)
+                              : "—"}
+                          </td>
+                          <td className="px-3 py-3" style={{ color: "#9aa0b4" }}>${log.entry}</td>
+                          <td className="px-3 py-3" style={{ color: "#ef4444" }}>${log.stop}</td>
+                          <td className="px-3 py-3" style={{ color: "#10b981" }}>${log.target1}</td>
+                          <td className="px-3 py-3" style={{ color: "#00d4ff" }}>{rr}</td>
+                          <td className="px-3 py-3">
+                            <span className="px-1.5 py-0.5 rounded" style={{
                               background: statusLabel === "open" ? "rgba(245,158,11,0.1)" : "rgba(90,96,117,0.15)",
                               color: statusLabel === "open" ? "#f59e0b" : "#9aa0b4",
-                            }}
-                          >
-                            {statusLabel}
-                          </span>
-                        </td>
-                        <td className="px-3 py-3" style={{ color: "#9aa0b4" }}>{log.exitPrice ? `$${log.exitPrice}` : "—"}</td>
-                        <td
-                          className="px-3 py-3 font-semibold"
-                          style={{ color: resultNum > 0 ? "#10b981" : resultNum < 0 ? "#ef4444" : "#9aa0b4" }}
-                        >
-                          {log.result ? `$${log.result}` : "—"}
-                        </td>
-                        <td className="px-3 py-3 max-w-[100px] truncate" style={{ color: "#9aa0b4" }} title={log.exitReason}>{log.exitReason || "—"}</td>
-                        <td className="px-3 py-3" style={{ color: log.followedPlan ? "#10b981" : "#ef4444" }}>
-                          {log.followedPlan ? "✓" : "✗"}
-                        </td>
-                      </tr>
+                            }}>{statusLabel}</span>
+                          </td>
+                          <td className="px-3 py-3" style={{ color: "#9aa0b4" }}>{log.exitPrice ? `$${log.exitPrice}` : "—"}</td>
+                          <td className="px-3 py-3 font-semibold" style={{ color: resultNum > 0 ? "#10b981" : resultNum < 0 ? "#ef4444" : "#9aa0b4" }}>
+                            {log.result ? `$${log.result}` : "—"}
+                          </td>
+                          <td className="px-3 py-3" style={{ color: log.followedPlan ? "#10b981" : "#ef4444" }}>
+                            {log.followedPlan ? "✓" : "✗"}
+                          </td>
+                          <td className="px-3 py-3">
+                            <button
+                              onClick={() => isEditing ? setEditingId(null) : startEdit(log)}
+                              className="text-xs px-2 py-1 rounded transition-all"
+                              style={{
+                                background: isEditing ? "rgba(239,68,68,0.1)" : "rgba(0,212,255,0.08)",
+                                color: isEditing ? "#ef4444" : "#00d4ff",
+                                border: `1px solid ${isEditing ? "rgba(239,68,68,0.2)" : "rgba(0,212,255,0.2)"}`,
+                              }}
+                            >
+                              {isEditing ? "Cancel" : "Edit"}
+                            </button>
+                          </td>
+                        </tr>
+                        {isEditing && (
+                          <tr key={`${log.id}-edit`} style={{ borderBottom: "1px solid #1e2433" }}>
+                            <td colSpan={15} className="px-4 py-4" style={{ background: "rgba(0,212,255,0.03)" }}>
+                              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
+                                <Field label="Status">
+                                  <select
+                                    value={editForm.tradeStatus ?? "open"}
+                                    onChange={e => setEditForm(p => ({ ...p, tradeStatus: e.target.value as "open" | "closed" }))}
+                                    style={inputStyle}
+                                  >
+                                    <option value="open">Open</option>
+                                    <option value="closed">Closed</option>
+                                  </select>
+                                </Field>
+                                <Field label="Exit Price ($)">
+                                  <input
+                                    type="number" step="0.01"
+                                    value={editForm.exitPrice ?? ""}
+                                    onChange={e => setEditForm(p => ({ ...p, exitPrice: e.target.value }))}
+                                    style={inputStyle}
+                                  />
+                                </Field>
+                                <Field label="Result ($ P&L)">
+                                  <input
+                                    type="number" step="0.01"
+                                    value={editForm.result ?? ""}
+                                    onChange={e => setEditForm(p => ({ ...p, result: e.target.value }))}
+                                    style={inputStyle}
+                                  />
+                                </Field>
+                                <Field label="Exit Reason">
+                                  <select
+                                    value={editForm.exitReason ?? ""}
+                                    onChange={e => setEditForm(p => ({ ...p, exitReason: e.target.value }))}
+                                    style={inputStyle}
+                                  >
+                                    <option value="">Select…</option>
+                                    {EXIT_REASONS.map(r => <option key={r} value={r}>{r}</option>)}
+                                  </select>
+                                </Field>
+                              </div>
+                              <div className="flex items-center gap-3 mb-3">
+                                <div
+                                  className="w-4 h-4 rounded flex items-center justify-center cursor-pointer transition-all flex-shrink-0"
+                                  onClick={() => setEditForm(p => ({ ...p, followedPlan: !p.followedPlan }))}
+                                  style={{ background: editForm.followedPlan ? "#10b981" : "transparent", border: `2px solid ${editForm.followedPlan ? "#10b981" : "#2a3048"}` }}
+                                >
+                                  {editForm.followedPlan && (
+                                    <svg width="8" height="6" viewBox="0 0 8 6" fill="none">
+                                      <path d="M1 3L3 5L7 1" stroke="#0a0b0d" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                    </svg>
+                                  )}
+                                </div>
+                                <span className="text-xs" style={{ color: "#9aa0b4" }}>Followed plan</span>
+                              </div>
+                              <div className="grid grid-cols-2 gap-3 mb-3">
+                                <Field label="Lesson Learned">
+                                  <input type="text" value={editForm.lessonLearned ?? ""} onChange={e => setEditForm(p => ({ ...p, lessonLearned: e.target.value }))} style={inputStyle} />
+                                </Field>
+                                <Field label="Notes">
+                                  <input type="text" value={editForm.notes ?? ""} onChange={e => setEditForm(p => ({ ...p, notes: e.target.value }))} style={inputStyle} />
+                                </Field>
+                              </div>
+                              <button
+                                onClick={() => saveEdit(log.id)}
+                                className="text-xs px-4 py-2 rounded-lg font-semibold"
+                                style={{ background: "rgba(16,185,129,0.12)", color: "#10b981", border: "1px solid rgba(16,185,129,0.3)" }}
+                              >
+                                ✓ Save Changes
+                              </button>
+                            </td>
+                          </tr>
+                        )}
+                      </>
                     );
                   })}
                 </tbody>
@@ -553,25 +798,22 @@ export default function PaperLab() {
             </div>
           </div>
         ) : (
-          <div
-            className="rounded-2xl p-10 text-center"
-            style={{ background: "#0f1117", border: "1px solid #1e2433" }}
-          >
+          <div className="rounded-2xl p-10 text-center" style={{ background: "#0f1117", border: "1px solid #1e2433" }}>
             <div className="text-4xl mb-3">📊</div>
             <p className="font-semibold mb-1" style={{ color: "#e8eaf0" }}>No trades logged yet</p>
-            <p className="text-sm" style={{ color: "#9aa0b4" }}>
-              Log your first paper trade above to start building your edge log.
-            </p>
+            <p className="text-sm" style={{ color: "#9aa0b4" }}>Log your first paper trade above to start building your edge log.</p>
           </div>
         )}
 
         <p className="text-center text-xs mt-6" style={{ color: "#5a6075" }}>
-          Trade data is stored locally in your browser · Paper trades only · Not financial advice
+          Trade data is stored locally in your browser · Paper trades only · Not financial advice · Users are responsible for all trading decisions
         </p>
       </div>
     </div>
   );
 }
+
+// ─── Shared styles ────────────────────────────────────────────────────────────
 
 const inputStyle: React.CSSProperties = {
   width: "100%",
@@ -584,11 +826,7 @@ const inputStyle: React.CSSProperties = {
   outline: "none",
 };
 
-function Field({
-  label, error, children, className,
-}: {
-  label: string; error?: string; children: React.ReactNode; className?: string;
-}) {
+function Field({ label, error, children, className }: { label: string; error?: string; children: React.ReactNode; className?: string }) {
   return (
     <div className={className}>
       <label className="block text-xs font-medium mb-1.5" style={{ color: "#9aa0b4" }}>{label}</label>
