@@ -10,7 +10,7 @@ const SECTIONS = [
     icon: "🎓",
     label: "EDGE Academy",
     sub: "Trading Education",
-    desc: "10 structured modules from trading basics to advanced setups. Gated quizzes, checklists, and a Final Readiness Test before you risk real capital.",
+    desc: "10 structured modules from trading basics to advanced investor movement analysis. Gated quizzes, checklists, and a Final Readiness Test before you risk real capital.",
     color: "#00d4ff",
     stats: ["10 Modules", "Quizzes + Checklists", "Final Readiness Test"],
     badge: "LIVE",
@@ -23,12 +23,12 @@ const SECTIONS = [
     icon: "📡",
     label: "EDGE Terminal",
     sub: "Market Intelligence",
-    desc: "Curated watchlist with trend analysis, catalyst tracking, entry zones, and confidence scores. SPY, QQQ, TLT, XLE, NVDA, TSLA and more.",
+    desc: "Curated watchlist with live price quotes, trend analysis, catalyst tracking, entry zones, and TradingView charts. SPY, QQQ, TLT, XLE, NVDA, TSLA and more.",
     color: "#10b981",
-    stats: ["7 Tickers", "Bias Scores", "Setups + Levels"],
-    badge: "PREVIEW",
-    badgeColor: "#f59e0b",
-    badgeBg: "rgba(245,158,11,0.1)",
+    stats: ["7 Tickers", "Live Quotes", "TradingView Charts"],
+    badge: "LIVE",
+    badgeColor: "#10b981",
+    badgeBg: "rgba(16,185,129,0.1)",
   },
   {
     id: "research",
@@ -36,9 +36,22 @@ const SECTIONS = [
     icon: "🔬",
     label: "EDGE Research Lab",
     sub: "Macro & Flow Analysis",
-    desc: "Structured research across Fed policy, bonds, energy, China, AI/semis, congressional trades, insider activity, and small-cap catalysts.",
+    desc: "Structured research across Fed policy, bonds, energy, China, AI/semis, congressional trades, insider activity, and small-cap catalysts — with bullish/bearish examples for each.",
     color: "#8b5cf6",
     stats: ["11 Research Areas", "Macro + Flow", "Catalyst Tracking"],
+    badge: "PREVIEW",
+    badgeColor: "#f59e0b",
+    badgeBg: "rgba(245,158,11,0.1)",
+  },
+  {
+    id: "whale-tracker",
+    href: "/whale-tracker",
+    icon: "🐋",
+    label: "EDGE Whale Tracker",
+    sub: "Smart Money Intelligence",
+    desc: "Track unusual options flow, insider Form 4 purchases, congressional STOCK Act disclosures, institutional 13F accumulation, and large block trade alerts — all clearly labeled.",
+    color: "#a78bfa",
+    stats: ["Options Flow", "Insider + Congress", "13F Institutions"],
     badge: "PREVIEW",
     badgeColor: "#f59e0b",
     badgeBg: "rgba(245,158,11,0.1)",
@@ -49,9 +62,9 @@ const SECTIONS = [
     icon: "📊",
     label: "EDGE Paper Lab",
     sub: "Paper Trade Tracker",
-    desc: "Document every simulated trade with full thesis, R:R calculation, and outcome tracking. Build your edge log before risking real capital.",
+    desc: "Document every simulated trade with full thesis, auto position sizing, emotional state tracking, and a performance dashboard. Build discipline before risking real capital.",
     color: "#f59e0b",
-    stats: ["Trade Journal", "R:R Calculator", "Thesis Builder"],
+    stats: ["Position Sizing", "Emotional Tracking", "Performance Dashboard"],
     badge: "LIVE",
     badgeColor: "#10b981",
     badgeBg: "rgba(16,185,129,0.1)",
@@ -77,7 +90,7 @@ export default function PlatformHub() {
             EDGE<span style={{ color: "#00d4ff" }}>OS</span>
           </h1>
           <p className="text-xl md:text-2xl max-w-2xl mx-auto mb-4" style={{ color: "#9aa0b4" }}>
-            Learn. Analyze. Research. Practice.
+            Trading education · Market intelligence · Smart money tracking · Paper trade discipline
           </p>
           <p className="text-sm" style={{ color: "#5a6075" }}>
             The complete platform for developing your trading edge — before risking real capital.
@@ -153,9 +166,11 @@ export default function PlatformHub() {
               { step: "→", label: "", color: "#2a3048" },
               { step: "3", label: "Terminal", color: "#10b981" },
               { step: "→", label: "", color: "#2a3048" },
-              { step: "4", label: "Paper Lab", color: "#f59e0b" },
+              { step: "4", label: "Whale Tracker", color: "#a78bfa" },
               { step: "→", label: "", color: "#2a3048" },
-              { step: "5", label: "Live Trading", color: "#ef4444" },
+              { step: "5", label: "Paper Lab", color: "#f59e0b" },
+              { step: "→", label: "", color: "#2a3048" },
+              { step: "6", label: "Live Trading", color: "#ef4444" },
             ].map((item, i) =>
               item.label ? (
                 <div key={i} className="flex flex-col items-center gap-1">
