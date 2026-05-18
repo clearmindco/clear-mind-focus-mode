@@ -15,7 +15,7 @@ export function hasFinnhubKey(): boolean {
 }
 
 export function hasNewsApiKey(): boolean {
-  return isRealKey(process.env.NEWSAPI_KEY);
+  return isRealKey(process.env.NEWS_API_KEY);
 }
 
 export function hasAlphaVantageKey(): boolean {
@@ -112,6 +112,33 @@ export async function serverGetMarketNews(): Promise<NewsItem[]> {
       url: item.url,
       isPlaceholder: false,
     }));
+  } catch {
+    return PLACEHOLDER_NEWS;
+  }
+}
+
+export async function serverGetNewsApiArticles(query: string): Promise<NewsItem[]> {
+  const key = process.env.NEWS_API_KEY;
+  if (!isRealKey(key)) return PLACEHOLDER_NEWS;
+  try {
+    const res = await fetch(
+      `https://newsapi.org/v2/everything?q=${encodeURIComponent(query)}&language=en&pageSize=10&sortBy=publishedAt&apiKey=${key}`,
+      { next: { revalidate: 600 } }
+    );
+    if (!res.ok) return PLACEHOLDER_NEWS;
+    const data = await res.json() as { articles?: Array<{ title: string | null; source: { name: string }; publishedAt: string; description: string | null; url: string }> };
+    const articles = data.articles ?? [];
+    return articles
+      .filter(item => item.title != null)
+      .slice(0, 10)
+      .map(item => ({
+        headline: item.title!,
+        source: item.source?.name ?? "Unknown",
+        datetime: item.publishedAt,
+        summary: item.description ?? "",
+        url: item.url,
+        isPlaceholder: false,
+      }));
   } catch {
     return PLACEHOLDER_NEWS;
   }

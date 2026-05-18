@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
-import { isFinnhubConnected, isNewsApiConnected } from "@/lib/data-providers";
+import type { NewsItem } from "@/lib/data-providers";
 
 interface ResearchCategory {
   id: string;
@@ -267,7 +267,7 @@ const CATEGORIES: ResearchCategory[] = [
     ],
     signalTypes: ["Breaking News", "Earnings Surprise", "Sentiment Extreme", "Rotation Signal"],
     dataSources: ["NewsAPI.org", "Finnhub company news", "Reuters / Bloomberg headlines"],
-    plannedApi: "NewsAPI.org (NEXT_PUBLIC_NEWS_API_KEY) + Finnhub news",
+    plannedApi: "NewsAPI.org (NEWS_API_KEY) + Finnhub news",
     apiKey: "newsapi",
   },
   {
@@ -331,8 +331,33 @@ const CATEGORIES: ResearchCategory[] = [
 
 export default function ResearchLab() {
   const [expanded, setExpanded] = useState<string | null>(null);
-  const finnhubOk = isFinnhubConnected();
-  const newsApiOk = isNewsApiConnected();
+  const [apiStatus, setApiStatus] = useState<{ finnhub: boolean; newsApi: boolean } | null>(null);
+  const [headlines, setHeadlines] = useState<NewsItem[]>([]);
+  const [headlinesLoading, setHeadlinesLoading] = useState(false);
+  const [headlinesFetched, setHeadlinesFetched] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/status").then(r => r.json()).then(setApiStatus).catch(() => {});
+  }, []);
+
+  const finnhubOk = apiStatus?.finnhub ?? false;
+  const newsApiOk = apiStatus?.newsApi ?? false;
+
+  async function loadHeadlines() {
+    setHeadlinesLoading(true);
+    try {
+      const res = await fetch("/api/news?query=stock%20market%20today");
+      if (res.ok) {
+        const data = await res.json() as NewsItem[];
+        setHeadlines(data.filter(n => !n.isPlaceholder).slice(0, 5));
+      }
+    } catch {
+      // keep empty
+    } finally {
+      setHeadlinesLoading(false);
+      setHeadlinesFetched(true);
+    }
+  }
 
   function getConnectionStatus(apiKey: ResearchCategory["apiKey"]) {
     if (apiKey === "none") return { label: "No API Needed", color: "#5a6075", bg: "#141720" };
@@ -564,6 +589,71 @@ export default function ResearchLab() {
               </div>
             );
           })}
+        </div>
+
+        {/* Live Headlines Widget */}
+        <div className="mt-8 rounded-2xl p-6" style={{ background: "#0f1117", border: "1px solid #1e2433" }}>
+          <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
+            <div>
+              <p className="font-semibold text-sm" style={{ color: "#e8eaf0" }}>📰 Latest Market Headlines</p>
+              <p className="text-xs mt-0.5" style={{ color: "#5a6075" }}>
+                {newsApiOk ? "Live via NewsAPI — educational reference only, not trade signals" : "NewsAPI not connected — add NEWS_API_KEY to see live headlines"}
+              </p>
+            </div>
+            <button
+              onClick={loadHeadlines}
+              disabled={headlinesLoading || !newsApiOk}
+              className="text-xs px-4 py-2 rounded-xl transition-all"
+              style={{
+                background: newsApiOk ? "rgba(139,92,246,0.1)" : "#141720",
+                color: newsApiOk ? "#8b5cf6" : "#5a6075",
+                border: `1px solid ${newsApiOk ? "rgba(139,92,246,0.3)" : "#1e2433"}`,
+                cursor: newsApiOk && !headlinesLoading ? "pointer" : "not-allowed",
+              }}
+            >
+              {headlinesLoading ? "Loading…" : "Load Latest Headlines"}
+            </button>
+          </div>
+
+          {headlinesFetched && headlines.length === 0 && (
+            <p className="text-xs" style={{ color: "#5a6075" }}>No headlines returned — NewsAPI may require a production plan for this query.</p>
+          )}
+
+          {headlines.length > 0 && (
+            <div className="space-y-3">
+              {headlines.map((item, i) => (
+                <div key={i} className="rounded-xl p-3 flex items-start gap-3" style={{ background: "#141720", border: "1px solid #1e2433" }}>
+                  <span className="text-xs flex-shrink-0 mt-0.5 px-1.5 py-0.5 rounded" style={{ background: "rgba(16,185,129,0.1)", color: "#10b981" }}>live</span>
+                  <div className="flex-1 min-w-0">
+                    <a
+                      href={item.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs font-medium leading-snug hover:underline"
+                      style={{ color: "#e8eaf0" }}
+                    >
+                      {item.headline}
+                    </a>
+                    <div className="flex items-center gap-3 mt-1">
+                      <span className="text-xs" style={{ color: "#5a6075" }}>{item.source}</span>
+                      <span className="text-xs" style={{ color: "#3a4060" }}>
+                        {new Date(item.datetime).toLocaleDateString()}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              <p className="text-xs" style={{ color: "#5a6075" }}>
+                Educational reference only · Not financial advice · Always verify news before acting
+              </p>
+            </div>
+          )}
+
+          {!headlinesFetched && !newsApiOk && (
+            <div className="rounded-xl p-4" style={{ background: "#141720", border: "1px solid #1e2433" }}>
+              <p className="text-xs" style={{ color: "#5a6075" }}>Add <code style={{ color: "#9aa0b4" }}>NEWS_API_KEY</code> to your Netlify environment variables and redeploy to enable live headlines.</p>
+            </div>
+          )}
         </div>
 
         {/* Roadmap */}

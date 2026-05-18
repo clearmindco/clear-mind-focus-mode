@@ -133,6 +133,17 @@ function buildDashboard(logs: TradeLog[]) {
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
+interface AiCoachResult {
+  thesisScore: number;
+  clarityFeedback: string;
+  riskFeedback: string;
+  bullishCase: string;
+  bearishCase: string;
+  questionsToAnswerBeforeTrade: string[];
+  finalEducationalDecision: string;
+  disclaimer: string;
+}
+
 export default function PaperLab() {
   const [progress, setProgress] = useState<AppProgress | null>(null);
   const [form, setForm] = useState(emptyForm);
@@ -144,8 +155,49 @@ export default function PaperLab() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState<Partial<TradeLog>>({});
   const [showDashboard, setShowDashboard] = useState(false);
+  const [openAiOk, setOpenAiOk] = useState(false);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiResult, setAiResult] = useState<AiCoachResult | null>(null);
+  const [aiError, setAiError] = useState<string | null>(null);
 
   useEffect(() => { setProgress(loadProgress()); }, []);
+  useEffect(() => {
+    fetch("/api/status").then(r => r.json()).then((s: { openAi: boolean }) => setOpenAiOk(s.openAi)).catch(() => {});
+  }, []);
+
+  async function runAiCoach() {
+    if (!openAiOk || form.thesis.trim().length < 30) return;
+    setAiLoading(true);
+    setAiResult(null);
+    setAiError(null);
+    try {
+      const res = await fetch("/api/ai-trade-coach", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ticker: form.ticker,
+          thesis: form.thesis,
+          direction: form.direction,
+          setupType: form.setupType,
+          entry: form.entry,
+          stop: form.stop,
+          target1: form.target1,
+          target2: form.target2,
+          riskNotes: form.notes,
+        }),
+      });
+      const data = await res.json() as AiCoachResult & { error?: string };
+      if (!res.ok || data.error) {
+        setAiError(data.error ?? "Review failed — try again.");
+      } else {
+        setAiResult(data);
+      }
+    } catch {
+      setAiError("Network error — could not reach AI Coach.");
+    } finally {
+      setAiLoading(false);
+    }
+  }
 
   const allPretradeChecked = PRETRADE_ITEMS.every(i => pretradeChecked.has(i.id));
 
@@ -556,6 +608,100 @@ export default function PaperLab() {
                 </Field>
               </div>
 
+              {/* AI Trade Coach */}
+              <div className="rounded-2xl p-5" style={{ background: "rgba(139,92,246,0.04)", border: "1px solid rgba(139,92,246,0.2)" }}>
+                <div className="flex items-center justify-between flex-wrap gap-3 mb-3">
+                  <div>
+                    <p className="text-sm font-semibold" style={{ color: "#a855f7" }}>🤖 AI Trade Coach</p>
+                    <p className="text-xs mt-0.5" style={{ color: "#5a6075" }}>
+                      {openAiOk
+                        ? "Educational feedback on your thesis — not financial advice"
+                        : "OpenAI not connected — add OPENAI_API_KEY to enable"}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: openAiOk ? "#10b981" : "#5a6075" }} />
+                    <span className="text-xs" style={{ color: openAiOk ? "#10b981" : "#5a6075" }}>
+                      {openAiOk ? "Connected" : "Not connected"}
+                    </span>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={runAiCoach}
+                  disabled={!openAiOk || aiLoading || form.thesis.trim().length < 30}
+                  className="w-full py-2.5 rounded-xl text-xs font-semibold transition-all mb-4"
+                  style={{
+                    background: openAiOk && form.thesis.trim().length >= 30 ? "rgba(139,92,246,0.15)" : "#141720",
+                    color: openAiOk && form.thesis.trim().length >= 30 ? "#a855f7" : "#5a6075",
+                    border: `1px solid ${openAiOk && form.thesis.trim().length >= 30 ? "rgba(139,92,246,0.4)" : "#1e2433"}`,
+                    cursor: openAiOk && !aiLoading && form.thesis.trim().length >= 30 ? "pointer" : "not-allowed",
+                  }}
+                >
+                  {aiLoading ? "Reviewing thesis…" : form.thesis.trim().length < 30 ? "Write 30+ chars in thesis above to unlock" : "Review My Trade Thesis"}
+                </button>
+
+                {aiError && (
+                  <div className="rounded-xl p-3 text-xs" style={{ background: "rgba(239,68,68,0.06)", color: "#ef4444", border: "1px solid rgba(239,68,68,0.2)" }}>
+                    {aiError}
+                  </div>
+                )}
+
+                {aiResult && (
+                  <div className="space-y-3">
+                    {/* Score */}
+                    <div className="flex items-center gap-3 rounded-xl px-4 py-3" style={{ background: "#141720", border: "1px solid #1e2433" }}>
+                      <div className="text-center">
+                        <p className="text-xs" style={{ color: "#5a6075" }}>Thesis Score</p>
+                        <p className="text-2xl font-bold" style={{ color: aiResult.thesisScore >= 7 ? "#10b981" : aiResult.thesisScore >= 5 ? "#f59e0b" : "#ef4444" }}>
+                          {aiResult.thesisScore}<span className="text-sm" style={{ color: "#5a6075" }}>/10</span>
+                        </p>
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-xs font-semibold mb-0.5" style={{ color: "#a855f7" }}>Final Assessment</p>
+                        <p className="text-xs font-bold" style={{ color: "#e8eaf0" }}>{aiResult.finalEducationalDecision}</p>
+                      </div>
+                    </div>
+
+                    {/* Feedback cards */}
+                    <div className="grid sm:grid-cols-2 gap-3">
+                      <div className="rounded-xl p-3" style={{ background: "rgba(0,212,255,0.04)", border: "1px solid rgba(0,212,255,0.15)" }}>
+                        <p className="text-xs font-semibold mb-1" style={{ color: "#00d4ff" }}>Clarity</p>
+                        <p className="text-xs leading-relaxed" style={{ color: "#9aa0b4" }}>{aiResult.clarityFeedback}</p>
+                      </div>
+                      <div className="rounded-xl p-3" style={{ background: "rgba(245,158,11,0.04)", border: "1px solid rgba(245,158,11,0.15)" }}>
+                        <p className="text-xs font-semibold mb-1" style={{ color: "#f59e0b" }}>Risk</p>
+                        <p className="text-xs leading-relaxed" style={{ color: "#9aa0b4" }}>{aiResult.riskFeedback}</p>
+                      </div>
+                      <div className="rounded-xl p-3" style={{ background: "rgba(16,185,129,0.04)", border: "1px solid rgba(16,185,129,0.15)" }}>
+                        <p className="text-xs font-semibold mb-1" style={{ color: "#10b981" }}>Bull Case</p>
+                        <p className="text-xs leading-relaxed" style={{ color: "#9aa0b4" }}>{aiResult.bullishCase}</p>
+                      </div>
+                      <div className="rounded-xl p-3" style={{ background: "rgba(239,68,68,0.04)", border: "1px solid rgba(239,68,68,0.15)" }}>
+                        <p className="text-xs font-semibold mb-1" style={{ color: "#ef4444" }}>Bear Case</p>
+                        <p className="text-xs leading-relaxed" style={{ color: "#9aa0b4" }}>{aiResult.bearishCase}</p>
+                      </div>
+                    </div>
+
+                    {/* Questions to answer */}
+                    <div className="rounded-xl p-3" style={{ background: "#141720", border: "1px solid #1e2433" }}>
+                      <p className="text-xs font-semibold mb-2" style={{ color: "#f59e0b" }}>Questions to answer before trading</p>
+                      <ul className="space-y-1.5">
+                        {aiResult.questionsToAnswerBeforeTrade.map((q, i) => (
+                          <li key={i} className="flex items-start gap-2 text-xs" style={{ color: "#9aa0b4" }}>
+                            <span style={{ color: "#f59e0b", flexShrink: 0 }}>{i + 1}.</span>
+                            {q}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <p className="text-xs text-center" style={{ color: "#3a4060" }}>{aiResult.disclaimer}</p>
+                  </div>
+                )}
+              </div>
+
               {/* Exit section */}
               <div>
                 <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "#5a6075" }}>
@@ -806,7 +952,7 @@ export default function PaperLab() {
         )}
 
         <p className="text-center text-xs mt-6" style={{ color: "#5a6075" }}>
-          Trade data is stored locally in your browser · Paper trades only · Not financial advice · Users are responsible for all trading decisions
+          Trade data is stored locally in your browser · Cloud sync planned via Supabase · Paper trades only · Not financial advice · Users are responsible for all trading decisions
         </p>
       </div>
     </div>

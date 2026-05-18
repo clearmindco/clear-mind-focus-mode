@@ -37,78 +37,44 @@ const APIS: ApiEntry[] = [
     envKey: "ALPHA_VANTAGE_API_KEY",
     connected: isRealKey(process.env.ALPHA_VANTAGE_API_KEY),
     wired: "future",
-    description: "Technical indicators: RSI, MACD, SMA, EMA. Server-only key — fetch function defined in lib/server-data.ts, not yet wired to any UI element.",
-    usedIn: "Terminal technical overlays — coming soon",
+    description: "Technical indicators: RSI, MACD, SMA, EMA. Key detected — fetch function exists in lib/server-data.ts but indicator overlays are not yet wired to any UI. Key detected ≠ feature live.",
+    usedIn: "Terminal technical overlays — key exists, UI not yet built",
     getFrom: "alphavantage.co → Get your free API key",
     tier: "Free: 25 calls/day",
     category: "data",
   },
   {
     name: "NewsAPI",
-    envKey: "NEWSAPI_KEY",
-    connected: isRealKey(process.env.NEWSAPI_KEY),
+    envKey: "NEWS_API_KEY",
+    connected: isRealKey(process.env.NEWS_API_KEY),
     wired: "future",
-    description: "Market news headlines from major financial outlets. Server-only key — fetch function defined but news feed UI not yet built.",
-    usedIn: "Research Lab news sentiment feed — coming soon",
+    description: "Market news headlines from major financial outlets. Server-only key — wired to /api/news?query= and the Research Lab 'Latest Headlines' widget.",
+    usedIn: "Research Lab — Latest Headlines news widget",
     getFrom: "newsapi.org → Get API Key (developer plan)",
     tier: "Free dev: 100 calls/day (localhost only on free tier)",
     category: "news",
   },
-  // ── Planned — not yet defined in code ──
   {
-    name: "Polygon.io",
-    envKey: "NEXT_PUBLIC_POLYGON_API_KEY",
-    connected: false,
-    wired: "planned",
-    description: "Institutional-grade market data: real-time quotes, options chains, aggregates, tick data, and news. Higher quality and rate limits than Finnhub.",
-    usedIn: "Terminal enhanced quotes, options flow data — planned",
-    getFrom: "polygon.io → Sign up free → API Keys",
-    tier: "Free: unlimited delayed data; Starter $29/mo for real-time",
-    category: "data",
-  },
-  {
-    name: "Benzinga",
-    envKey: "NEXT_PUBLIC_BENZINGA_API_KEY",
-    connected: false,
-    wired: "planned",
-    description: "High-quality financial news, press releases, and analyst ratings. Often ahead of general news APIs for market-moving headlines.",
-    usedIn: "Research Lab news feed, Terminal catalyst alerts — planned",
-    getFrom: "benzinga.com/licensing → Contact for API access",
-    tier: "Paid — starts ~$49/mo; trial available",
-    category: "news",
-  },
-  {
-    name: "QuiverQuant",
-    envKey: "NEXT_PUBLIC_QUIVERQUANT_API_KEY",
-    connected: false,
-    wired: "planned",
-    description: "Congressional trading data (STOCK Act disclosures), government contracts, lobbying data, and Twitter sentiment. Best source for political trading patterns.",
-    usedIn: "Whale Tracker congressional section, Research Lab congressional trades — planned",
-    getFrom: "quiverquant.com → Pricing → API access",
-    tier: "Paid — ~$50/mo; free tier limited",
-    category: "data",
+    name: "OpenAI",
+    envKey: "OPENAI_API_KEY",
+    connected: isRealKey(process.env.OPENAI_API_KEY),
+    wired: "future",
+    description: "AI Trade Coach: reviews paper trade thesis via /api/ai-trade-coach, returns structured educational feedback. Server-only key — never exposed to browser. All output is labeled educational only, not financial advice.",
+    usedIn: "Paper Lab — AI Trade Coach panel (review trade thesis)",
+    getFrom: "platform.openai.com → API Keys → Create new secret key",
+    tier: "Pay-per-use: ~$0.002–$0.06 per 1K tokens (gpt-4o-mini)",
+    category: "ai",
   },
   {
     name: "Supabase",
     envKey: "NEXT_PUBLIC_SUPABASE_URL",
-    connected: false,
-    wired: "planned",
-    description: "Postgres database + auth + real-time subscriptions. Would replace localStorage for cross-device progress sync, user accounts, and shared watchlists.",
-    usedIn: "Progress sync, user accounts, shared paper trade journals — planned",
+    connected: isRealKey(process.env.NEXT_PUBLIC_SUPABASE_URL) && isRealKey(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY),
+    wired: "future",
+    description: "Keys detected (URL + anon key) — database sync is not implemented yet. Paper Lab still uses localStorage. Cloud sync and cross-device progress are planned for a future update.",
+    usedIn: "Progress sync, user accounts — keys exist, database code not yet written",
     getFrom: "supabase.com → New project (free tier available)",
     tier: "Free: 500MB DB, 2 projects; Pro $25/mo",
     category: "backend",
-  },
-  {
-    name: "OpenAI",
-    envKey: "OPENAI_API_KEY",
-    connected: false,
-    wired: "planned",
-    description: "AI-powered thesis analysis, trade review, and confidence scoring. Would power an 'AI Trade Coach' that reviews your paper trade thesis and gives structured feedback. Note: server-only key (no NEXT_PUBLIC_ prefix).",
-    usedIn: "AI Trade Coach in Paper Lab, Terminal AI confidence scores — planned",
-    getFrom: "platform.openai.com → API Keys → Create new secret key",
-    tier: "Pay-per-use: ~$0.002–$0.06 per 1K tokens",
-    category: "ai",
   },
 ];
 
@@ -169,18 +135,14 @@ export default function ApiSetupPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-3 text-xs">
+          <div className="grid grid-cols-2 gap-3 text-xs">
             <div className="rounded-xl p-3" style={{ background: "rgba(16,185,129,0.06)", border: "1px solid rgba(16,185,129,0.15)" }}>
-              <p className="font-semibold mb-1" style={{ color: "#10b981" }}>Live features</p>
-              <p style={{ color: "#9aa0b4" }}>Finnhub → Terminal price cards fetch live quotes on page load.</p>
+              <p className="font-semibold mb-1" style={{ color: "#10b981" }}>Live now</p>
+              <p style={{ color: "#9aa0b4" }}>Finnhub → Terminal quotes + Signal scoring. NewsAPI → Research Lab headlines. OpenAI → Paper Lab AI Trade Coach.</p>
             </div>
             <div className="rounded-xl p-3" style={{ background: "rgba(245,158,11,0.06)", border: "1px solid rgba(245,158,11,0.15)" }}>
-              <p className="font-semibold mb-1" style={{ color: "#f59e0b" }}>Future features</p>
-              <p style={{ color: "#9aa0b4" }}>Alpha Vantage + NewsAPI are defined in code but not yet wired to UI.</p>
-            </div>
-            <div className="rounded-xl p-3" style={{ background: "rgba(139,92,246,0.06)", border: "1px solid rgba(139,92,246,0.15)" }}>
-              <p className="font-semibold mb-1" style={{ color: "#8b5cf6" }}>Planned</p>
-              <p style={{ color: "#9aa0b4" }}>Polygon, Benzinga, Quiver, Supabase, OpenAI — next platform tier.</p>
+              <p className="font-semibold mb-1" style={{ color: "#f59e0b" }}>Keys exist, feature pending</p>
+              <p style={{ color: "#9aa0b4" }}>Alpha Vantage (indicators not wired) · Supabase (DB code not written yet).</p>
             </div>
           </div>
         </div>
@@ -194,7 +156,7 @@ export default function ApiSetupPage() {
           <div className="text-xs leading-relaxed space-y-1" style={{ color: "#9aa0b4" }}>
             <p><strong style={{ color: "#00d4ff" }}>Netlify:</strong> Site Settings → Environment Variables → Add variable → enter key name + value → Save → Trigger new deploy.</p>
             <p><strong style={{ color: "#00d4ff" }}>Local dev:</strong> Copy <code style={{ color: "#e8eaf0" }}>.env.example</code> → rename to <code style={{ color: "#e8eaf0" }}>.env.local</code> → fill in real values → restart dev server.</p>
-            <p className="pt-1" style={{ color: "#5a6075" }}>Server-side keys (<code>FINNHUB_API_KEY</code>, etc.) have <strong>no</strong> <code>NEXT_PUBLIC_</code> prefix — they are only available in server Route Handlers and never sent to the browser. After adding a key, also set the matching boolean flag (e.g. <code>NEXT_PUBLIC_FINNHUB_CONNECTED=true</code>) so the UI knows to show live features.</p>
+            <p className="pt-1" style={{ color: "#5a6075" }}>Server-only keys (<code>FINNHUB_API_KEY</code>, <code>NEWS_API_KEY</code>, <code>OPENAI_API_KEY</code>, etc.) have <strong>no</strong> <code>NEXT_PUBLIC_</code> prefix — available only in server Route Handlers, never sent to the browser. Connection status is checked server-side via <code>/api/status</code>.</p>
           </div>
         </div>
 
@@ -214,33 +176,27 @@ export default function ApiSetupPage() {
           <span className="text-xs px-2 py-0.5 rounded" style={{ background: "rgba(245,158,11,0.1)", color: "#f59e0b", border: "1px solid rgba(245,158,11,0.2)" }}>
             FUTURE
           </span>
-          Defined in data layer — feature UI not yet built
+          Key configured — feature UI partially or fully built
         </h2>
         <div className="space-y-3 mb-8">
           {futureWired.map(api => <ApiCard key={api.name} api={api} />)}
         </div>
 
-        {/* Planned APIs */}
-        <h2 className="text-sm font-semibold mb-3 flex items-center gap-2" style={{ color: "#e8eaf0" }}>
-          <span className="text-xs px-2 py-0.5 rounded" style={{ background: "rgba(139,92,246,0.1)", color: "#8b5cf6", border: "1px solid rgba(139,92,246,0.2)" }}>
-            PLANNED
-          </span>
-          Next platform tier — not yet in codebase
-        </h2>
-        <div
-          className="rounded-xl p-4 flex gap-3 items-start mb-4"
-          style={{ background: "rgba(139,92,246,0.04)", border: "1px solid rgba(139,92,246,0.12)" }}
-        >
-          <span className="text-base flex-shrink-0">💡</span>
-          <p className="text-xs leading-relaxed" style={{ color: "#9aa0b4" }}>
-            These APIs are not yet in the codebase. They represent the next tier of platform capabilities. You can start collecting API keys in preparation — add them to Netlify environment variables when they are wired up.
-          </p>
-        </div>
-        <div className="space-y-3 mb-8">
-          {plannedApis.map(api => (
-            <ApiCard key={api.name} api={api} categoryLabel={CATEGORY_LABELS[api.category]} />
-          ))}
-        </div>
+        {plannedApis.length > 0 && (
+          <>
+            <h2 className="text-sm font-semibold mb-3 flex items-center gap-2" style={{ color: "#e8eaf0" }}>
+              <span className="text-xs px-2 py-0.5 rounded" style={{ background: "rgba(139,92,246,0.1)", color: "#8b5cf6", border: "1px solid rgba(139,92,246,0.2)" }}>
+                PLANNED
+              </span>
+              Not yet in codebase
+            </h2>
+            <div className="space-y-3 mb-8">
+              {plannedApis.map(api => (
+                <ApiCard key={api.name} api={api} categoryLabel={CATEGORY_LABELS[api.category]} />
+              ))}
+            </div>
+          </>
+        )}
 
         {/* Security note */}
         <div
