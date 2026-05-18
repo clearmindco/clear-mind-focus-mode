@@ -22,11 +22,11 @@ const APIS: ApiEntry[] = [
   // ── Currently wired ──
   {
     name: "Finnhub",
-    envKey: "NEXT_PUBLIC_FINNHUB_API_KEY",
-    connected: isRealKey(process.env.NEXT_PUBLIC_FINNHUB_API_KEY),
+    envKey: "FINNHUB_API_KEY",
+    connected: isRealKey(process.env.FINNHUB_API_KEY),
     wired: "live",
-    description: "Real-time stock quotes (price, change, OHLC), company news, and insider transaction Form 4 filings. The only currently wired data source.",
-    usedIn: "Terminal — live price cards (SPY, QQQ, IWM, TLT, XLE, NVDA, TSLA)",
+    description: "Real-time stock quotes (price, change, OHLC), company news, and insider transaction Form 4 filings. Server-only key — fetched via /api/quote, /api/news, /api/market-radar, and /api/signal routes.",
+    usedIn: "Terminal — live price cards (SPY, QQQ, IWM, TLT, XLE, NVDA, TSLA) + Signal scoring",
     getFrom: "finnhub.io → Sign up free → Dashboard → API Key",
     tier: "Free: 60 calls/min",
     category: "data",
@@ -34,10 +34,10 @@ const APIS: ApiEntry[] = [
   // ── Future — defined in data layer ──
   {
     name: "Alpha Vantage",
-    envKey: "NEXT_PUBLIC_ALPHA_VANTAGE_API_KEY",
-    connected: isRealKey(process.env.NEXT_PUBLIC_ALPHA_VANTAGE_API_KEY),
+    envKey: "ALPHA_VANTAGE_API_KEY",
+    connected: isRealKey(process.env.ALPHA_VANTAGE_API_KEY),
     wired: "future",
-    description: "Technical indicators: RSI, MACD, SMA, EMA. Fetch function defined in lib/data-providers.ts — not yet wired to any UI element.",
+    description: "Technical indicators: RSI, MACD, SMA, EMA. Server-only key — fetch function defined in lib/server-data.ts, not yet wired to any UI element.",
     usedIn: "Terminal technical overlays — coming soon",
     getFrom: "alphavantage.co → Get your free API key",
     tier: "Free: 25 calls/day",
@@ -45,10 +45,10 @@ const APIS: ApiEntry[] = [
   },
   {
     name: "NewsAPI",
-    envKey: "NEXT_PUBLIC_NEWS_API_KEY",
-    connected: isRealKey(process.env.NEXT_PUBLIC_NEWS_API_KEY),
+    envKey: "NEWSAPI_KEY",
+    connected: isRealKey(process.env.NEWSAPI_KEY),
     wired: "future",
-    description: "Market news headlines from major financial outlets. Connection status checked in Research Lab. Fetch function defined but news feed UI not yet built.",
+    description: "Market news headlines from major financial outlets. Server-only key — fetch function defined but news feed UI not yet built.",
     usedIn: "Research Lab news sentiment feed — coming soon",
     getFrom: "newsapi.org → Get API Key (developer plan)",
     tier: "Free dev: 100 calls/day (localhost only on free tier)",
@@ -194,7 +194,7 @@ export default function ApiSetupPage() {
           <div className="text-xs leading-relaxed space-y-1" style={{ color: "#9aa0b4" }}>
             <p><strong style={{ color: "#00d4ff" }}>Netlify:</strong> Site Settings → Environment Variables → Add variable → enter key name + value → Save → Trigger new deploy.</p>
             <p><strong style={{ color: "#00d4ff" }}>Local dev:</strong> Copy <code style={{ color: "#e8eaf0" }}>.env.example</code> → rename to <code style={{ color: "#e8eaf0" }}>.env.local</code> → fill in real values → restart dev server.</p>
-            <p className="pt-1" style={{ color: "#5a6075" }}>All three current keys use the <code>NEXT_PUBLIC_</code> prefix — they are browser-safe and embedded in the JS bundle at build time. Do not use this prefix for secrets (like OpenAI API keys, which must stay server-side).</p>
+            <p className="pt-1" style={{ color: "#5a6075" }}>Server-side keys (<code>FINNHUB_API_KEY</code>, etc.) have <strong>no</strong> <code>NEXT_PUBLIC_</code> prefix — they are only available in server Route Handlers and never sent to the browser. After adding a key, also set the matching boolean flag (e.g. <code>NEXT_PUBLIC_FINNHUB_CONNECTED=true</code>) so the UI knows to show live features.</p>
           </div>
         </div>
 
@@ -253,8 +253,9 @@ export default function ApiSetupPage() {
             <ul className="space-y-0.5">
               <li>• This page shows Connected / Missing only — key values are never rendered.</li>
               <li>• <code>.env.local</code> is in <code>.gitignore</code> — it will never be committed.</li>
-              <li>• <code>NEXT_PUBLIC_</code> keys are browser-visible by design (rate-limited free APIs). Do not use this prefix for sensitive secrets.</li>
-              <li>• <code>OPENAI_API_KEY</code> must NOT have the <code>NEXT_PUBLIC_</code> prefix — it must only be used in server-side code.</li>
+              <li>• Server-only keys (<code>FINNHUB_API_KEY</code>, <code>ALPHA_VANTAGE_API_KEY</code>, etc.) have no <code>NEXT_PUBLIC_</code> prefix and are never sent to the browser.</li>
+              <li>• Boolean flags (<code>NEXT_PUBLIC_FINNHUB_CONNECTED=true</code>) are browser-safe — they contain no secret values, only on/off state.</li>
+              <li>• <code>OPENAI_API_KEY</code> must NOT have the <code>NEXT_PUBLIC_</code> prefix — server-side only.</li>
               <li>• If you suspect a key was leaked, rotate it immediately at the provider&apos;s dashboard.</li>
             </ul>
           </div>

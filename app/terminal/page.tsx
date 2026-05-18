@@ -2,11 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import Navbar from "@/components/Navbar";
-import {
-  getQuote,
-  isFinnhubConnected,
-  type QuoteData,
-} from "@/lib/data-providers";
+import type { QuoteData } from "@/lib/data-providers";
 
 type StatusType = "BUY WATCH" | "WAIT" | "AVOID";
 
@@ -251,21 +247,29 @@ function TradingViewChart({ tvSymbol, color }: { tvSymbol: string; color: string
 export default function Terminal() {
   const [quotes, setQuotes] = useState<Record<string, QuoteData>>({});
   const [loading, setLoading] = useState(false);
+  const [fetched, setFetched] = useState(false);
   const [expanded, setExpanded] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
   const [detailTab, setDetailTab] = useState<"levels" | "chart" | "analysis">("levels");
-  const apiConnected = isFinnhubConnected();
 
   const fetchAll = useCallback(async () => {
-    if (!apiConnected) return;
     setLoading(true);
-    const results = await Promise.all(TICKERS.map(t => getQuote(t.ticker)));
-    const map: Record<string, QuoteData> = {};
-    results.forEach(q => { map[q.ticker] = q; });
-    setQuotes(map);
-    setLoading(false);
-    setLastUpdated(new Date().toLocaleTimeString());
-  }, [apiConnected]);
+    try {
+      const res = await fetch("/api/market-radar");
+      if (res.ok) {
+        const data = await res.json() as Record<string, QuoteData>;
+        setQuotes(data);
+        setLastUpdated(new Date().toLocaleTimeString());
+      }
+    } catch {
+      // keep existing state on network error
+    } finally {
+      setLoading(false);
+      setFetched(true);
+    }
+  }, []);
+
+  const apiConnected = fetched && Object.values(quotes).some(q => !q.isPlaceholder);
 
   useEffect(() => { fetchAll(); }, [fetchAll]);
 
@@ -297,21 +301,19 @@ export default function Terminal() {
               Market radar · 7 tickers · TradingView charts · Analysis setups
             </p>
           </div>
-          {apiConnected && (
-            <button
-              onClick={fetchAll}
-              disabled={loading}
-              className="text-xs px-4 py-2 rounded-xl transition-all"
-              style={{
-                background: "#0f1117",
-                border: "1px solid #1e2433",
-                color: loading ? "#5a6075" : "#00d4ff",
-                cursor: loading ? "wait" : "pointer",
-              }}
-            >
-              {loading ? "Refreshing…" : "↻ Refresh"}
-            </button>
-          )}
+          <button
+            onClick={fetchAll}
+            disabled={loading}
+            className="text-xs px-4 py-2 rounded-xl transition-all"
+            style={{
+              background: "#0f1117",
+              border: "1px solid #1e2433",
+              color: loading ? "#5a6075" : "#00d4ff",
+              cursor: loading ? "wait" : "pointer",
+            }}
+          >
+            {loading ? "Refreshing…" : "↻ Refresh"}
+          </button>
         </div>
 
         {/* Compliance/placeholder warning */}
@@ -328,7 +330,7 @@ export default function Terminal() {
             <strong style={{ color: "#f59e0b" }}>
               {apiConnected ? "placeholder values" : "placeholder — API not connected"}
             </strong>
-            {apiConnected ? " and do not constitute a recommendation to buy or sell." : ". Add NEXT_PUBLIC_FINNHUB_API_KEY to see live prices."}
+            {apiConnected ? " and do not constitute a recommendation to buy or sell." : ". Add FINNHUB_API_KEY to your server environment to see live prices."}
             {" "}Bull/bear cases and beginner notes are general educational context, not trade signals. Always paper trade first.
           </p>
         </div>
@@ -554,17 +556,15 @@ export default function Terminal() {
                 <div>⏳ AI confidence scores (requires OpenAI)</div>
               </div>
             </div>
-            {!apiConnected && (
-              <div className="flex-shrink-0">
-                <a
-                  href="/api-setup"
-                  className="inline-block px-4 py-2 rounded-xl text-xs font-semibold"
-                  style={{ background: "rgba(0,212,255,0.1)", color: "#00d4ff", border: "1px solid rgba(0,212,255,0.3)" }}
-                >
-                  ⚙️ Go to API Setup →
-                </a>
-              </div>
-            )}
+            <div className="flex-shrink-0">
+              <a
+                href="/api-setup"
+                className="inline-block px-4 py-2 rounded-xl text-xs font-semibold"
+                style={{ background: "rgba(0,212,255,0.1)", color: "#00d4ff", border: "1px solid rgba(0,212,255,0.3)" }}
+              >
+                ⚙️ Go to API Setup →
+              </a>
+            </div>
           </div>
         </div>
 
