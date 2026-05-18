@@ -8,6 +8,7 @@ import ProgressBar from "@/components/ProgressBar";
 import Checklist from "@/components/Checklist";
 import Quiz from "@/components/Quiz";
 import { LESSONS, MODULES } from "@/lib/lessons";
+import InvestorLabLesson from "@/components/InvestorLabLesson";
 import {
   getLessonProgress,
   updateChecklistItem,
@@ -168,7 +169,24 @@ export default function ModuleClient({ id }: { id: string }) {
       {/* Content */}
       <div className="max-w-4xl mx-auto px-4 py-8">
         {activeTab === "lesson" && (
-          <LessonContent lesson={lesson} onContinue={() => setActiveTab("checklist")} />
+          lesson.id === "investor-movement-lab" ? (
+            <div className="animate-fade-in space-y-8">
+              <InvestorLabLesson />
+              <button
+                onClick={() => setActiveTab("checklist")}
+                className="w-full py-3 rounded-xl font-semibold text-sm transition-all duration-200"
+                style={{
+                  background: "linear-gradient(135deg, #a855f7 0%, #7c3aed 100%)",
+                  color: "#fff",
+                  boxShadow: "0 0 20px rgba(168,85,247,0.3)",
+                }}
+              >
+                Continue to Checklist →
+              </button>
+            </div>
+          ) : (
+            <LessonContent lesson={lesson} onContinue={() => setActiveTab("checklist")} />
+          )
         )}
         {activeTab === "checklist" && (
           <ChecklistTab

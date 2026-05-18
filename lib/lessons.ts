@@ -961,6 +961,136 @@ export const LESSONS: Lesson[] = [
       }
     ],
     passingScore: 75
+  },
+  {
+    id: "investor-movement-lab",
+    moduleId: "investor-lab",
+    moduleNumber: 10,
+    title: "Investor Movement Lab",
+    subtitle: "Insiders, institutions, politicians, sentiment, and the movement score",
+    icon: "🔍",
+    color: "#a855f7",
+    estimatedMinutes: 25,
+    sections: [
+      {
+        title: "What This Module Teaches",
+        content: "This module teaches you how to read the signals left behind by people who often know more than you: company insiders, large institutional funds, and US politicians. You will also learn how social media sentiment and news catalysts factor into the picture.\n\nNone of this data is a direct buy or sell signal. All of it is delayed. All of it requires confirmation on the chart. This module teaches you to use it as one additional layer of context — not as a standalone reason to trade."
+      },
+      {
+        title: "Mentions and Sentiment",
+        content: "When a stock starts getting mentioned more often on Reddit, Twitter/X, Stocktwits, or financial news, it means attention is increasing. More attention often brings more buyers — which can move price.\n\nEarly attention (before the crowd) can signal opportunity. Crowded hype (everyone is already talking about it) usually signals danger — the easy money has been made and late buyers are left holding the bag when the hype fades.\n\nSentiment tools like Stocktwits, Google Trends, and Reddit volume trackers can show you where attention is growing. The key question: are you early, or are you the last one in?"
+      },
+      {
+        title: "Insider Activity — Form 4 Filings",
+        content: "Corporate insiders (CEOs, CFOs, Directors, major shareholders) are legally required to report their personal stock trades to the SEC within two business days. These reports are called Form 4 filings and are publicly available on the SEC's EDGAR database.\n\nInsider buying carries more meaning than insider selling. When an executive spends their own money buying shares, they are making a personal bet that the stock is undervalued. They have the most information about the company — if they're buying, pay attention.\n\nInsider selling is less significant alone. Executives sell for many reasons: diversification, tax planning, paying for a house, exercise of stock options. Do not read too much into a single insider sale. Look for patterns — multiple insiders selling in coordination is more meaningful than one executive selling 5% of their holdings."
+      },
+      {
+        title: "Institutional Activity — 13F Filings",
+        content: "Large investment funds (Vanguard, BlackRock, ARK, Fidelity) are required to disclose their holdings quarterly in a document called a 13F filing. These filings show which stocks funds bought, sold, or held.\n\nThe critical limitation: 13F data is delayed by up to 45 days after the end of the quarter. By the time you see it, the fund may have already exited the position. Never treat a 13F disclosure as a live signal.\n\nWhat 13F data IS useful for: identifying which stocks are being accumulated by smart money over multiple quarters. A pattern of increasing institutional ownership across several 13F periods suggests sustained conviction — not a one-time trade."
+      },
+      {
+        title: "Congressional Activity — STOCK Act",
+        content: "The STOCK Act (Stop Trading On Congressional Knowledge Act) requires US senators and representatives to disclose personal stock trades within 45 days of the transaction. These disclosures are public record.\n\nWhy this matters: politicians sit on committees that oversee industries. A senator on the Armed Services Committee buying defense stocks before a major defense bill passes is a data point worth noting. A representative on the Finance Committee buying bank stocks before regulatory news is another.\n\nThe limitations: the 45-day delay means the trade already happened. The amounts are reported in ranges (e.g., $50K–$100K), not exact figures. And correlation is not causation — many politician trades are routine financial planning.\n\nUse this data as one contextual signal. Never trade based solely on a politician's disclosure."
+      },
+      {
+        title: "The Catalyst + Movement Score",
+        content: "The Movement Score is an educational tool that combines multiple signals into a single number to help you evaluate the overall backdrop for a stock idea.\n\nScoring: Sentiment Rising (+10), Insider Buying (+20), Insider Selling (-10), Institutional Accumulation (+15), Congressional Buying (+15), Major News Catalyst (+20), Technical Chart Confirmation (+20), Overcrowded Hype Warning (-20).\n\nOutput: Score ≥ 50 and no hype warning = Bullish Watch. Score 20–49 = Neutral Watch. Hype warning active = High-Risk Hype. Score below 0 = Bearish Watch.\n\nRemember: a high Movement Score does NOT replace chart analysis and risk management. It means the context is favorable — not that the trade is guaranteed."
+      }
+    ],
+    analogy: "Think of the Investor Movement Lab like a detective's evidence board. Form 4 filings are fingerprints — they tell you who touched this stock and when. 13F filings are CCTV footage — useful but delayed. Congressional disclosures are witness statements — valuable but potentially self-serving. Social sentiment is crowd noise — it tells you how many people are watching, but not whether they're right. The Movement Score is your evidence summary — it doesn't convict anyone, but it tells you whether to investigate further.",
+    webullExample: "In Webull: search a stock, tap 'News' tab to see recent catalyst events. For insider data and 13F filings, you'll need to visit SEC EDGAR (edgar.gov) directly — search the ticker and look for Form 4 (insiders) or 13F (institutions) filings. Quiver Quant (quiverquant.com) aggregates congressional trades and government contracts in a much more beginner-friendly way. Always cross-reference what you find with the actual chart before making any decision.",
+    commonMistakes: [
+      "Treating a single insider sale as a strong sell signal — executives sell for many personal reasons unrelated to the business outlook",
+      "Acting on 13F filings as if they are current — the data can be 45-90 days old and the fund may have already exited",
+      "Copying politician trades without understanding the delay — you may be buying after the major move has already happened",
+      "Chasing stocks purely on high social media mentions — by the time everyone is talking about it, the smart money is often already selling to the crowd"
+    ],
+    realTradingMeaning: "Insider and institutional signals work best as a tailwind, not a trigger. If your chart setup is already strong — breakout above resistance, strong volume, good risk/reward — and you also see recent insider buying and institutional accumulation, that's a high-quality confluence trade. The movement signals add conviction to a trade you were already considering. They are not a shortcut around chart reading and risk management.",
+    checklist: [
+      { id: "c1", text: "I understand what a Form 4 filing is and where to find it (SEC EDGAR)" },
+      { id: "c2", text: "I understand why insider buying is a stronger signal than insider selling" },
+      { id: "c3", text: "I understand what a 13F filing is and why the data is delayed" },
+      { id: "c4", text: "I understand the STOCK Act and the 45-day reporting delay for politicians" },
+      { id: "c5", text: "I understand the Movement Score and how to use it as context, not a trigger" },
+      { id: "c6", text: "I understand that none of this data replaces chart analysis and risk management" },
+      { id: "c7", text: "I know that social media hype is a warning sign, not a buy signal" }
+    ],
+    quiz: [
+      {
+        id: "q1",
+        question: "A company's CEO just filed a Form 4 showing they personally bought $2 million of the company's stock. What does this most likely signal?",
+        type: "multiple-choice",
+        options: [
+          "Nothing — executives are required to buy stock as part of compensation",
+          "High conviction that the stock is undervalued — insiders risk their own money when they believe",
+          "The company is about to be acquired",
+          "The stock will definitely go up"
+        ],
+        correct: 1,
+        explanation: "When a CEO uses personal money to buy company stock, it signals conviction that the stock is worth more than the current price. They have the most information of anyone. A $2M personal purchase is a meaningful signal — though never a guarantee."
+      },
+      {
+        id: "q2",
+        question: "You see a 13F filing showing Vanguard added 3 million shares of NVDA last quarter. What is the most important limitation of this information?",
+        type: "multiple-choice",
+        options: [
+          "Vanguard is not a trustworthy fund",
+          "The filing is delayed up to 45 days — Vanguard may have already sold those shares",
+          "13F filings are not publicly available",
+          "Vanguard only files 13F reports for stocks over $1 billion in value"
+        ],
+        correct: 1,
+        explanation: "13F filings reflect holdings at the end of a quarter but are only filed 45 days later. By the time you read it, the fund may have already exited or significantly changed its position. Always treat this as delayed historical data, not a current signal."
+      },
+      {
+        id: "q3",
+        question: "True or False: If a Senator buys a stock today, you can see that trade in the STOCK Act disclosure tomorrow.",
+        type: "true-false",
+        options: ["True", "False"],
+        correct: 1,
+        explanation: "False. The STOCK Act requires disclosure within 45 days of the transaction. By the time the public sees it, the trade could be 6 weeks old. The major price move has often already occurred."
+      },
+      {
+        id: "q4",
+        question: "A stock is trending on social media with thousands of mentions. What is the key risk for a beginner?",
+        type: "multiple-choice",
+        options: [
+          "Social media mentions always precede a price drop",
+          "The stock may be in 'crowded hype' — you could be one of the last buyers before the move reverses",
+          "High mentions means the SEC will investigate the stock",
+          "Social media data is illegal to use for trading decisions"
+        ],
+        correct: 1,
+        explanation: "When everyone is already talking about a stock, the early buyers who drove the price up are now the sellers. Crowded hype means late buyers are buying from early winners. This is often the peak — not the start — of a move."
+      },
+      {
+        id: "q5",
+        question: "Using the Movement Score: Insider buying (+20), Technical confirmation (+20), Major catalyst (+20). Total = 60. What is the output?",
+        type: "scenario",
+        options: [
+          "High-Risk Hype — too many positive signals is suspicious",
+          "Bearish Watch — contrarian signals dominate",
+          "Bullish Watch — score ≥ 50 with no hype warning",
+          "Neutral — the score needs sentiment data to be valid"
+        ],
+        correct: 2,
+        explanation: "Score of 60 with no overcrowded hype warning = Bullish Watch. This is the best-case confluence: a chart setup confirmed by insider buying and a real catalyst. Each signal reinforces the others."
+      },
+      {
+        id: "q6",
+        question: "What is the correct way to use Investor Movement Lab data in your trading process?",
+        type: "multiple-choice",
+        options: [
+          "Copy any stock a Senator bought and hold until they sell",
+          "Buy whenever you see insider buying, regardless of the chart",
+          "Use movement signals as additional context that reinforces (or weakens) a trade setup you already identified on the chart",
+          "Only trade stocks with institutional accumulation on their 13F filing"
+        ],
+        correct: 2,
+        explanation: "Movement data is context, not a trigger. The chart setup comes first. Then you ask: does the insider/institutional/sentiment data add conviction to this setup? If yes, the trade quality improves. Never bypass chart analysis just because a signal looks bullish."
+      }
+    ],
+    passingScore: 80
   }
 ];
 
