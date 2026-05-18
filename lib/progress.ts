@@ -17,14 +17,18 @@ export interface TradeLog {
   ticker: string;
   direction?: string;
   setupType: string;
+  catalyst?: string;
   entry: string;
   stop: string;
   target1: string;
   target2: string;
+  tradeStatus?: "open" | "closed";
+  exitPrice?: string;
   result: string;
   exitReason?: string;
   thesis: string;
   followedPlan: boolean;
+  lessonLearned?: string;
   notes: string;
 }
 

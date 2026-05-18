@@ -8,6 +8,7 @@ const NAV = [
   { label: "Terminal", href: "/terminal", match: ["/terminal"] },
   { label: "Research Lab", href: "/research", match: ["/research"] },
   { label: "Paper Lab", href: "/paper-lab", match: ["/paper-lab"] },
+  { label: "API Setup", href: "/api-setup", match: ["/api-setup"], icon: "⚙️" },
 ];
 
 export default function Navbar() {
@@ -48,7 +49,7 @@ export default function Navbar() {
                   border: active ? "1px solid rgba(0,212,255,0.15)" : "1px solid transparent",
                 }}
               >
-                {item.label}
+                {"icon" in item && item.icon ? `${item.icon} ` : ""}{item.label}
               </Link>
             );
           })}
