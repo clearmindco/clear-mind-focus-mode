@@ -5,6 +5,8 @@
  * Never exposes key values — only reports whether a real key is present.
  */
 
+import { NextResponse } from "next/server";
+
 function isRealKey(val: string | undefined): boolean {
   return !!val && !val.startsWith("your_") && val.length > 10;
 }
@@ -20,5 +22,5 @@ export async function GET() {
       isRealKey(process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY),
   };
 
-  return Response.json(status);
+  return NextResponse.json(status);
 }

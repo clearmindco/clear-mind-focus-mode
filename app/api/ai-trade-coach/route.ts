@@ -7,6 +7,8 @@
  * Output is educational only. Not financial advice.
  */
 
+import { type NextRequest, NextResponse } from "next/server";
+
 interface TradeCoachRequest {
   ticker: string;
   thesis: string;
@@ -32,10 +34,10 @@ interface OpenAIResponse {
   choices: OpenAIChoice[];
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   const key = process.env.OPENAI_API_KEY;
   if (!key || key.startsWith("your_") || key.length <= 10) {
-    return Response.json(
+    return NextResponse.json(
       { error: "OpenAI not configured on this server" },
       { status: 503 }
     );
@@ -44,7 +46,7 @@ export async function POST(request: Request) {
   const body = (await request.json()) as TradeCoachRequest;
 
   if (!body.thesis || body.thesis.trim().length < 20) {
-    return Response.json(
+    return NextResponse.json(
       { error: "Thesis too short — please write at least 20 characters" },
       { status: 400 }
     );
@@ -70,7 +72,7 @@ Setup type: ${body.setupType}
 Entry: $${body.entry}
 Stop loss: $${body.stop}
 Target 1: $${body.target1}
-Target 2: $${body.target2 ?? "not set"}
+Target 2: ${body.target2 ?? "not set"}
 Risk notes: ${body.riskNotes ?? "none"}
 
 Trade thesis:
@@ -96,14 +98,14 @@ Please review this trade thesis and provide educational feedback.`;
       }),
     });
   } catch {
-    return Response.json(
+    return NextResponse.json(
       { error: "AI review failed — try again in a moment" },
       { status: 502 }
     );
   }
 
   if (!openAiResponse.ok) {
-    return Response.json(
+    return NextResponse.json(
       { error: "AI review failed — try again in a moment" },
       { status: 502 }
     );
@@ -113,5 +115,5 @@ Please review this trade thesis and provide educational feedback.`;
   const content = data.choices[0]?.message?.content ?? "{}";
   const parsed: unknown = JSON.parse(content);
 
-  return Response.json(parsed, { status: 200 });
+  return NextResponse.json(parsed, { status: 200 });
 }
