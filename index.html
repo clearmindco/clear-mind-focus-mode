@@ -1,1194 +1,173 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Quiet Mind Bundle &#8212; Clear Mind Co.</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Bodoni+Moda:ital,wght@1,400;1,500&display=swap" rel="stylesheet">
-<style>
-:root {
-  --cloud:#F9F7F4; --white:#FFFFFE;
-  --petal:#EFE6DF; --petal-d:#E2D2C8; --petal-l:#F7F1ED;
-  --stone:#E0DAD4; --stone-d:#C8C0B8;
-  --euca:#9DB8A6; --euca-l:#BDD0C4; --euca-bg:#EDF2EE; --euca-deep:#7A9E8A;
-  --ink:#28241F; --ink-s:#635D56; --ink-m:#9E9790;
-  --gold:#C4A06E; --gold-l:#DFC49A;
-  --r:18px; --r-s:11px;
-  --sh-card:0 2px 16px rgba(40,36,31,.06);
-  --sh-h:0 4px 20px rgba(40,36,31,.09),0 12px 40px rgba(40,36,31,.07);
-  --trans:.22s cubic-bezier(.4,0,.2,1);
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{background:#F9F7F4;color:var(--ink);font-family:'DM Sans',sans-serif;font-weight:300;font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
-
-/* Save dot */
-#save-dot{position:fixed;top:14px;right:14px;width:7px;height:7px;border-radius:50%;background:var(--euca-deep);opacity:0;transition:opacity .2s;z-index:9999;pointer-events:none}
-#save-dot.show{opacity:1}
-
-/* Top nav */
-.top-nav{position:fixed;top:0;left:0;right:0;height:52px;background:rgba(249,247,244,.96);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--stone);display:flex;align-items:center;padding:0 24px;gap:0;z-index:100}
-.top-brand{display:flex;align-items:center;gap:8px;font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:400;color:var(--ink);text-decoration:none;cursor:pointer;margin-right:24px;white-space:nowrap}
-.top-brand-mark{width:22px;height:22px;border-radius:50%;background:var(--euca);flex-shrink:0}
-.top-links{display:flex;align-items:center;gap:2px;flex:1}
-.top-link{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:400;color:var(--ink-s);text-decoration:none;padding:6px 11px;border-radius:7px;cursor:pointer;transition:background var(--trans),color var(--trans);white-space:nowrap}
-.top-link:hover{background:var(--petal);color:var(--ink)}
-.top-link.active{background:var(--euca-bg);color:var(--euca-deep);font-weight:500}
-
-/* Bottom nav */
-.bot-nav{display:none;position:fixed;bottom:0;left:0;right:0;height:66px;background:rgba(249,247,244,.98);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid var(--stone);z-index:100;align-items:center;justify-content:space-around;padding:0 4px}
-.bot-btn{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:6px 4px;border-radius:var(--r-s);transition:background var(--trans);flex:1;min-width:0}
-.bot-btn:hover{background:var(--petal)}
-.bot-btn.active .b-glyph{color:var(--euca-deep)}
-.bot-btn.active .b-label{color:var(--euca-deep);font-weight:500}
-.b-glyph{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--ink-m);transition:color var(--trans);line-height:1}
-.b-label{font-family:'DM Sans',sans-serif;font-size:8px;font-weight:400;color:var(--ink-m);transition:color var(--trans);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;text-align:center}
-
-/* Pages */
-.page{display:none;padding:72px 22px 36px;max-width:720px;margin:0 auto;background:#F9F7F4;min-height:100vh}
-.page.active{display:block;animation:fadeUp .28s ease both}
-@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-@keyframes itemIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
-
-/* Typography */
-.eyebrow{font-family:'DM Sans',sans-serif;font-size:9.5px;font-weight:500;letter-spacing:.32em;text-transform:uppercase;color:var(--euca-deep);margin-bottom:8px}
-.page-title{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:500;color:#1A1714;line-height:1.15;margin-bottom:6px}
-.page-sub{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:400;color:#4A4540;margin-bottom:24px;line-height:1.55}
-.card-label{font-family:'DM Sans',sans-serif;font-size:9px;font-weight:500;letter-spacing:.28em;text-transform:uppercase;color:var(--euca-deep);margin-bottom:12px}
-
-/* Cards */
-.card{background:var(--white);border-radius:var(--r);box-shadow:var(--sh-card);padding:20px 22px;margin-bottom:16px}
-
-/* Inputs */
-textarea,input[type="text"]{width:100%;background:var(--petal-l);border:1px solid var(--stone);border-radius:var(--r-s);padding:12px 14px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:300;color:var(--ink);line-height:1.55;resize:none;outline:none;transition:border-color var(--trans),box-shadow var(--trans);caret-color:var(--euca-deep)}
-textarea:focus,input[type="text"]:focus{border-color:var(--euca);box-shadow:0 0 0 3px rgba(157,184,166,.12)}
-textarea::placeholder,input[type="text"]::placeholder{color:var(--ink-m)}
-
-/* Buttons */
-.btn-primary{background:var(--ink);color:#F9F7F4;border:none;border-radius:var(--r-s);padding:11px 22px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:background var(--trans),transform var(--trans)}
-.btn-primary:hover{background:#3a3530;transform:translateY(-1px)}
-.btn-primary:active{transform:translateY(0)}
-.btn-soft{background:transparent;color:var(--ink-s);border:1px solid var(--stone);border-radius:var(--r-s);padding:9px 18px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:400;cursor:pointer;transition:background var(--trans),border-color var(--trans)}
-.btn-soft:hover{background:var(--petal);border-color:var(--petal-d)}
-
-/* Footer */
-.page-footer{text-align:center;font-family:'Bodoni Moda',serif;font-style:italic;font-size:14px;color:var(--ink-m);margin-top:28px;padding:16px 0 8px}
-
-/* Empty state */
-.empty-state{text-align:center;padding:40px 20px}
-.es-glyph{font-family:'Cormorant Garamond',serif;font-size:36px;color:var(--stone-d);display:block;margin-bottom:12px;line-height:1}
-.es-text{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:300;color:var(--ink-m);line-height:1.55}
-
-/* ─── HOME ─── */
-.welcome-strip{background:var(--petal);border:1px solid var(--stone);border-radius:var(--r);padding:14px 18px;display:flex;align-items:flex-start;gap:12px;margin-bottom:16px}
-.ws-glyph{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--euca-deep);flex-shrink:0;line-height:1.4}
-.ws-text{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:300;color:var(--ink-s);line-height:1.55}
-.ws-text strong{font-weight:500;color:var(--ink)}
-
-.greeting-card{background:linear-gradient(150deg,var(--petal),#D8E6DC);border-radius:var(--r);padding:24px 24px 20px;margin-bottom:16px;position:relative;overflow:hidden}
-.greeting-card::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(157,184,166,.18)}
-.g-time{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:400;color:var(--ink-s);margin-bottom:6px;letter-spacing:.04em}
-.g-text{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:#1A1714;margin-bottom:16px;line-height:1.25}
-
-.mood-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
-.mood-pill{display:flex;align-items:center;gap:7px;background:rgba(255,255,254,.72);border:1.5px solid transparent;border-radius:24px;padding:7px 13px 7px 10px;cursor:pointer;transition:background var(--trans),border-color var(--trans),box-shadow var(--trans);font-family:'DM Sans',sans-serif}
-.mood-pill:hover{background:rgba(255,255,254,.9)}
-.mood-pill.on{border-color:var(--euca);box-shadow:0 2px 8px rgba(157,184,166,.25);background:rgba(255,255,254,.92)}
-.mood-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
-.mood-dot-calm{background:#A8C5B0}
-.mood-dot-okay{background:#C4B8A8}
-.mood-dot-stressed{background:#C4A8A8}
-.mood-dot-tired{background:#B8B0C8}
-.mood-dot-good{background:#C4C8A0}
-.mood-word{font-size:8.5px;font-weight:400;color:var(--ink-s)}
-
-.aff-banner{background:linear-gradient(150deg,var(--euca-bg),var(--petal-l));border:1px solid rgba(189,208,196,.45);border-radius:var(--r);padding:22px 24px;margin-bottom:16px;cursor:pointer;transition:box-shadow var(--trans);text-align:center}
-.aff-banner:hover{box-shadow:var(--sh-h)}
-.aff-quote{font-family:'Bodoni Moda',serif;font-style:italic;font-size:16px;color:#1A1714;line-height:1.55;margin-bottom:10px;transition:opacity .18s ease}
-.aff-sublabel{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:400;color:var(--ink-m);letter-spacing:.06em}
-
-.streak-bar{background:var(--white);border-radius:var(--r);box-shadow:var(--sh-card);display:grid;grid-template-columns:1fr 1px 1fr 1px 1fr;margin-bottom:16px;overflow:hidden}
-.streak-col{padding:18px 14px;text-align:center}
-.streak-divider{background:var(--stone);align-self:stretch}
-.streak-num{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:300;color:#1A1714;line-height:1;margin-bottom:5px}
-.streak-lbl{font-family:'DM Sans',sans-serif;font-size:8.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-m)}
-
-.widget-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
-.widget{background:var(--white);border-radius:var(--r);box-shadow:var(--sh-card);padding:18px 18px 16px;cursor:pointer;transition:box-shadow var(--trans),transform var(--trans);position:relative;overflow:hidden}
-.widget::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--euca),var(--gold-l));opacity:0;transition:opacity var(--trans)}
-.widget:hover{box-shadow:var(--sh-h);transform:translateY(-2px)}
-.widget:hover::before{opacity:1}
-.widget.petal{background:var(--petal-l)}
-.widget.sage{background:var(--euca-bg)}
-.widget-full{grid-column:1/-1}
-.w-glyph{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--euca-deep);line-height:1;margin-bottom:10px;display:block}
-.w-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;color:#1A1714;margin-bottom:5px;line-height:1.2}
-.w-sub{font-family:'DM Sans',sans-serif;font-size:11.5px;font-weight:300;color:var(--ink-s);line-height:1.4}
-
-/* ─── MIND RESET ─── */
-.dump-entry{background:var(--white);border-radius:var(--r);box-shadow:var(--sh-card);padding:20px 22px;margin-bottom:16px;animation:itemIn .28s ease both;border:1.5px solid transparent;transition:border-color var(--trans),background var(--trans)}
-.dump-entry.released{border-color:var(--euca-l);background:rgba(237,242,238,.4)}
-.dump-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-.dump-date{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:400;color:var(--ink-m)}
-.dump-del{background:none;border:none;font-size:14px;color:var(--ink-m);cursor:pointer;padding:4px 8px;border-radius:6px;transition:background var(--trans)}
-.dump-del:hover{background:var(--petal);color:var(--ink-s)}
-.dump-q{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--euca-deep);margin-bottom:6px;margin-top:14px}
-.dump-q:first-of-type{margin-top:0}
-.dump-ta{width:100%;min-height:72px;background:var(--petal-l);border:1px solid var(--stone);border-radius:var(--r-s);padding:11px 13px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:300;color:var(--ink);line-height:1.55;resize:none;outline:none;transition:border-color var(--trans);caret-color:var(--euca-deep)}
-.dump-ta:focus{border-color:var(--euca)}
-.dump-release-btn{margin-top:16px;background:none;border:1px solid var(--euca-l);border-radius:var(--r-s);padding:9px 18px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:400;color:var(--euca-deep);cursor:pointer;transition:background var(--trans)}
-.dump-release-btn:hover{background:var(--euca-bg)}
-.release-complete{margin-top:12px;font-family:'Bodoni Moda',serif;font-style:italic;font-size:13px;color:var(--euca-deep);display:none}
-.dump-entry.released .release-complete{display:block}
-
-/* ─── TODAY ─── */
-.priority-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
-.priority-row:last-child{margin-bottom:0}
-.priority-num{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:400;color:var(--euca-l);line-height:1;width:24px;flex-shrink:0;text-align:center}
-.task-add-row{display:flex;gap:10px;margin-bottom:14px}
-.task-add-row input{flex:1}
-.task-list{list-style:none}
-.task-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--stone);animation:itemIn .22s ease both}
-.task-item:last-child{border-bottom:none}
-.task-cb{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--stone-d);flex-shrink:0;cursor:pointer;transition:background var(--trans),border-color var(--trans);background-size:12px 12px;background-repeat:no-repeat;background-position:center}
-.task-cb.done{background-color:var(--euca);border-color:var(--euca);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath stroke='white' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round' d='M2.5 6l2.5 2.5 4.5-4.5'/%3E%3C/svg%3E")}
-.task-text{flex:1;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:300;color:var(--ink);transition:color var(--trans)}
-.task-text.done{color:var(--ink-m);text-decoration:line-through}
-.task-del{background:none;border:none;color:var(--ink-m);cursor:pointer;font-size:12px;padding:4px 6px;border-radius:5px;transition:background var(--trans)}
-.task-del:hover{background:var(--petal);color:var(--ink-s)}
-.task-progress{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:400;color:var(--ink-m);padding:7px 12px;background:var(--euca-bg);border-radius:var(--r-s);display:inline-block;margin-top:12px}
-.release-box{background:var(--petal-l);border:1px solid var(--petal-d);border-radius:var(--r);padding:18px 20px;margin-bottom:16px}
-.petal-input{background:rgba(255,255,254,.7);border:1px solid var(--petal-d)}
-.petal-input:focus{border-color:var(--euca)}
-.win-box{background:linear-gradient(150deg,var(--euca-bg),var(--petal-l));border-radius:var(--r);padding:18px 20px;margin-bottom:16px}
-.win-input{background:rgba(255,255,254,.7);border:1px solid rgba(157,184,166,.3);font-family:'Bodoni Moda',serif;font-style:italic;font-size:14px}
-.win-input:focus{border-color:var(--euca)}
-
-/* ─── WEEK ─── */
-.focus-bar{background:var(--petal-l);border:1px solid var(--petal-d);border-radius:var(--r);padding:16px 20px;margin-bottom:14px}
-.day-grid{background:var(--white);border-radius:var(--r);box-shadow:var(--sh-card);padding:4px 0;margin-bottom:14px;overflow:hidden}
-.day-row{display:grid;grid-template-columns:94px 1fr;align-items:center;gap:12px;padding:10px 20px;border-bottom:1px solid var(--stone)}
-.day-row:last-child{border-bottom:none}
-.day-lbl{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:400;color:var(--euca-deep)}
-.day-input{background:var(--petal-l);border:1px solid var(--stone);border-radius:var(--r-s);padding:8px 12px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:300;color:var(--ink);outline:none;transition:border-color var(--trans);caret-color:var(--euca-deep);width:100%}
-.day-input:focus{border-color:var(--euca)}
-.release-wbar{background:var(--white);border:1px solid var(--stone);border-radius:var(--r);padding:16px 20px;margin-bottom:14px}
-
-/* ─── GOALS ─── */
-.goal-card{background:var(--white);border-radius:var(--r);box-shadow:var(--sh-card);padding:20px 22px;margin-bottom:14px;animation:itemIn .28s ease both}
-.goal-header{display:flex;align-items:flex-start;gap:10px;margin-bottom:14px}
-.goal-title-in{flex:1;background:none;border:none;border-bottom:1px solid var(--stone);border-radius:0;padding:6px 0;font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:#1A1714;outline:none;transition:border-color var(--trans);width:auto}
-.goal-title-in:focus{border-color:var(--euca)}
-.goal-title-in::placeholder{color:var(--ink-m)}
-.goal-del{background:none;border:none;color:var(--ink-m);cursor:pointer;padding:6px 8px;border-radius:6px;transition:background var(--trans);flex-shrink:0}
-.goal-del:hover{background:var(--petal)}
-.goal-progress-track{height:4px;background:var(--stone);border-radius:2px;margin-bottom:6px;overflow:hidden}
-.goal-progress-fill{height:100%;background:linear-gradient(90deg,var(--euca),var(--gold));border-radius:2px;transition:width .5s cubic-bezier(.4,0,.2,1)}
-.goal-progress-text{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:400;color:var(--ink-m);margin-bottom:12px}
-.milestone-list{list-style:none;margin-bottom:12px}
-.milestone-item{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--stone);animation:itemIn .2s ease both}
-.milestone-item:last-child{border-bottom:none}
-.ms-cb{width:18px;height:18px;border-radius:4px;border:1.5px solid var(--stone-d);flex-shrink:0;cursor:pointer;transition:background var(--trans),border-color var(--trans);background-size:10px 10px;background-repeat:no-repeat;background-position:center}
-.ms-cb.done{background-color:var(--euca);border-color:var(--euca);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath stroke='white' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round' d='M2.5 6l2.5 2.5 4.5-4.5'/%3E%3C/svg%3E")}
-.ms-text{flex:1;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:300;color:var(--ink);transition:color var(--trans)}
-.ms-text.done{color:var(--ink-m);text-decoration:line-through}
-.ms-del{background:none;border:none;color:var(--ink-m);cursor:pointer;font-size:12px;padding:3px 6px;border-radius:5px;transition:background var(--trans)}
-.ms-del:hover{background:var(--petal)}
-.ms-add-row{display:flex;gap:8px}
-.ms-add-row input{flex:1;font-size:13px;padding:9px 12px}
-.ms-add-btn{background:var(--euca-bg);border:1px solid var(--euca-l);border-radius:var(--r-s);padding:9px 16px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:var(--euca-deep);cursor:pointer;transition:background var(--trans);white-space:nowrap}
-.ms-add-btn:hover{background:var(--euca-l)}
-
-/* ─── HABITS ─── */
-.habits-card{background:var(--white);border-radius:var(--r);box-shadow:var(--sh-card);padding:20px 22px;margin-bottom:14px}
-.habit-add-row{display:flex;gap:10px;margin-bottom:16px}
-.habit-add-row input{flex:1}
-.habit-header-row{display:grid;grid-template-columns:130px repeat(7,1fr);gap:4px;margin-bottom:6px;padding:0 4px}
-.habit-day-head{font-family:'DM Sans',sans-serif;font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-m);text-align:center}
-.habit-row{display:grid;grid-template-columns:130px repeat(7,1fr);gap:4px;align-items:center;padding:6px 4px;border-bottom:1px solid var(--stone);animation:itemIn .22s ease both}
-.habit-row:last-child{border-bottom:none}
-.habit-name{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:400;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:6px}
-.habit-dot{width:27px;height:27px;border-radius:50%;border:1.5px solid var(--stone-d);cursor:pointer;transition:background var(--trans),border-color var(--trans),transform var(--trans),box-shadow var(--trans);margin:0 auto;display:block;background-size:14px 14px;background-repeat:no-repeat;background-position:center}
-.habit-dot.done{background-color:var(--euca);border-color:var(--euca-deep);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath stroke='white' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round' d='M2.5 6l2.5 2.5 4.5-4.5'/%3E%3C/svg%3E");transform:scale(1.05);box-shadow:0 2px 8px rgba(157,184,166,.35)}
-
-/* ─── AFFIRMATION CARDS ─── */
-.aff-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
-.aff-card{border-radius:var(--r);padding:28px 22px 22px;cursor:pointer;transition:box-shadow var(--trans),transform var(--trans)}
-.aff-card:hover{box-shadow:var(--sh-h);transform:translateY(-2px)}
-.aff-card.petal-bg{background:var(--petal-l)}
-.aff-card.euca-bg-bg{background:var(--euca-bg)}
-.aff-rule{width:18px;height:1.5px;background:var(--euca-deep);opacity:.5;margin-bottom:14px}
-.aff-card-quote{font-family:'Bodoni Moda',serif;font-style:italic;font-size:14.5px;color:#1A1714;line-height:1.6;margin-bottom:18px}
-.aff-card-brand{font-family:'Cormorant Garamond',serif;font-size:11px;font-weight:400;color:var(--ink-m)}
-.aff-hint{text-align:center;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:300;color:var(--ink-m);margin-bottom:24px}
-
-/* ─── JOURNAL ─── */
-.journal-surface{background:var(--white);border-radius:var(--r);box-shadow:var(--sh-card);margin-bottom:16px;overflow:hidden}
-.j-prompt-zone{background:linear-gradient(150deg,var(--petal-l),var(--euca-bg));padding:20px 22px 18px;border-bottom:1px solid var(--stone)}
-.j-date{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:400;color:var(--ink-m);margin-bottom:8px}
-.j-prompt-label{font-family:'DM Sans',sans-serif;font-size:9px;font-weight:500;letter-spacing:.28em;text-transform:uppercase;color:var(--euca-deep);margin-bottom:6px}
-.j-prompt-text{font-family:'Bodoni Moda',serif;font-style:italic;font-size:15px;color:#1A1714;line-height:1.55;margin-bottom:10px;transition:opacity .16s ease}
-.j-cycle-btn{background:none;border:1px solid rgba(122,158,138,.4);border-radius:7px;padding:6px 13px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:400;color:var(--euca-deep);cursor:pointer;transition:background var(--trans)}
-.j-cycle-btn:hover{background:rgba(157,184,166,.12)}
-.j-write-zone{padding:18px 22px}
-.j-textarea{width:100%;min-height:260px;background:none;border:none;padding:0;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:300;color:var(--ink);line-height:1.7;resize:none;outline:none;caret-color:var(--euca-deep)}
-.j-footer-bar{display:flex;justify-content:space-between;align-items:center;padding:12px 22px;border-top:1px solid var(--stone)}
-.j-privacy{font-family:'Bodoni Moda',serif;font-style:italic;font-size:12px;color:var(--ink-m)}
-.j-count{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:400;color:var(--ink-m)}
-.j-actions{display:flex;gap:10px;margin-bottom:20px}
-.j-entry{background:var(--white);border-radius:var(--r);box-shadow:var(--sh-card);padding:18px 22px;margin-bottom:12px;animation:itemIn .28s ease both}
-.j-entry-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px}
-.j-entry-date{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:400;color:var(--ink-m)}
-.j-entry-del{background:none;border:none;color:var(--ink-m);cursor:pointer;font-size:12px;padding:3px 7px;border-radius:5px;transition:background var(--trans)}
-.j-entry-del:hover{background:var(--petal)}
-.j-entry-prompt{font-family:'Bodoni Moda',serif;font-style:italic;font-size:12px;color:var(--euca-deep);margin-bottom:8px}
-.j-entry-text{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:300;color:var(--ink-s);line-height:1.6;white-space:pre-wrap}
-.past-heading{font-family:'DM Sans',sans-serif;font-size:9px;font-weight:500;letter-spacing:.28em;text-transform:uppercase;color:var(--euca-deep);margin-bottom:14px}
-
-/* ─── RESPONSIVE ─── */
-@media(max-width:600px){
-  .top-nav{display:none}
-  .bot-nav{display:flex}
-  .page{padding:64px 16px 80px}
-  .page-title{font-size:30px}
-  .widget-grid{gap:10px}
-  .aff-grid{grid-template-columns:1fr}
-  .mood-word{font-size:7.5px}
-  .habit-header-row,.habit-row{grid-template-columns:82px repeat(7,1fr)}
-}
-@media(max-width:380px){
-  .habit-header-row,.habit-row{grid-template-columns:66px repeat(7,1fr)}
-  .habit-dot{width:23px;height:23px}
-}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#F9F7F4">
+  <title>The Quiet Mind Bundle - Clear Mind Co.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@1,6..96,400;1,6..96,500&family=Cormorant+Garamond:wght@300;400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
+  <div class="save-dot" id="save-dot"></div>
 
-<div id="save-dot"></div>
+  <nav class="top-nav" aria-label="Primary navigation">
+    <div class="brand"><span class="brand-mark" aria-hidden="true"></span><span>Clear Mind Co.</span></div>
+    <div class="top-links" id="top-links"></div>
+  </nav>
+  <nav class="bot-nav" id="bot-nav" aria-label="Mobile navigation"></nav>
 
-<!-- TOP NAV -->
-<nav class="top-nav">
-  <div class="top-brand" onclick="go('home')">
-    <div class="top-brand-mark"></div>
-    Clear Mind Co.
-  </div>
-  <div class="top-links">
-    <span class="top-link active" onclick="go('home')">Home</span>
-    <span class="top-link" onclick="go('dump')">Mind Reset</span>
-    <span class="top-link" onclick="go('today')">Today</span>
-    <span class="top-link" onclick="go('week')">My Week</span>
-    <span class="top-link" onclick="go('goals')">Goals</span>
-    <span class="top-link" onclick="go('habits')">Habits</span>
-    <span class="top-link" onclick="go('cards')">Affirmations</span>
-    <span class="top-link" onclick="go('journal')">Journal</span>
-  </div>
-</nav>
+  <main>
+    <section class="page active" id="page-home" data-page="home">
+      <header class="page-header">
+        <span class="page-eyebrow">The Quiet Mind Bundle</span>
+        <h1 class="page-title">A softer place to begin.</h1>
+        <p class="page-sub">A private daily reset for your thoughts, priorities, habits, goals, affirmations, and reflection.</p>
+      </header>
 
-<!-- BOTTOM NAV -->
-<nav class="bot-nav">
-  <div class="bot-btn active" onclick="go('home')">
-    <span class="b-glyph">&#8962;</span>
-    <span class="b-label">Home</span>
-  </div>
-  <div class="bot-btn" onclick="go('dump')">
-    <span class="b-glyph">&#9675;</span>
-    <span class="b-label">Reset</span>
-  </div>
-  <div class="bot-btn" onclick="go('today')">
-    <span class="b-glyph">&#10022;</span>
-    <span class="b-label">Today</span>
-  </div>
-  <div class="bot-btn" onclick="go('week')">
-    <span class="b-glyph">&#9649;</span>
-    <span class="b-label">Week</span>
-  </div>
-  <div class="bot-btn" onclick="go('goals')">
-    <span class="b-glyph">&#9678;</span>
-    <span class="b-label">Goals</span>
-  </div>
-  <div class="bot-btn" onclick="go('habits')">
-    <span class="b-glyph">&#8767;</span>
-    <span class="b-label">Habits</span>
-  </div>
-  <div class="bot-btn" onclick="go('cards')">
-    <span class="b-glyph">&#10023;</span>
-    <span class="b-label">Cards</span>
-  </div>
-  <div class="bot-btn" onclick="go('journal')">
-    <span class="b-glyph">&#10000;</span>
-    <span class="b-label">Journal</span>
-  </div>
-</nav>
-
-<!-- ═══════════════════════════════════════════════ PAGE: HOME -->
-<div class="page active" id="page-home">
-
-  <div class="welcome-strip">
-    <span class="ws-glyph">&#10022;</span>
-    <span class="ws-text">Start here. Open <strong>Mind Reset</strong> to empty your head &#8212; then go to <strong>Today</strong> to choose your 3 things.</span>
-  </div>
-
-  <div class="greeting-card">
-    <div class="g-time" id="g-time"></div>
-    <div class="g-text" id="g-text"></div>
-    <div class="mood-row">
-      <div class="mood-pill" data-mood="calm" onclick="setMood('calm',this)">
-        <div class="mood-dot mood-dot-calm"></div>
-        <span class="mood-word">Calm</span>
+      <div class="welcome-strip">
+        <span class="welcome-glyph">CM</span>
+        <div class="welcome-text"><strong>Welcome back.</strong> This space saves quietly on your device, so you can return without pressure.</div>
       </div>
-      <div class="mood-pill" data-mood="okay" onclick="setMood('okay',this)">
-        <div class="mood-dot mood-dot-okay"></div>
-        <span class="mood-word">Okay</span>
+
+      <div class="greeting-card">
+        <div class="g-time" id="g-time">Today</div>
+        <div class="g-text" id="g-text">How does your mind feel?</div>
+        <div class="g-sub">Choose the closest word. You can change it anytime.</div>
+        <div class="mood-row" id="mood-row"></div>
+        <div class="mood-response" id="mood-response" aria-live="polite"></div>
+        <svg class="mood-botanical-accent" viewBox="0 0 90 130" aria-hidden="true" focusable="false">
+          <path d="M46 122C40 92 43 57 58 12"></path>
+          <ellipse cx="35" cy="102" rx="13" ry="5" transform="rotate(-16 35 102)"></ellipse>
+          <ellipse cx="58" cy="86" rx="13" ry="5" transform="rotate(-24 58 86)"></ellipse>
+          <ellipse cx="36" cy="72" rx="12" ry="5" transform="rotate(16 36 72)"></ellipse>
+          <ellipse cx="62" cy="55" rx="12" ry="5" transform="rotate(-22 62 55)"></ellipse>
+          <ellipse cx="43" cy="39" rx="10" ry="4.5" transform="rotate(18 43 39)"></ellipse>
+          <ellipse cx="65" cy="24" rx="10" ry="4.5" transform="rotate(-24 65 24)"></ellipse>
+        </svg>
       </div>
-      <div class="mood-pill" data-mood="stressed" onclick="setMood('stressed',this)">
-        <div class="mood-dot mood-dot-stressed"></div>
-        <span class="mood-word">Stressed</span>
+
+      <button class="aff-banner" type="button" onclick="cycleHomeAffirmation()">
+        <div class="aff-quote" id="home-aff">I can move gently and still move forward.</div>
+        <span class="aff-meta">Choose direction. Tap for another quiet thought</span>
+      </button>
+
+      <div class="streak-bar">
+        <div class="streak-item"><div class="streak-num" id="stat-days">0</div><div class="streak-label">Days Used</div></div>
+        <div class="streak-rule"></div>
+        <div class="streak-item"><div class="streak-num" id="stat-tasks">0</div><div class="streak-label">Tasks Done</div></div>
+        <div class="streak-rule"></div>
+        <div class="streak-item"><div class="streak-num" id="stat-words">0</div><div class="streak-label">Words Saved</div></div>
       </div>
-      <div class="mood-pill" data-mood="tired" onclick="setMood('tired',this)">
-        <div class="mood-dot mood-dot-tired"></div>
-        <span class="mood-word">Tired</span>
+
+      <div class="widget-grid">
+        <button class="widget petal" type="button" onclick="showPage('reset')"><span class="w-glyph">01</span><div class="w-title">Mind Reset</div><div class="w-desc">Release the looping thoughts before they take over the day.</div></button>
+        <button class="widget sage" type="button" onclick="showPage('today')"><span class="w-glyph">02</span><div class="w-title">Today</div><div class="w-desc">Choose the essentials and let the rest become lighter.</div></button>
+        <button class="widget" type="button" onclick="showPage('week')"><span class="w-glyph">03</span><div class="w-title">My Week</div><div class="w-desc">Give each day a simple shape without overplanning.</div></button>
+        <button class="widget petal" type="button" onclick="showPage('journal')"><span class="w-glyph">04</span><div class="w-title">Journal</div><div class="w-desc">End with a clear page and one honest sentence.</div></button>
       </div>
-      <div class="mood-pill" data-mood="good" onclick="setMood('good',this)">
-        <div class="mood-dot mood-dot-good"></div>
-        <span class="mood-word">Good</span>
+      <footer class="page-footer"><div class="footer-quote">Small rituals can hold a very full life.</div><div class="footer-brand">Clear Mind Co.</div></footer>
+    </section>
+
+    <section class="page" id="page-reset" data-page="reset">
+      <header class="page-header"><span class="page-eyebrow">Mind Reset</span><h1 class="page-title">Empty the noise.</h1><p class="page-sub">A soft place to put the thoughts you do not want to carry alone.</p></header>
+      <div class="card">
+        <span class="section-label">New reset</span>
+        <textarea class="field" id="dump-seed" rows="3" placeholder="What is taking up the most space in your mind right now?"></textarea>
+        <div class="btn-row"><button class="btn btn-primary" type="button" onclick="addDump()">Create reset</button></div>
       </div>
-    </div>
-  </div>
+      <div id="dump-list"></div>
+    </section>
 
-  <div class="aff-banner" onclick="cycleAff()">
-    <div class="aff-quote" id="home-aff-quote"></div>
-    <div class="aff-sublabel">Tap for a new affirmation</div>
-  </div>
-
-  <div class="streak-bar">
-    <div class="streak-col">
-      <div class="streak-num" id="s-streak">1</div>
-      <div class="streak-lbl">Day Streak</div>
-    </div>
-    <div class="streak-divider"></div>
-    <div class="streak-col">
-      <div class="streak-num" id="s-resets">0</div>
-      <div class="streak-lbl">Mind Resets</div>
-    </div>
-    <div class="streak-divider"></div>
-    <div class="streak-col">
-      <div class="streak-num" id="s-wins">0</div>
-      <div class="streak-lbl">Small Wins</div>
-    </div>
-  </div>
-
-  <div class="widget-grid">
-    <div class="widget petal" onclick="go('dump')">
-      <span class="w-glyph">&#9675;</span>
-      <div class="w-title">Mind Reset</div>
-      <div class="w-sub">Release what&#8217;s loud right now</div>
-    </div>
-    <div class="widget" onclick="go('today')">
-      <span class="w-glyph">&#10022;</span>
-      <div class="w-title">Today</div>
-      <div class="w-sub">3 things. That&#8217;s enough.</div>
-    </div>
-    <div class="widget sage" onclick="go('goals')">
-      <span class="w-glyph">&#9678;</span>
-      <div class="w-title">Goals</div>
-      <div class="w-sub">Becoming who you want to be</div>
-    </div>
-    <div class="widget" onclick="go('habits')">
-      <span class="w-glyph">&#8767;</span>
-      <div class="w-title">Habits</div>
-      <div class="w-sub">Small acts that compound</div>
-    </div>
-    <div class="widget" onclick="go('week')">
-      <span class="w-glyph">&#9649;</span>
-      <div class="w-title">My Week</div>
-      <div class="w-sub">Gentle structure, not pressure</div>
-    </div>
-    <div class="widget petal" onclick="go('cards')">
-      <span class="w-glyph">&#10023;</span>
-      <div class="w-title">Affirmations</div>
-      <div class="w-sub">Words you need to hear today</div>
-    </div>
-    <div class="widget sage widget-full" onclick="go('journal')">
-      <span class="w-glyph">&#10000;</span>
-      <div class="w-title">Journal</div>
-      <div class="w-sub">Your quiet reflection space</div>
-    </div>
-  </div>
-
-  <div class="page-footer">You are doing better than you think.</div>
-</div>
-
-<!-- ═══════════════════════════════════════ PAGE: MIND RESET -->
-<div class="page" id="page-dump">
-  <div class="eyebrow">Mind Reset</div>
-  <div class="page-title">Empty Your Mind</div>
-  <div class="page-sub">Every thought you&#8217;re carrying deserves a place to land.</div>
-
-  <button class="btn-primary" onclick="newDump()" style="margin-bottom:20px">+ New Reset Entry</button>
-
-  <div id="dump-list">
-    <div class="empty-state">
-      <span class="es-glyph">&#9675;</span>
-      <div class="es-text">Your mind is clear right now.<br>Tap above when something needs a place to land.</div>
-    </div>
-  </div>
-
-  <div class="page-footer">You are allowed to put it down.</div>
-</div>
-
-<!-- ══════════════════════════════════════════════ PAGE: TODAY -->
-<div class="page" id="page-today">
-  <div class="eyebrow">Daily Clarity</div>
-  <div class="page-title">Today&#8217;s Focus</div>
-  <div class="page-sub">Choose three things that truly matter. Let the rest wait.</div>
-
-  <div class="card">
-    <div class="card-label">How I feel right now</div>
-    <textarea id="feeling-field" rows="3" placeholder="Write freely about how you&#8217;re feeling&#8230;" oninput="sf('feeling',this.value)"></textarea>
-  </div>
-
-  <div class="card">
-    <div class="card-label">The only 3 things that matter today</div>
-    <div class="priority-row">
-      <div class="priority-num">1</div>
-      <input type="text" id="p1" placeholder="First priority&#8230;" oninput="sf('p1',this.value)">
-    </div>
-    <div class="priority-row">
-      <div class="priority-num">2</div>
-      <input type="text" id="p2" placeholder="Second priority&#8230;" oninput="sf('p2',this.value)">
-    </div>
-    <div class="priority-row">
-      <div class="priority-num">3</div>
-      <input type="text" id="p3" placeholder="Third priority&#8230;" oninput="sf('p3',this.value)">
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-label">Today&#8217;s Task Path</div>
-    <div class="task-add-row">
-      <input type="text" id="task-in" placeholder="Add a task&#8230;" onkeydown="if(event.key==='Enter')addTask()">
-      <button class="btn-soft" onclick="addTask()" style="white-space:nowrap">Add</button>
-    </div>
-    <ul class="task-list" id="task-list"></ul>
-    <div id="task-progress" style="display:none"></div>
-  </div>
-
-  <div class="release-box">
-    <div class="card-label">One thing I am releasing today</div>
-    <textarea class="petal-input" id="release-field" rows="2" placeholder="I release&#8230;" oninput="sf('release',this.value)"></textarea>
-  </div>
-
-  <div class="win-box">
-    <div class="card-label" style="color:var(--euca-deep)">Today&#8217;s Small Win &#10022;</div>
-    <textarea class="win-input" id="win-field" rows="2" placeholder="Something I did well today&#8230;" oninput="saveWin(this.value)"></textarea>
-  </div>
-
-  <div class="page-footer">One thing at a time is enough.</div>
-</div>
-
-<!-- ══════════════════════════════════════════ PAGE: MY WEEK -->
-<div class="page" id="page-week">
-  <div class="eyebrow">Weekly Reset</div>
-  <div class="page-title">My Week, My Way</div>
-  <div class="page-sub">Not every hour planned. Just what matters.</div>
-
-  <div class="focus-bar">
-    <div class="card-label">This week I&#8217;m focusing on</div>
-    <input type="text" id="week-focus" placeholder="This week&#8217;s intention&#8230;" oninput="sf('week-focus',this.value)">
-  </div>
-
-  <div class="day-grid">
-    <div class="day-row"><div class="day-lbl">Monday</div><input class="day-input" type="text" id="day-0" placeholder="Today&#8217;s note&#8230;" oninput="sf('day-0',this.value)"></div>
-    <div class="day-row"><div class="day-lbl">Tuesday</div><input class="day-input" type="text" id="day-1" placeholder="Today&#8217;s note&#8230;" oninput="sf('day-1',this.value)"></div>
-    <div class="day-row"><div class="day-lbl">Wednesday</div><input class="day-input" type="text" id="day-2" placeholder="Today&#8217;s note&#8230;" oninput="sf('day-2',this.value)"></div>
-    <div class="day-row"><div class="day-lbl">Thursday</div><input class="day-input" type="text" id="day-3" placeholder="Today&#8217;s note&#8230;" oninput="sf('day-3',this.value)"></div>
-    <div class="day-row"><div class="day-lbl">Friday</div><input class="day-input" type="text" id="day-4" placeholder="Today&#8217;s note&#8230;" oninput="sf('day-4',this.value)"></div>
-    <div class="day-row"><div class="day-lbl">Saturday</div><input class="day-input" type="text" id="day-5" placeholder="Today&#8217;s note&#8230;" oninput="sf('day-5',this.value)"></div>
-    <div class="day-row"><div class="day-lbl">Sunday</div><input class="day-input" type="text" id="day-6" placeholder="Today&#8217;s note&#8230;" oninput="sf('day-6',this.value)"></div>
-  </div>
-
-  <div class="release-wbar">
-    <div class="card-label">This week I&#8217;m releasing</div>
-    <input type="text" id="week-release" placeholder="What I&#8217;m letting go of&#8230;" oninput="sf('week-release',this.value)">
-  </div>
-
-  <div class="page-footer">Progress does not have to be perfect.</div>
-</div>
-
-<!-- ══════════════════════════════════════════════ PAGE: GOALS -->
-<div class="page" id="page-goals">
-  <div class="eyebrow">Goal Tracker</div>
-  <div class="page-title">Becoming Who You Want to Be</div>
-  <div class="page-sub">One small action at a time. That is all it takes.</div>
-
-  <button class="btn-primary" onclick="addGoal()" style="margin-bottom:20px">+ Add a Goal</button>
-
-  <div id="goals-list">
-    <div class="empty-state">
-      <span class="es-glyph">&#9678;</span>
-      <div class="es-text">Your goals will appear here.<br>Start by adding one small aspiration.</div>
-    </div>
-  </div>
-
-  <div class="page-footer">You are becoming her, slowly and surely.</div>
-</div>
-
-<!-- ════════════════════════════════════════════ PAGE: HABITS -->
-<div class="page" id="page-habits">
-  <div class="eyebrow">Habit Tracker</div>
-  <div class="page-title">Small Acts That Compound</div>
-  <div class="page-sub">You don&#8217;t need a perfect streak. Just keep coming back.</div>
-
-  <div class="habits-card">
-    <div class="habit-add-row">
-      <input type="text" id="habit-in" placeholder="Add a new habit&#8230;" onkeydown="if(event.key==='Enter')addHabit()">
-      <button class="btn-soft" onclick="addHabit()">Add</button>
-    </div>
-    <div class="habit-header-row">
-      <div></div>
-      <div class="habit-day-head">M</div>
-      <div class="habit-day-head">T</div>
-      <div class="habit-day-head">W</div>
-      <div class="habit-day-head">T</div>
-      <div class="habit-day-head">F</div>
-      <div class="habit-day-head">S</div>
-      <div class="habit-day-head">S</div>
-    </div>
-    <div id="habits-list">
-      <div class="empty-state" style="padding:20px 0">
-        <span class="es-text">Add your first habit above. Each dot you tap is a quiet act of self-respect.</span>
+    <section class="page" id="page-today" data-page="today">
+      <header class="page-header"><span class="page-eyebrow">Today</span><h1 class="page-title">Let today be simple.</h1><p class="page-sub">Choose what matters, name what can wait, and record one quiet win.</p></header>
+      <div class="card">
+        <span class="section-label">Top three</span>
+        <div class="priority-row" id="priority-row-1"><span class="p-num">1</span><input class="p-input save-field priority-input" data-key="priority-1" placeholder="The one thing that matters most today"></div>
+        <div class="priority-row" id="priority-row-2"><span class="p-num">2</span><input class="p-input save-field priority-input" data-key="priority-2" placeholder="A second meaningful step"></div>
+        <div class="priority-row" id="priority-row-3"><span class="p-num">3</span><input class="p-input save-field priority-input" data-key="priority-3" placeholder="A small supportive task"></div>
       </div>
-    </div>
-  </div>
-
-  <div class="page-footer">Your consistency is quiet power.</div>
-</div>
-
-<!-- ═══════════════════════════════════ PAGE: AFFIRMATIONS -->
-<div class="page" id="page-cards">
-  <div class="eyebrow">Affirmation Cards</div>
-  <div class="page-title">Words You Need to Hear Today</div>
-  <div class="page-sub">Screenshot any card. Set it as your phone wallpaper.</div>
-
-  <div class="aff-grid">
-    <div class="aff-card petal-bg">
-      <div class="aff-rule"></div>
-      <div class="aff-card-quote">You are not behind. You are human.</div>
-      <div class="aff-card-brand">Clear Mind Co.</div>
-    </div>
-    <div class="aff-card euca-bg-bg">
-      <div class="aff-rule"></div>
-      <div class="aff-card-quote">Rest is not something you earn.</div>
-      <div class="aff-card-brand">Clear Mind Co.</div>
-    </div>
-    <div class="aff-card euca-bg-bg">
-      <div class="aff-rule"></div>
-      <div class="aff-card-quote">Progress does not have to be perfect.</div>
-      <div class="aff-card-brand">Clear Mind Co.</div>
-    </div>
-    <div class="aff-card petal-bg">
-      <div class="aff-rule"></div>
-      <div class="aff-card-quote">Your overwhelm is not a character flaw.</div>
-      <div class="aff-card-brand">Clear Mind Co.</div>
-    </div>
-    <div class="aff-card petal-bg">
-      <div class="aff-rule"></div>
-      <div class="aff-card-quote">One thing at a time is enough.</div>
-      <div class="aff-card-brand">Clear Mind Co.</div>
-    </div>
-    <div class="aff-card euca-bg-bg">
-      <div class="aff-rule"></div>
-      <div class="aff-card-quote">You are doing better than you think.</div>
-      <div class="aff-card-brand">Clear Mind Co.</div>
-    </div>
-    <div class="aff-card euca-bg-bg">
-      <div class="aff-rule"></div>
-      <div class="aff-card-quote">You are allowed to take up space.</div>
-      <div class="aff-card-brand">Clear Mind Co.</div>
-    </div>
-    <div class="aff-card petal-bg">
-      <div class="aff-rule"></div>
-      <div class="aff-card-quote">Calm is something you return to.</div>
-      <div class="aff-card-brand">Clear Mind Co.</div>
-    </div>
-  </div>
-
-  <div class="aff-hint">Tap any card &middot; Screenshot to save &middot; Set as your phone wallpaper</div>
-
-  <div class="page-footer">You already have what you need.</div>
-</div>
-
-<!-- ══════════════════════════════════════════ PAGE: JOURNAL -->
-<div class="page" id="page-journal">
-  <div class="eyebrow">Reflection</div>
-  <div class="page-title">Your Quiet Space</div>
-  <div class="page-sub">Write freely. No rules. No judgment. Just you.</div>
-
-  <div class="journal-surface">
-    <div class="j-prompt-zone">
-      <div class="j-date" id="j-date"></div>
-      <div class="j-prompt-label">Today&#8217;s Prompt</div>
-      <div class="j-prompt-text" id="j-prompt"></div>
-      <button class="j-cycle-btn" onclick="cyclePrompt()">Different prompt &#8594;</button>
-    </div>
-    <div class="j-write-zone">
-      <textarea class="j-textarea" id="j-textarea" placeholder="Start writing&#8230; there&#8217;s no wrong way to do this." oninput="jUpdate()"></textarea>
-    </div>
-    <div class="j-footer-bar">
-      <span class="j-privacy">What you write here is only for you.</span>
-      <span class="j-count" id="j-count">0 words</span>
-    </div>
-  </div>
-
-  <div class="j-actions">
-    <button class="btn-primary" onclick="saveJEntry()">Save Entry &#10022;</button>
-    <button class="btn-soft" onclick="clearJDraft()">Clear</button>
-  </div>
-
-  <div id="journal-past"></div>
-
-  <div class="page-footer">The act of writing is the act of knowing yourself.</div>
-</div>
-
-<script>
-// ────────────────────────────────────────────────────────────
-// CONSTANTS
-// ────────────────────────────────────────────────────────────
-const PAGES = ['home','dump','today','week','goals','habits','cards','journal'];
-
-const AFFS = [
-  "You are not behind. You are human.",
-  "Rest is not something you earn.",
-  "Progress does not have to be perfect.",
-  "Your overwhelm is not a character flaw.",
-  "One thing at a time is enough.",
-  "You are doing better than you think.",
-  "You don’t have to figure it all out today.",
-  "Small steps still move you forward.",
-  "You are allowed to take up space.",
-  "Calm is something you return to.",
-  "You are enough, exactly as you are.",
-  "Feeling behind is not a fact. It’s a feeling.",
-  "Done is better than perfect, every time.",
-  "Your sensitivity is not weakness. It’s depth."
-];
-
-const J_PROMPTS = [
-  "What felt heavy today?",
-  "What do I need more of right now?",
-  "What am I proud of today?",
-  "What deserves my energy tomorrow?",
-  "What can I let go of tonight?",
-  "What made me smile today, even briefly?",
-  "What would I tell a friend who felt how I feel right now?",
-  "What is one thing I did well today?",
-  "What do I want tomorrow to feel like?",
-  "What am I grateful for in this moment?"
-];
-
-// ────────────────────────────────────────────────────────────
-// LOCALSTORAGE
-// ────────────────────────────────────────────────────────────
-const LS = {
-  get(k, d=null) {
-    try { const v = localStorage.getItem('cmco_'+k); return v !== null ? JSON.parse(v) : d; }
-    catch { return d; }
-  },
-  set(k, v) {
-    try { localStorage.setItem('cmco_'+k, JSON.stringify(v)); flash(); }
-    catch {}
-  }
-};
-
-function sf(k, v) { LS.set('f_'+k, v); }
-
-// ────────────────────────────────────────────────────────────
-// SAVE DOT
-// ────────────────────────────────────────────────────────────
-let _flashTimer;
-function flash() {
-  const dot = document.getElementById('save-dot');
-  dot.classList.add('show');
-  clearTimeout(_flashTimer);
-  _flashTimer = setTimeout(() => dot.classList.remove('show'), 900);
-}
-
-// ────────────────────────────────────────────────────────────
-// NAVIGATION
-// ────────────────────────────────────────────────────────────
-function go(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-' + id).classList.add('active');
-  const idx = PAGES.indexOf(id);
-  document.querySelectorAll('.top-link').forEach((el, i) => el.classList.toggle('active', i === idx));
-  document.querySelectorAll('.bot-btn').forEach((el, i) => el.classList.toggle('active', i === idx));
-  window.scrollTo(0, 0);
-}
-
-// ────────────────────────────────────────────────────────────
-// DATE HELPERS
-// ────────────────────────────────────────────────────────────
-function dateStr(d) {
-  const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  return DAYS[d.getDay()] + ', ' + MONTHS[d.getMonth()] + ' ' + d.getDate();
-}
-
-function todayKey() {
-  const d = new Date();
-  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-}
-
-function daysBetween(a, b) {
-  const [ay,am,ad] = a.split('-').map(Number);
-  const [by,bm,bd] = b.split('-').map(Number);
-  return Math.round((new Date(by,bm-1,bd) - new Date(ay,am-1,ad)) / 86400000);
-}
-
-// ────────────────────────────────────────────────────────────
-// HOME
-// ────────────────────────────────────────────────────────────
-let affIdx = 0;
-
-function initHome() {
-  const now = new Date();
-  const h = now.getHours();
-  const greet = h < 12 ? "Good morning. Take a breath first."
-              : h < 17 ? "Good afternoon. You’re doing enough."
-              :           "Good evening. Let’s wind down gently.";
-  document.getElementById('g-time').textContent = dateStr(now);
-  document.getElementById('g-text').textContent = greet;
-
-  const stored = LS.get('aff-idx');
-  affIdx = stored !== null ? stored : (now.getDate() % AFFS.length);
-  document.getElementById('home-aff-quote').textContent = AFFS[affIdx];
-
-  const savedMood = LS.get('mood');
-  if (savedMood) {
-    const pill = document.querySelector('.mood-pill[data-mood="' + savedMood + '"]');
-    if (pill) pill.classList.add('on');
-  }
-
-  updateStreak();
-}
-
-function setMood(mood, el) {
-  document.querySelectorAll('.mood-pill').forEach(p => p.classList.remove('on'));
-  el.classList.add('on');
-  LS.set('mood', mood);
-}
-
-function cycleAff() {
-  const el = document.getElementById('home-aff-quote');
-  el.style.opacity = '0';
-  setTimeout(() => {
-    affIdx = (affIdx + 1) % AFFS.length;
-    LS.set('aff-idx', affIdx);
-    el.textContent = AFFS[affIdx];
-    el.style.opacity = '1';
-  }, 180);
-}
-
-function updateStreak() {
-  const today = todayKey();
-  const last  = LS.get('last-open');
-  let streak  = LS.get('streak', 1);
-
-  if (last === null) {
-    streak = 1;
-  } else if (last !== today) {
-    const diff = daysBetween(last, today);
-    streak = diff === 1 ? streak + 1 : 1;
-  }
-
-  LS.set('last-open', today);
-  LS.set('streak', streak);
-
-  document.getElementById('s-streak').textContent = streak;
-  document.getElementById('s-resets').textContent = LS.get('total-resets', 0);
-  document.getElementById('s-wins').textContent   = LS.get('total-wins', 0);
-}
-
-// ────────────────────────────────────────────────────────────
-// MIND RESET
-// ────────────────────────────────────────────────────────────
-function initDump() { renderDumps(); }
-
-function newDump() {
-  const dumps = LS.get('dumps', []);
-  const n = LS.get('dump-n', 0) + 1;
-  LS.set('dump-n', n);
-
-  const now = new Date();
-  dumps.unshift({
-    id: n,
-    date: dateStr(now) + ' — ' + now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}),
-    q1:'', q2:'', q3:'', q4:'',
-    released: false
-  });
-  LS.set('dumps', dumps);
-
-  const resets = LS.get('total-resets', 0) + 1;
-  LS.set('total-resets', resets);
-  document.getElementById('s-resets').textContent = resets;
-
-  renderDumps();
-}
-
-function renderDumps() {
-  const dumps = LS.get('dumps', []);
-  const list  = document.getElementById('dump-list');
-  if (!dumps.length) {
-    list.innerHTML = '<div class="empty-state"><span class="es-glyph">&#9675;</span><div class="es-text">Your mind is clear right now.<br>Tap above when something needs a place to land.</div></div>';
-    return;
-  }
-  list.innerHTML = dumps.map(d => `
-    <div class="dump-entry${d.released ? ' released' : ''}" id="dump-${d.id}">
-      <div class="dump-header">
-        <span class="dump-date">${d.date}</span>
-        <button class="dump-del" onclick="delDump(${d.id})">&#10005;</button>
+      <div class="today-path" id="today-path" aria-live="polite">
+        <span class="path-label">Today's Path</span>
+        <div class="path-summary" id="path-summary">Start by naming just one thing.</div>
+        <div class="path-line" id="path-line">One clear step is enough.</div>
       </div>
-      <div class="dump-q">What is loud in my mind right now?</div>
-      <textarea class="dump-ta" placeholder="Write it all out…" oninput="saveDump(${d.id},'q1',this.value)">${esc(d.q1)}</textarea>
-      <div class="dump-q">What am I afraid I’ll forget?</div>
-      <textarea class="dump-ta" placeholder="List it here…" oninput="saveDump(${d.id},'q2',this.value)">${esc(d.q2)}</textarea>
-      <div class="dump-q">What can wait?</div>
-      <textarea class="dump-ta" placeholder="Give it permission to wait…" oninput="saveDump(${d.id},'q3',this.value)">${esc(d.q3)}</textarea>
-      <div class="dump-q">What do I need to release today?</div>
-      <textarea class="dump-ta" placeholder="Name it to release it…" oninput="saveDump(${d.id},'q4',this.value)">${esc(d.q4)}</textarea>
-      <button class="dump-release-btn" onclick="releaseDump(${d.id})">I feel lighter &#10022;</button>
-      <div class="release-complete">Your mind is a little lighter now.</div>
-    </div>`).join('');
-}
-
-function saveDump(id, field, val) {
-  const dumps = LS.get('dumps', []);
-  const d = dumps.find(x => x.id === id);
-  if (d) { d[field] = val; LS.set('dumps', dumps); }
-}
-
-function delDump(id) {
-  LS.set('dumps', LS.get('dumps', []).filter(x => x.id !== id));
-  renderDumps();
-}
-
-function releaseDump(id) {
-  const dumps = LS.get('dumps', []);
-  const d = dumps.find(x => x.id === id);
-  if (d) {
-    d.released = true;
-    LS.set('dumps', dumps);
-    const el = document.getElementById('dump-' + id);
-    if (el) el.classList.add('released');
-  }
-}
-
-// ────────────────────────────────────────────────────────────
-// TODAY
-// ────────────────────────────────────────────────────────────
-let _winSaved = false;
-
-function initToday() {
-  [['feeling-field','feeling'],['p1','p1'],['p2','p2'],['p3','p3'],
-   ['release-field','release'],['win-field','win']].forEach(([id,k]) => {
-    const el = document.getElementById(id);
-    if (el) el.value = LS.get('f_'+k, '');
-  });
-  renderTasks();
-}
-
-function addTask() {
-  const inp = document.getElementById('task-in');
-  const val = inp.value.trim();
-  if (!val) return;
-  const tasks = LS.get('tasks', []);
-  tasks.push({ id: Date.now(), text: val, done: false });
-  LS.set('tasks', tasks);
-  inp.value = '';
-  renderTasks();
-}
-
-function renderTasks() {
-  const tasks = LS.get('tasks', []);
-  const list  = document.getElementById('task-list');
-  const prog  = document.getElementById('task-progress');
-
-  if (!tasks.length) { list.innerHTML = ''; prog.style.display = 'none'; return; }
-
-  list.innerHTML = tasks.map(t => `
-    <li class="task-item">
-      <div class="task-cb${t.done ? ' done' : ''}" onclick="toggleTask(${t.id})"></div>
-      <span class="task-text${t.done ? ' done' : ''}">${esc(t.text)}</span>
-      <button class="task-del" onclick="delTask(${t.id})">&#10005;</button>
-    </li>`).join('');
-
-  const done = tasks.filter(t => t.done).length;
-  prog.className = 'task-progress';
-  prog.style.display = 'inline-block';
-  prog.textContent = done === tasks.length
-    ? 'All done. You showed up today.'
-    : done + ' of ' + tasks.length + ' complete';
-}
-
-function toggleTask(id) {
-  const tasks = LS.get('tasks', []);
-  const t = tasks.find(x => x.id === id);
-  if (t) { t.done = !t.done; LS.set('tasks', tasks); renderTasks(); }
-}
-
-function delTask(id) {
-  LS.set('tasks', LS.get('tasks', []).filter(x => x.id !== id));
-  renderTasks();
-}
-
-function saveWin(val) {
-  sf('win', val);
-  if (!_winSaved && val.trim()) {
-    const wins = LS.get('total-wins', 0) + 1;
-    LS.set('total-wins', wins);
-    document.getElementById('s-wins').textContent = wins;
-    _winSaved = true;
-  }
-}
-
-// ────────────────────────────────────────────────────────────
-// MY WEEK
-// ────────────────────────────────────────────────────────────
-function initWeek() {
-  ['week-focus','week-release'].forEach(k => {
-    const el = document.getElementById(k);
-    if (el) el.value = LS.get('f_'+k, '');
-  });
-  for (let i = 0; i < 7; i++) {
-    const el = document.getElementById('day-'+i);
-    if (el) el.value = LS.get('f_day-'+i, '');
-  }
-}
-
-// ────────────────────────────────────────────────────────────
-// GOALS
-// ────────────────────────────────────────────────────────────
-function initGoals() { renderGoals(); }
-
-function addGoal() {
-  const goals = LS.get('goals', []);
-  goals.push({ id: Date.now(), title: '', milestones: [] });
-  LS.set('goals', goals);
-  renderGoals();
-}
-
-function renderGoals() {
-  const goals = LS.get('goals', []);
-  const list  = document.getElementById('goals-list');
-  if (!goals.length) {
-    list.innerHTML = '<div class="empty-state"><span class="es-glyph">&#9678;</span><div class="es-text">Your goals will appear here.<br>Start by adding one small aspiration.</div></div>';
-    return;
-  }
-  list.innerHTML = goals.map(g => {
-    const total = g.milestones.length;
-    const done  = g.milestones.filter(m => m.done).length;
-    const pct   = total > 0 ? Math.round(done / total * 100) : 0;
-    const track = total > 0 ? `
-      <div class="goal-progress-track"><div class="goal-progress-fill" style="width:${pct}%"></div></div>
-      <div class="goal-progress-text">${pct}% complete — ${done} of ${total} milestones</div>` : '';
-    return `
-    <div class="goal-card" id="goal-${g.id}">
-      <div class="goal-header">
-        <input class="goal-title-in" type="text" placeholder="Name your goal…" value="${esc(g.title)}" oninput="saveGoalTitle(${g.id},this.value)">
-        <button class="goal-del" onclick="delGoal(${g.id})">&#10005;</button>
+      <div class="card">
+        <span class="section-label">Gentle checklist</span>
+        <div class="input-row"><input class="text-input" id="task-in" placeholder="Add something doable" onkeydown="if(event.key==='Enter')addTask()"><button class="add-btn" type="button" onclick="addTask()" aria-label="Add task"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></div>
+        <ul class="check-list" id="task-list"></ul>
+        <div class="progress-pill" id="task-prog"></div>
+        <div class="next-step-wrap">
+          <button class="btn btn-euca" type="button" onclick="chooseNextBestStep()">Choose next best step</button>
+          <span class="next-step-helper" id="next-step-helper">Start here. Do not overthink the whole day.</span>
+        </div>
+        <div class="current-step-card" id="current-step-card" aria-live="polite">
+          <span class="current-step-label">Current Next Step</span>
+          <div class="current-step-text" id="current-step-text"></div>
+          <div class="current-step-line" id="current-step-line">Work on this one next. Do not solve the whole day at once.</div>
+          <div class="btn-row"><button class="btn btn-soft" type="button" onclick="markCurrentStepDone()">Mark this step done</button></div>
+        </div>
       </div>
-      ${track}
-      <ul class="milestone-list">
-        ${g.milestones.map(m => `
-          <li class="milestone-item">
-            <div class="ms-cb${m.done ? ' done' : ''}" onclick="toggleMs(${g.id},${m.id})"></div>
-            <span class="ms-text${m.done ? ' done' : ''}">${esc(m.text)}</span>
-            <button class="ms-del" onclick="delMs(${g.id},${m.id})">&#10005;</button>
-          </li>`).join('')}
-      </ul>
-      <div class="ms-add-row">
-        <input type="text" placeholder="Add a milestone…" id="ms-in-${g.id}" onkeydown="if(event.key==='Enter')addMs(${g.id})">
-        <button class="ms-add-btn" onclick="addMs(${g.id})">+ Add</button>
+      <div class="petal-box">
+        <span class="section-label">What can wait</span>
+        <textarea class="petal-input save-field" data-key="today-release" placeholder="Permission to place something down for now"></textarea>
       </div>
-    </div>`;
-  }).join('');
-}
-
-function saveGoalTitle(id, val) {
-  const goals = LS.get('goals', []);
-  const g = goals.find(x => x.id === id);
-  if (g) { g.title = val; LS.set('goals', goals); }
-}
-
-function delGoal(id) {
-  LS.set('goals', LS.get('goals', []).filter(x => x.id !== id));
-  renderGoals();
-}
-
-function addMs(gid) {
-  const inp = document.getElementById('ms-in-'+gid);
-  const val = inp.value.trim();
-  if (!val) return;
-  const goals = LS.get('goals', []);
-  const g = goals.find(x => x.id === gid);
-  if (g) { g.milestones.push({ id: Date.now(), text: val, done: false }); LS.set('goals', goals); renderGoals(); }
-}
-
-function toggleMs(gid, mid) {
-  const goals = LS.get('goals', []);
-  const g = goals.find(x => x.id === gid);
-  if (g) {
-    const m = g.milestones.find(x => x.id === mid);
-    if (m) { m.done = !m.done; LS.set('goals', goals); renderGoals(); }
-  }
-}
-
-function delMs(gid, mid) {
-  const goals = LS.get('goals', []);
-  const g = goals.find(x => x.id === gid);
-  if (g) { g.milestones = g.milestones.filter(x => x.id !== mid); LS.set('goals', goals); renderGoals(); }
-}
-
-// ────────────────────────────────────────────────────────────
-// HABITS
-// ────────────────────────────────────────────────────────────
-function initHabits() { renderHabits(); }
-
-function addHabit() {
-  const inp = document.getElementById('habit-in');
-  const val = inp.value.trim();
-  if (!val) return;
-  const habits = LS.get('habits', []);
-  habits.push({ id: Date.now(), name: val, days: [0,0,0,0,0,0,0] });
-  LS.set('habits', habits);
-  inp.value = '';
-  renderHabits();
-}
-
-function renderHabits() {
-  const habits = LS.get('habits', []);
-  const list   = document.getElementById('habits-list');
-  if (!habits.length) {
-    list.innerHTML = '<div class="empty-state" style="padding:20px 0"><span class="es-text">Add your first habit above. Each dot you tap is a quiet act of self-respect.</span></div>';
-    return;
-  }
-  list.innerHTML = habits.map(h => `
-    <div class="habit-row">
-      <div class="habit-name" title="${esc(h.name)}">${esc(h.name)}</div>
-      ${h.days.map((d,i) => `<div class="habit-dot${d ? ' done' : ''}" onclick="toggleHabit(${h.id},${i})"></div>`).join('')}
-    </div>`).join('');
-}
-
-function toggleHabit(id, day) {
-  const habits = LS.get('habits', []);
-  const h = habits.find(x => x.id === id);
-  if (h) { h.days[day] = h.days[day] ? 0 : 1; LS.set('habits', habits); renderHabits(); }
-}
-
-// ────────────────────────────────────────────────────────────
-// JOURNAL
-// ────────────────────────────────────────────────────────────
-let jPromptIdx = 0;
-
-function initJournal() {
-  const now = new Date();
-  document.getElementById('j-date').textContent = dateStr(now);
-
-  const stored = LS.get('j-prompt-idx');
-  jPromptIdx = stored !== null ? stored : (now.getDate() % J_PROMPTS.length);
-  document.getElementById('j-prompt').textContent = J_PROMPTS[jPromptIdx];
-
-  const draft = LS.get('f_j-today', '');
-  document.getElementById('j-textarea').value = draft;
-  updateJCount(draft);
-  renderJEntries();
-}
-
-function cyclePrompt() {
-  const el = document.getElementById('j-prompt');
-  el.style.opacity = '0';
-  setTimeout(() => {
-    jPromptIdx = (jPromptIdx + 1) % J_PROMPTS.length;
-    LS.set('j-prompt-idx', jPromptIdx);
-    el.textContent = J_PROMPTS[jPromptIdx];
-    el.style.opacity = '1';
-  }, 160);
-}
-
-function jUpdate() {
-  const val = document.getElementById('j-textarea').value;
-  sf('j-today', val);
-  updateJCount(val);
-}
-
-function updateJCount(text) {
-  const w = text.trim() ? text.trim().split(/\s+/).length : 0;
-  document.getElementById('j-count').textContent = w + (w === 1 ? ' word' : ' words');
-}
-
-function saveJEntry() {
-  const text = document.getElementById('j-textarea').value.trim();
-  if (!text) return;
-  const entries = LS.get('j-entries', []);
-  entries.unshift({ id: Date.now(), date: dateStr(new Date()), prompt: J_PROMPTS[jPromptIdx], text });
-  LS.set('j-entries', entries);
-  document.getElementById('j-textarea').value = '';
-  LS.set('f_j-today', '');
-  updateJCount('');
-  renderJEntries();
-}
-
-function clearJDraft() {
-  document.getElementById('j-textarea').value = '';
-  LS.set('f_j-today', '');
-  updateJCount('');
-}
-
-function renderJEntries() {
-  const entries = LS.get('j-entries', []);
-  const container = document.getElementById('journal-past');
-  if (!entries.length) { container.innerHTML = ''; return; }
-  container.innerHTML = '<div class="past-heading">Past Entries</div>' +
-    entries.map(e => `
-    <div class="j-entry">
-      <div class="j-entry-header">
-        <span class="j-entry-date">${e.date}</span>
-        <button class="j-entry-del" onclick="delJEntry(${e.id})">&#10005;</button>
+      <div class="win-box">
+        <span class="section-label">Quiet win</span>
+        <textarea class="win-input save-field" data-key="today-win" placeholder="Today, I am giving myself credit for..."></textarea>
       </div>
-      <div class="j-entry-prompt">${esc(e.prompt)}</div>
-      <div class="j-entry-text">${esc(e.text)}</div>
-    </div>`).join('');
-}
+    </section>
 
-function delJEntry(id) {
-  LS.set('j-entries', LS.get('j-entries', []).filter(x => x.id !== id));
-  renderJEntries();
-}
+    <section class="page" id="page-week" data-page="week">
+      <header class="page-header"><span class="page-eyebrow">My Week</span><h1 class="page-title">A softer overview.</h1><p class="page-sub">Hold the week lightly. One focus per day is enough.</p></header>
+      <div class="focus-bar"><span class="fb-label">Weekly focus</span><input class="fb-input save-field" data-key="week-focus" placeholder="What deserves your best energy this week?"></div>
+      <div class="day-rows" id="day-rows"></div>
+      <div class="release-bar"><span class="fb-label">Not this week</span><input class="fb-input save-field" data-key="week-release" placeholder="What are you allowed to postpone?"></div>
+    </section>
 
-// ────────────────────────────────────────────────────────────
-// UTILITY
-// ────────────────────────────────────────────────────────────
-function esc(s) {
-  return String(s)
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;');
-}
+    <section class="page" id="page-goals" data-page="goals">
+      <header class="page-header"><span class="page-eyebrow">Goals</span><h1 class="page-title">Move with direction.</h1><p class="page-sub">Shape your next chapter through clear goals and quiet, steady milestones.</p></header>
+      <div class="btn-row" style="margin:0 0 14px"><button class="btn btn-primary" type="button" onclick="addGoal()">Add goal</button></div>
+      <div id="goals-list"></div>
+    </section>
 
-// ────────────────────────────────────────────────────────────
-// BOOT
-// ────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-  initHome();
-  initToday();
-  initWeek();
-  initDump();
-  initGoals();
-  initHabits();
-  initJournal();
-});
-</script>
+    <section class="page" id="page-habits" data-page="habits">
+      <header class="page-header"><span class="page-eyebrow">Habits</span><h1 class="page-title">Tiny promises count.</h1><p class="page-sub">Track soft consistency without shame or pressure.</p></header>
+      <div class="card">
+        <span class="section-label">New habit</span>
+        <div class="input-row"><input class="text-input" id="habit-in" placeholder="Drink water, stretch, read, tidy..." onkeydown="if(event.key==='Enter')addHabit()"><button class="add-btn" type="button" onclick="addHabit()" aria-label="Add habit"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></div>
+      </div>
+      <div class="habit-head"><span></span><span class="dh">M</span><span class="dh">T</span><span class="dh">W</span><span class="dh">T</span><span class="dh">F</span><span class="dh">S</span><span class="dh">S</span></div>
+      <div class="habit-rows-wrap" id="habit-rows"></div>
+    </section>
+
+    <section class="page" id="page-affirmations" data-page="affirmations">
+      <header class="page-header"><span class="page-eyebrow">Affirmations</span><h1 class="page-title">Words to return to.</h1><p class="page-sub">Tap any card to bring it into the home affirmation banner.</p></header>
+      <div class="cards-grid" id="cards-grid"></div>
+      <div class="screenshot-hint">Designed as calm cards you can screenshot and keep nearby.</div>
+    </section>
+
+    <section class="page" id="page-journal" data-page="journal">
+      <header class="page-header"><span class="page-eyebrow">Journal</span><h1 class="page-title">Return to yourself.</h1><p class="page-sub">A quiet place to sort what you feel, what you know, and what needs room.</p></header>
+      <div class="journal-surface">
+        <div class="journal-top">
+          <span class="journal-date" id="j-date">Today</span>
+          <span class="journal-prompt-label">Reflection prompt</span>
+          <div class="journal-prompt-text" id="j-prompt"></div>
+          <button class="journal-prompt-btn" type="button" onclick="cyclePrompt()">New prompt</button>
+        </div>
+        <div class="journal-body"><textarea class="journal-textarea" id="journal-main" placeholder="Start with what is true right now..." oninput="saveJournalDraft();jCount()"></textarea></div>
+        <div class="journal-footer"><span class="journal-close">Saved privately on this device</span><span class="journal-char" id="j-count"></span></div>
+      </div>
+      <div class="btn-row"><button class="btn btn-primary" type="button" onclick="saveJEntry()">Save entry</button><button class="btn btn-soft" type="button" onclick="clearJToday()">Clear draft</button></div>
+      <div style="height:18px"></div>
+      <span class="section-label">Past entries</span>
+      <div class="journal-past" id="journal-past"></div>
+    </section>
+  </main>
+
+  <script src="assets/js/app.js"></script>
 </body>
 </html>
