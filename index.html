@@ -2,2206 +2,1192 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="X-Content-Type-Options" content="nosniff">
-<meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
-<meta name="referrer" content="strict-origin-when-cross-origin">
-<meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://api.anthropic.com; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://api.anthropic.com; object-src 'none'">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#1C140E">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
-<meta name="apple-mobile-web-app-title" content="Focus Mode">
-<title>Clear Mind Co. — FOCUS MODE</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Quiet Mind Bundle &#8212; Clear Mind Co.</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Bodoni+Moda:ital,wght@1,400;1,500&display=swap" rel="stylesheet">
 <style>
-:root{
-  --app-bg:#F2EAE0; --page-bg:#F8F3EC; --card:#FFFFFF; --card-2:#ffffff; --text:#2C2416; --text-2:#3A2C1E; --muted:#8A7868;
-  --border:#E0D2C2; --brand:#8C5E38; --accent:#A8723F; --soft:#F0E0CC; --sage:#5E7D5C; --rust:#8E3A1C; --gold:#A07820;
-  --btn:#1C140E; --btn-text:#FFFFFF; --input:#F5EEE4; --input-border:#DDD0BC; --hero1:#8C5E38; --hero2:#F0E0CC; --hero3:#A8723F;
-  --shadow:0 10px 30px rgba(44,36,22,.08);
+:root {
+  --cloud:#F9F7F4; --white:#FFFFFE;
+  --petal:#EFE6DF; --petal-d:#E2D2C8; --petal-l:#F7F1ED;
+  --stone:#E0DAD4; --stone-d:#C8C0B8;
+  --euca:#9DB8A6; --euca-l:#BDD0C4; --euca-bg:#EDF2EE; --euca-deep:#7A9E8A;
+  --ink:#28241F; --ink-s:#635D56; --ink-m:#9E9790;
+  --gold:#C4A06E; --gold-l:#DFC49A;
+  --r:18px; --r-s:11px;
+  --sh-card:0 2px 16px rgba(40,36,31,.06);
+  --sh-h:0 4px 20px rgba(40,36,31,.09),0 12px 40px rgba(40,36,31,.07);
+  --trans:.22s cubic-bezier(.4,0,.2,1);
 }
-body.dark-mode{
-  --app-bg:#140E09; --page-bg:#1C1410; --card:#261A12; --card-2:#2E2018; --text:#F2E8D8; --text-2:#D8C8B0; --muted:#9A8672;
-  --border:#3E2E20; --brand:#C89060; --accent:#DDA870; --soft:#3A2818; --sage:#7DA37A; --rust:#C76F4B; --gold:#D0A347;
-  --btn:#C89060; --btn-text:#140E09; --input:#2A1C12; --input-border:#4A3428; --hero1:#2E2018; --hero2:#4a301d; --hero3:#C89060;
-  --shadow:0 14px 40px rgba(0,0,0,.28);
-}
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0; background:var(--app-bg); color:var(--text); font-family:'DM Sans',system-ui,sans-serif;
-  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
-}
-button,input,textarea,select{
-  font:inherit; color:inherit; -webkit-appearance:none; appearance:none; border-radius:16px; touch-action:manipulation;
-}
-button{cursor:pointer; border:0; background:var(--btn); color:var(--btn-text); padding:12px 16px; font-weight:700}
-button.ghost{background:transparent; color:var(--text); border:1px solid var(--border)}
-button.soft{background:var(--soft); color:var(--text)}
-button.icon{width:40px; height:40px; padding:0; border-radius:12px; display:inline-grid; place-items:center}
-input,textarea,select{
-  width:100%; background:var(--input); border:1px solid var(--input-border); padding:12px 14px; outline:none;
-}
-textarea{resize:vertical; min-height:110px}
-a{text-decoration:none; color:inherit}
-h1,h2,h3,h4{
-  font-family:'Cormorant Garamond',serif; margin:0 0 10px; line-height:1.05; letter-spacing:.2px;
-}
-p{margin:0 0 10px; color:var(--text-2)}
-.app{min-height:100vh; background:var(--page-bg)}
-.topbar{
-  position:sticky; top:0; z-index:25; background:var(--page-bg); border-bottom:1px solid var(--border);
-  padding:10px 12px 8px;
-}
-.row{display:flex; gap:10px; align-items:center}
-.row.wrap{flex-wrap:wrap}
-.brand{font-family:'Cormorant Garamond',serif; font-size:28px; font-weight:700}
-.small{font-size:12px; color:var(--muted)}
-.nav-tabs,.subtabs{display:flex; gap:8px; overflow:auto; padding-bottom:2px; scrollbar-width:none}
-.nav-tabs button,.subtabs button{white-space:nowrap; border:1px solid var(--border)}
-.subtabs{margin-top:10px}
-.subtabs button.active,.nav-tabs button.active{background:var(--btn); color:var(--btn-text); border-color:transparent}
-button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{
-  outline:2px solid var(--accent); outline-offset:2px;
-}
-.hero{
-  margin:14px; border-radius:24px; padding:22px 18px; color:#fff;
-  background:linear-gradient(135deg,var(--hero1),var(--hero2) 60%,var(--hero3));
-  box-shadow:var(--shadow);
-}
-.hero .date-line{opacity:.88; font-size:13px}
-.content{padding:0 14px 24px}
-.pg{display:none}
-.pg.on{display:block}
-.card{
-  background:var(--card); border:1px solid var(--border); border-radius:22px; padding:16px; box-shadow:var(--shadow); margin-bottom:14px;
-}
-.card.dark{
-  background:linear-gradient(135deg,var(--btn),#3a2818); color:#fff; border-color:transparent;
-}
-body.dark-mode .card.dark{background:linear-gradient(135deg,#2d1d13,#4e321e)}
-.card.dark p,.card.dark .small,.card.dark .muted{color:rgba(255,255,255,.82)}
-.grid2{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px}
-.grid3{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px}
-.stat{
-  background:var(--card-2); border:1px solid var(--border); border-radius:18px; padding:14px; text-align:center;
-}
-.kpi{font-size:26px; font-weight:700; margin-bottom:4px}
-.chips,.setup-chips{display:flex; flex-wrap:wrap; gap:10px}
-.chip{
-  padding:10px 14px; border-radius:999px; border:1px solid var(--border); background:var(--card-2); color:var(--text);
-  cursor:pointer; user-select:none; font-weight:700;
-}
-.chip.on{background:var(--btn); color:var(--btn-text); border-color:transparent}
-.progress{
-  width:100%; height:12px; background:var(--soft); border-radius:999px; overflow:hidden; margin:10px 0 8px;
-}
-.progress > span{display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--brand),var(--accent)); border-radius:999px; transition:width .25s}
-.tile{
-  padding:18px; border-radius:18px; background:var(--card-2); border:1px solid var(--border); font-weight:700; color:var(--text);
-}
-.tile small{display:block; color:var(--muted); margin-top:6px; font-weight:400}
-.collapser{display:flex; justify-content:space-between; align-items:center; cursor:pointer}
-.hidden{display:none !important}
-.focus-emoji{font-size:52px; line-height:1; text-align:center; margin:10px 0 8px}
-.list{display:flex; flex-direction:column; gap:10px}
-.item{
-  display:grid; grid-template-columns:auto 1fr auto auto; gap:10px; align-items:center; padding:12px; border:1px solid var(--border); border-radius:18px; background:var(--card-2);
-}
-.check{
-  width:24px; height:24px; border-radius:50%; border:2px solid var(--border); background:transparent; display:inline-grid; place-items:center; font-size:14px; padding:0;
-}
-.check.on{background:var(--brand); color:white; border-color:transparent}
-.pill{padding:7px 10px; border-radius:999px; font-size:12px; font-weight:700}
-.pill.must{background:rgba(142,58,28,.14); color:var(--rust)}
-.pill.should{background:rgba(160,120,32,.14); color:var(--gold)}
-.pill.bonus{background:rgba(94,125,92,.14); color:var(--sage)}
-.strike{text-decoration:line-through; opacity:.66}
-.form-row{display:grid; grid-template-columns:1fr 130px auto; gap:10px}
-.form-row.two{grid-template-columns:1fr auto}
-.goal-card{padding:14px; border-radius:18px; border:1px solid var(--border); background:var(--card-2); margin-bottom:12px}
-.goal-card input[type=range]{padding:0; background:transparent; border:0}
-.journal-text{font-family:'Cormorant Garamond',serif; font-size:18px; min-height:150px}
-.chat-box{height:260px; overflow:auto; border:1px solid var(--border); border-radius:20px; padding:12px; background:var(--card-2)}
-.msg{display:flex; margin:8px 0}
-.msg.you{justify-content:flex-end}
-.bubble{max-width:86%; padding:12px 14px; border-radius:18px; line-height:1.35}
-.msg.ai .bubble{background:var(--soft)}
-.msg.you .bubble{background:var(--btn); color:var(--btn-text)}
-.input-row{display:grid; grid-template-columns:1fr auto; gap:10px}
-.modal{
-  position:fixed; inset:0; z-index:50; background:rgba(15,10,7,.58); display:none; align-items:center; justify-content:center; padding:18px;
-}
-.modal.on{display:flex}
-.modal-card{
-  width:min(860px,100%); max-height:92vh; overflow:auto; background:var(--page-bg); border:1px solid var(--border); border-radius:28px; padding:18px; box-shadow:var(--shadow);
-}
-.setup-card{max-width:760px}
-.progress-dots{display:flex; justify-content:center; gap:8px; margin-bottom:12px}
-.dot{width:10px; height:10px; border-radius:50%; background:var(--border)}
-.dot.on{background:var(--brand)}
-.feature-grid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-top:16px}
-.feature{background:var(--card); border:1px solid var(--border); border-radius:20px; padding:14px}
-.center{text-align:center}
-.setup-nav{display:flex; justify-content:space-between; gap:10px; margin-top:18px}
-.setup-pane{display:none}
-.setup-pane.on{display:block}
-.mood-row{display:flex; gap:10px; flex-wrap:wrap}
-.mood{font-size:28px; padding:8px 12px; background:var(--card-2); border:1px solid var(--border)}
-.mood.on{background:var(--btn); color:var(--btn-text)}
-canvas{width:100%; max-width:100%; background:var(--card-2); border-radius:18px; border:1px solid var(--border)}
-.tour-card{
-  position:fixed; left:14px; right:14px; bottom:14px; z-index:60; background:var(--page-bg); border:1px solid var(--border); border-radius:22px; box-shadow:var(--shadow); padding:16px; display:none;
-}
-.tour-card.on{display:block}
-.week-grid{display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:10px}
-.week-day,.month-day{border:1px solid var(--border); background:var(--card-2); border-radius:16px; padding:10px}
-.month-grid{display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:8px}
-.month-day{min-height:90px; cursor:pointer}
-.month-day.today{outline:2px solid var(--accent)}
-.month-day .num{font-weight:700}
-.note-dot{width:8px; height:8px; border-radius:50%; background:var(--accent); margin-top:8px}
-.badges{display:flex; flex-wrap:wrap; gap:8px}
-.badge{padding:7px 10px; border-radius:999px; background:var(--soft); color:var(--text); font-size:12px}
-.notice{font-size:13px; color:var(--muted)}
-hr.sep{border:none; border-top:1px solid var(--border); margin:16px 0}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#F9F7F4;color:var(--ink);font-family:'DM Sans',sans-serif;font-weight:300;font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
 
-.money-plan{display:grid; gap:12px}
-.plan-step,.plan-callout{
-  background:var(--card-2); border:1px solid var(--border); border-radius:18px; padding:14px;
-}
-.plan-step strong{display:block; margin-bottom:4px}
-.plan-callout{border-left:4px solid var(--accent)}
-.payoff-order{display:grid; gap:10px}
-.payoff-chip{display:flex; justify-content:space-between; gap:12px; align-items:center; padding:12px 14px; border-radius:16px; background:var(--card-2); border:1px solid var(--border)}
-.payoff-chip .order-num{width:28px; height:28px; border-radius:999px; background:var(--soft); display:grid; place-items:center; font-weight:700; flex:0 0 auto}
+/* Save dot */
+#save-dot{position:fixed;top:14px;right:14px;width:7px;height:7px;border-radius:50%;background:var(--euca-deep);opacity:0;transition:opacity .2s;z-index:9999;pointer-events:none}
+#save-dot.show{opacity:1}
 
-@media (max-width:760px){
-  .topbar{
-    padding:calc(env(safe-area-inset-top) + 8px) 10px 8px;
-  }
-  .brand{font-size:22px}
-  .content{padding:0 10px 18px}
-  .hero{margin:10px; padding:18px 14px; border-radius:20px}
-  .card{padding:14px; border-radius:18px}
-  .feature-grid,.grid3,.grid2{grid-template-columns:1fr}
-  .week-grid{grid-template-columns:1fr; gap:8px}
-  .form-row{grid-template-columns:1fr}
-  .nav-tabs button,.subtabs button{padding:10px 12px; font-size:14px}
-  .modal{
-    align-items:flex-start;
-    padding:calc(env(safe-area-inset-top) + 8px) 10px calc(env(safe-area-inset-bottom) + 12px);
-  }
-  .modal-card{
-    width:100%;
-    max-height:calc(100svh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 20px);
-    border-radius:20px;
-    padding:14px;
-    margin-top:0;
-  }
-  .month-grid{
-    grid-template-columns:repeat(7,minmax(0,1fr));
-    gap:4px;
-  }
-  .month-day{
-    min-height:54px;
-    padding:6px 4px;
-    border-radius:12px;
-    font-size:12px;
-  }
-  .month-day .num{font-size:12px}
-  .note-dot{width:6px; height:6px; margin-top:4px}
-  #monthEntryPanel{margin-top:10px}
+/* Top nav */
+.top-nav{position:fixed;top:0;left:0;right:0;height:52px;background:rgba(249,247,244,.96);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--stone);display:flex;align-items:center;padding:0 24px;gap:0;z-index:100}
+.top-brand{display:flex;align-items:center;gap:8px;font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:400;color:var(--ink);text-decoration:none;cursor:pointer;margin-right:24px;white-space:nowrap}
+.top-brand-mark{width:22px;height:22px;border-radius:50%;background:var(--euca);flex-shrink:0}
+.top-links{display:flex;align-items:center;gap:2px;flex:1}
+.top-link{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:400;color:var(--ink-s);text-decoration:none;padding:6px 11px;border-radius:7px;cursor:pointer;transition:background var(--trans),color var(--trans);white-space:nowrap}
+.top-link:hover{background:var(--petal);color:var(--ink)}
+.top-link.active{background:var(--euca-bg);color:var(--euca-deep);font-weight:500}
+
+/* Bottom nav */
+.bot-nav{display:none;position:fixed;bottom:0;left:0;right:0;height:66px;background:rgba(249,247,244,.98);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid var(--stone);z-index:100;align-items:center;justify-content:space-around;padding:0 4px}
+.bot-btn{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:6px 4px;border-radius:var(--r-s);transition:background var(--trans);flex:1;min-width:0}
+.bot-btn:hover{background:var(--petal)}
+.bot-btn.active .b-glyph{color:var(--euca-deep)}
+.bot-btn.active .b-label{color:var(--euca-deep);font-weight:500}
+.b-glyph{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--ink-m);transition:color var(--trans);line-height:1}
+.b-label{font-family:'DM Sans',sans-serif;font-size:8px;font-weight:400;color:var(--ink-m);transition:color var(--trans);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;text-align:center}
+
+/* Pages */
+.page{display:none;padding:72px 22px 36px;max-width:720px;margin:0 auto;background:#F9F7F4;min-height:100vh}
+.page.active{display:block;animation:fadeUp .28s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes itemIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
+
+/* Typography */
+.eyebrow{font-family:'DM Sans',sans-serif;font-size:9.5px;font-weight:500;letter-spacing:.32em;text-transform:uppercase;color:var(--euca-deep);margin-bottom:8px}
+.page-title{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:500;color:#1A1714;line-height:1.15;margin-bottom:6px}
+.page-sub{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:400;color:#4A4540;margin-bottom:24px;line-height:1.55}
+.card-label{font-family:'DM Sans',sans-serif;font-size:9px;font-weight:500;letter-spacing:.28em;text-transform:uppercase;color:var(--euca-deep);margin-bottom:12px}
+
+/* Cards */
+.card{background:var(--white);border-radius:var(--r);box-shadow:var(--sh-card);padding:20px 22px;margin-bottom:16px}
+
+/* Inputs */
+textarea,input[type="text"]{width:100%;background:var(--petal-l);border:1px solid var(--stone);border-radius:var(--r-s);padding:12px 14px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:300;color:var(--ink);line-height:1.55;resize:none;outline:none;transition:border-color var(--trans),box-shadow var(--trans);caret-color:var(--euca-deep)}
+textarea:focus,input[type="text"]:focus{border-color:var(--euca);box-shadow:0 0 0 3px rgba(157,184,166,.12)}
+textarea::placeholder,input[type="text"]::placeholder{color:var(--ink-m)}
+
+/* Buttons */
+.btn-primary{background:var(--ink);color:#F9F7F4;border:none;border-radius:var(--r-s);padding:11px 22px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:background var(--trans),transform var(--trans)}
+.btn-primary:hover{background:#3a3530;transform:translateY(-1px)}
+.btn-primary:active{transform:translateY(0)}
+.btn-soft{background:transparent;color:var(--ink-s);border:1px solid var(--stone);border-radius:var(--r-s);padding:9px 18px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:400;cursor:pointer;transition:background var(--trans),border-color var(--trans)}
+.btn-soft:hover{background:var(--petal);border-color:var(--petal-d)}
+
+/* Footer */
+.page-footer{text-align:center;font-family:'Bodoni Moda',serif;font-style:italic;font-size:14px;color:var(--ink-m);margin-top:28px;padding:16px 0 8px}
+
+/* Empty state */
+.empty-state{text-align:center;padding:40px 20px}
+.es-glyph{font-family:'Cormorant Garamond',serif;font-size:36px;color:var(--stone-d);display:block;margin-bottom:12px;line-height:1}
+.es-text{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:300;color:var(--ink-m);line-height:1.55}
+
+/* ─── HOME ─── */
+.welcome-strip{background:var(--petal);border:1px solid var(--stone);border-radius:var(--r);padding:14px 18px;display:flex;align-items:flex-start;gap:12px;margin-bottom:16px}
+.ws-glyph{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--euca-deep);flex-shrink:0;line-height:1.4}
+.ws-text{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:300;color:var(--ink-s);line-height:1.55}
+.ws-text strong{font-weight:500;color:var(--ink)}
+
+.greeting-card{background:linear-gradient(150deg,var(--petal),#D8E6DC);border-radius:var(--r);padding:24px 24px 20px;margin-bottom:16px;position:relative;overflow:hidden}
+.greeting-card::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(157,184,166,.18)}
+.g-time{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:400;color:var(--ink-s);margin-bottom:6px;letter-spacing:.04em}
+.g-text{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:#1A1714;margin-bottom:16px;line-height:1.25}
+
+.mood-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.mood-pill{display:flex;align-items:center;gap:7px;background:rgba(255,255,254,.72);border:1.5px solid transparent;border-radius:24px;padding:7px 13px 7px 10px;cursor:pointer;transition:background var(--trans),border-color var(--trans),box-shadow var(--trans);font-family:'DM Sans',sans-serif}
+.mood-pill:hover{background:rgba(255,255,254,.9)}
+.mood-pill.on{border-color:var(--euca);box-shadow:0 2px 8px rgba(157,184,166,.25);background:rgba(255,255,254,.92)}
+.mood-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.mood-dot-calm{background:#A8C5B0}
+.mood-dot-okay{background:#C4B8A8}
+.mood-dot-stressed{background:#C4A8A8}
+.mood-dot-tired{background:#B8B0C8}
+.mood-dot-good{background:#C4C8A0}
+.mood-word{font-size:8.5px;font-weight:400;color:var(--ink-s)}
+
+.aff-banner{background:linear-gradient(150deg,var(--euca-bg),var(--petal-l));border:1px solid rgba(189,208,196,.45);border-radius:var(--r);padding:22px 24px;margin-bottom:16px;cursor:pointer;transition:box-shadow var(--trans);text-align:center}
+.aff-banner:hover{box-shadow:var(--sh-h)}
+.aff-quote{font-family:'Bodoni Moda',serif;font-style:italic;font-size:16px;color:#1A1714;line-height:1.55;margin-bottom:10px;transition:opacity .18s ease}
+.aff-sublabel{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:400;color:var(--ink-m);letter-spacing:.06em}
+
+.streak-bar{background:var(--white);border-radius:var(--r);box-shadow:var(--sh-card);display:grid;grid-template-columns:1fr 1px 1fr 1px 1fr;margin-bottom:16px;overflow:hidden}
+.streak-col{padding:18px 14px;text-align:center}
+.streak-divider{background:var(--stone);align-self:stretch}
+.streak-num{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:300;color:#1A1714;line-height:1;margin-bottom:5px}
+.streak-lbl{font-family:'DM Sans',sans-serif;font-size:8.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-m)}
+
+.widget-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.widget{background:var(--white);border-radius:var(--r);box-shadow:var(--sh-card);padding:18px 18px 16px;cursor:pointer;transition:box-shadow var(--trans),transform var(--trans);position:relative;overflow:hidden}
+.widget::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--euca),var(--gold-l));opacity:0;transition:opacity var(--trans)}
+.widget:hover{box-shadow:var(--sh-h);transform:translateY(-2px)}
+.widget:hover::before{opacity:1}
+.widget.petal{background:var(--petal-l)}
+.widget.sage{background:var(--euca-bg)}
+.widget-full{grid-column:1/-1}
+.w-glyph{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--euca-deep);line-height:1;margin-bottom:10px;display:block}
+.w-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;color:#1A1714;margin-bottom:5px;line-height:1.2}
+.w-sub{font-family:'DM Sans',sans-serif;font-size:11.5px;font-weight:300;color:var(--ink-s);line-height:1.4}
+
+/* ─── MIND RESET ─── */
+.dump-entry{background:var(--white);border-radius:var(--r);box-shadow:var(--sh-card);padding:20px 22px;margin-bottom:16px;animation:itemIn .28s ease both;border:1.5px solid transparent;transition:border-color var(--trans),background var(--trans)}
+.dump-entry.released{border-color:var(--euca-l);background:rgba(237,242,238,.4)}
+.dump-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.dump-date{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:400;color:var(--ink-m)}
+.dump-del{background:none;border:none;font-size:14px;color:var(--ink-m);cursor:pointer;padding:4px 8px;border-radius:6px;transition:background var(--trans)}
+.dump-del:hover{background:var(--petal);color:var(--ink-s)}
+.dump-q{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--euca-deep);margin-bottom:6px;margin-top:14px}
+.dump-q:first-of-type{margin-top:0}
+.dump-ta{width:100%;min-height:72px;background:var(--petal-l);border:1px solid var(--stone);border-radius:var(--r-s);padding:11px 13px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:300;color:var(--ink);line-height:1.55;resize:none;outline:none;transition:border-color var(--trans);caret-color:var(--euca-deep)}
+.dump-ta:focus{border-color:var(--euca)}
+.dump-release-btn{margin-top:16px;background:none;border:1px solid var(--euca-l);border-radius:var(--r-s);padding:9px 18px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:400;color:var(--euca-deep);cursor:pointer;transition:background var(--trans)}
+.dump-release-btn:hover{background:var(--euca-bg)}
+.release-complete{margin-top:12px;font-family:'Bodoni Moda',serif;font-style:italic;font-size:13px;color:var(--euca-deep);display:none}
+.dump-entry.released .release-complete{display:block}
+
+/* ─── TODAY ─── */
+.priority-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.priority-row:last-child{margin-bottom:0}
+.priority-num{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:400;color:var(--euca-l);line-height:1;width:24px;flex-shrink:0;text-align:center}
+.task-add-row{display:flex;gap:10px;margin-bottom:14px}
+.task-add-row input{flex:1}
+.task-list{list-style:none}
+.task-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--stone);animation:itemIn .22s ease both}
+.task-item:last-child{border-bottom:none}
+.task-cb{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--stone-d);flex-shrink:0;cursor:pointer;transition:background var(--trans),border-color var(--trans);background-size:12px 12px;background-repeat:no-repeat;background-position:center}
+.task-cb.done{background-color:var(--euca);border-color:var(--euca);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath stroke='white' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round' d='M2.5 6l2.5 2.5 4.5-4.5'/%3E%3C/svg%3E")}
+.task-text{flex:1;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:300;color:var(--ink);transition:color var(--trans)}
+.task-text.done{color:var(--ink-m);text-decoration:line-through}
+.task-del{background:none;border:none;color:var(--ink-m);cursor:pointer;font-size:12px;padding:4px 6px;border-radius:5px;transition:background var(--trans)}
+.task-del:hover{background:var(--petal);color:var(--ink-s)}
+.task-progress{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:400;color:var(--ink-m);padding:7px 12px;background:var(--euca-bg);border-radius:var(--r-s);display:inline-block;margin-top:12px}
+.release-box{background:var(--petal-l);border:1px solid var(--petal-d);border-radius:var(--r);padding:18px 20px;margin-bottom:16px}
+.petal-input{background:rgba(255,255,254,.7);border:1px solid var(--petal-d)}
+.petal-input:focus{border-color:var(--euca)}
+.win-box{background:linear-gradient(150deg,var(--euca-bg),var(--petal-l));border-radius:var(--r);padding:18px 20px;margin-bottom:16px}
+.win-input{background:rgba(255,255,254,.7);border:1px solid rgba(157,184,166,.3);font-family:'Bodoni Moda',serif;font-style:italic;font-size:14px}
+.win-input:focus{border-color:var(--euca)}
+
+/* ─── WEEK ─── */
+.focus-bar{background:var(--petal-l);border:1px solid var(--petal-d);border-radius:var(--r);padding:16px 20px;margin-bottom:14px}
+.day-grid{background:var(--white);border-radius:var(--r);box-shadow:var(--sh-card);padding:4px 0;margin-bottom:14px;overflow:hidden}
+.day-row{display:grid;grid-template-columns:94px 1fr;align-items:center;gap:12px;padding:10px 20px;border-bottom:1px solid var(--stone)}
+.day-row:last-child{border-bottom:none}
+.day-lbl{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:400;color:var(--euca-deep)}
+.day-input{background:var(--petal-l);border:1px solid var(--stone);border-radius:var(--r-s);padding:8px 12px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:300;color:var(--ink);outline:none;transition:border-color var(--trans);caret-color:var(--euca-deep);width:100%}
+.day-input:focus{border-color:var(--euca)}
+.release-wbar{background:var(--white);border:1px solid var(--stone);border-radius:var(--r);padding:16px 20px;margin-bottom:14px}
+
+/* ─── GOALS ─── */
+.goal-card{background:var(--white);border-radius:var(--r);box-shadow:var(--sh-card);padding:20px 22px;margin-bottom:14px;animation:itemIn .28s ease both}
+.goal-header{display:flex;align-items:flex-start;gap:10px;margin-bottom:14px}
+.goal-title-in{flex:1;background:none;border:none;border-bottom:1px solid var(--stone);border-radius:0;padding:6px 0;font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:#1A1714;outline:none;transition:border-color var(--trans);width:auto}
+.goal-title-in:focus{border-color:var(--euca)}
+.goal-title-in::placeholder{color:var(--ink-m)}
+.goal-del{background:none;border:none;color:var(--ink-m);cursor:pointer;padding:6px 8px;border-radius:6px;transition:background var(--trans);flex-shrink:0}
+.goal-del:hover{background:var(--petal)}
+.goal-progress-track{height:4px;background:var(--stone);border-radius:2px;margin-bottom:6px;overflow:hidden}
+.goal-progress-fill{height:100%;background:linear-gradient(90deg,var(--euca),var(--gold));border-radius:2px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.goal-progress-text{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:400;color:var(--ink-m);margin-bottom:12px}
+.milestone-list{list-style:none;margin-bottom:12px}
+.milestone-item{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--stone);animation:itemIn .2s ease both}
+.milestone-item:last-child{border-bottom:none}
+.ms-cb{width:18px;height:18px;border-radius:4px;border:1.5px solid var(--stone-d);flex-shrink:0;cursor:pointer;transition:background var(--trans),border-color var(--trans);background-size:10px 10px;background-repeat:no-repeat;background-position:center}
+.ms-cb.done{background-color:var(--euca);border-color:var(--euca);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath stroke='white' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round' d='M2.5 6l2.5 2.5 4.5-4.5'/%3E%3C/svg%3E")}
+.ms-text{flex:1;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:300;color:var(--ink);transition:color var(--trans)}
+.ms-text.done{color:var(--ink-m);text-decoration:line-through}
+.ms-del{background:none;border:none;color:var(--ink-m);cursor:pointer;font-size:12px;padding:3px 6px;border-radius:5px;transition:background var(--trans)}
+.ms-del:hover{background:var(--petal)}
+.ms-add-row{display:flex;gap:8px}
+.ms-add-row input{flex:1;font-size:13px;padding:9px 12px}
+.ms-add-btn{background:var(--euca-bg);border:1px solid var(--euca-l);border-radius:var(--r-s);padding:9px 16px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:var(--euca-deep);cursor:pointer;transition:background var(--trans);white-space:nowrap}
+.ms-add-btn:hover{background:var(--euca-l)}
+
+/* ─── HABITS ─── */
+.habits-card{background:var(--white);border-radius:var(--r);box-shadow:var(--sh-card);padding:20px 22px;margin-bottom:14px}
+.habit-add-row{display:flex;gap:10px;margin-bottom:16px}
+.habit-add-row input{flex:1}
+.habit-header-row{display:grid;grid-template-columns:130px repeat(7,1fr);gap:4px;margin-bottom:6px;padding:0 4px}
+.habit-day-head{font-family:'DM Sans',sans-serif;font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-m);text-align:center}
+.habit-row{display:grid;grid-template-columns:130px repeat(7,1fr);gap:4px;align-items:center;padding:6px 4px;border-bottom:1px solid var(--stone);animation:itemIn .22s ease both}
+.habit-row:last-child{border-bottom:none}
+.habit-name{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:400;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-right:6px}
+.habit-dot{width:27px;height:27px;border-radius:50%;border:1.5px solid var(--stone-d);cursor:pointer;transition:background var(--trans),border-color var(--trans),transform var(--trans),box-shadow var(--trans);margin:0 auto;display:block;background-size:14px 14px;background-repeat:no-repeat;background-position:center}
+.habit-dot.done{background-color:var(--euca);border-color:var(--euca-deep);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath stroke='white' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round' d='M2.5 6l2.5 2.5 4.5-4.5'/%3E%3C/svg%3E");transform:scale(1.05);box-shadow:0 2px 8px rgba(157,184,166,.35)}
+
+/* ─── AFFIRMATION CARDS ─── */
+.aff-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+.aff-card{border-radius:var(--r);padding:28px 22px 22px;cursor:pointer;transition:box-shadow var(--trans),transform var(--trans)}
+.aff-card:hover{box-shadow:var(--sh-h);transform:translateY(-2px)}
+.aff-card.petal-bg{background:var(--petal-l)}
+.aff-card.euca-bg-bg{background:var(--euca-bg)}
+.aff-rule{width:18px;height:1.5px;background:var(--euca-deep);opacity:.5;margin-bottom:14px}
+.aff-card-quote{font-family:'Bodoni Moda',serif;font-style:italic;font-size:14.5px;color:#1A1714;line-height:1.6;margin-bottom:18px}
+.aff-card-brand{font-family:'Cormorant Garamond',serif;font-size:11px;font-weight:400;color:var(--ink-m)}
+.aff-hint{text-align:center;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:300;color:var(--ink-m);margin-bottom:24px}
+
+/* ─── JOURNAL ─── */
+.journal-surface{background:var(--white);border-radius:var(--r);box-shadow:var(--sh-card);margin-bottom:16px;overflow:hidden}
+.j-prompt-zone{background:linear-gradient(150deg,var(--petal-l),var(--euca-bg));padding:20px 22px 18px;border-bottom:1px solid var(--stone)}
+.j-date{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:400;color:var(--ink-m);margin-bottom:8px}
+.j-prompt-label{font-family:'DM Sans',sans-serif;font-size:9px;font-weight:500;letter-spacing:.28em;text-transform:uppercase;color:var(--euca-deep);margin-bottom:6px}
+.j-prompt-text{font-family:'Bodoni Moda',serif;font-style:italic;font-size:15px;color:#1A1714;line-height:1.55;margin-bottom:10px;transition:opacity .16s ease}
+.j-cycle-btn{background:none;border:1px solid rgba(122,158,138,.4);border-radius:7px;padding:6px 13px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:400;color:var(--euca-deep);cursor:pointer;transition:background var(--trans)}
+.j-cycle-btn:hover{background:rgba(157,184,166,.12)}
+.j-write-zone{padding:18px 22px}
+.j-textarea{width:100%;min-height:260px;background:none;border:none;padding:0;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:300;color:var(--ink);line-height:1.7;resize:none;outline:none;caret-color:var(--euca-deep)}
+.j-footer-bar{display:flex;justify-content:space-between;align-items:center;padding:12px 22px;border-top:1px solid var(--stone)}
+.j-privacy{font-family:'Bodoni Moda',serif;font-style:italic;font-size:12px;color:var(--ink-m)}
+.j-count{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:400;color:var(--ink-m)}
+.j-actions{display:flex;gap:10px;margin-bottom:20px}
+.j-entry{background:var(--white);border-radius:var(--r);box-shadow:var(--sh-card);padding:18px 22px;margin-bottom:12px;animation:itemIn .28s ease both}
+.j-entry-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px}
+.j-entry-date{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:400;color:var(--ink-m)}
+.j-entry-del{background:none;border:none;color:var(--ink-m);cursor:pointer;font-size:12px;padding:3px 7px;border-radius:5px;transition:background var(--trans)}
+.j-entry-del:hover{background:var(--petal)}
+.j-entry-prompt{font-family:'Bodoni Moda',serif;font-style:italic;font-size:12px;color:var(--euca-deep);margin-bottom:8px}
+.j-entry-text{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:300;color:var(--ink-s);line-height:1.6;white-space:pre-wrap}
+.past-heading{font-family:'DM Sans',sans-serif;font-size:9px;font-weight:500;letter-spacing:.28em;text-transform:uppercase;color:var(--euca-deep);margin-bottom:14px}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:600px){
+  .top-nav{display:none}
+  .bot-nav{display:flex}
+  .page{padding:64px 16px 80px}
+  .page-title{font-size:30px}
+  .widget-grid{gap:10px}
+  .aff-grid{grid-template-columns:1fr}
+  .mood-word{font-size:7.5px}
+  .habit-header-row,.habit-row{grid-template-columns:82px repeat(7,1fr)}
 }
-@media (max-width:420px){
-  .brand{font-size:20px}
-  .month-day{
-    min-height:48px;
-    padding:5px 3px;
-    font-size:11px;
-  }
-  .month-day .num{font-size:11px}
+@media(max-width:380px){
+  .habit-header-row,.habit-row{grid-template-columns:66px repeat(7,1fr)}
+  .habit-dot{width:23px;height:23px}
 }
 </style>
 </head>
 <body>
-<div class="app">
-  <div class="topbar">
-    <div class="row wrap" style="justify-content:space-between;">
-      <div class="brand">Clear Mind Co.</div>
-      <div class="nav-tabs">
-        <button type="button" id="todayBtn" class="soft active">Today</button>
-        <button type="button" id="weekBtn" class="soft">Week</button>
-        <button type="button" id="monthBtn" class="soft">Month</button>
-        <button type="button" id="coachBtn" class="soft">Coach</button>
-        <button type="button" id="themeBtn" class="soft">Dark/Light</button>
+
+<div id="save-dot"></div>
+
+<!-- TOP NAV -->
+<nav class="top-nav">
+  <div class="top-brand" onclick="go('home')">
+    <div class="top-brand-mark"></div>
+    Clear Mind Co.
+  </div>
+  <div class="top-links">
+    <span class="top-link active" onclick="go('home')">Home</span>
+    <span class="top-link" onclick="go('dump')">Mind Reset</span>
+    <span class="top-link" onclick="go('today')">Today</span>
+    <span class="top-link" onclick="go('week')">My Week</span>
+    <span class="top-link" onclick="go('goals')">Goals</span>
+    <span class="top-link" onclick="go('habits')">Habits</span>
+    <span class="top-link" onclick="go('cards')">Affirmations</span>
+    <span class="top-link" onclick="go('journal')">Journal</span>
+  </div>
+</nav>
+
+<!-- BOTTOM NAV -->
+<nav class="bot-nav">
+  <div class="bot-btn active" onclick="go('home')">
+    <span class="b-glyph">&#8962;</span>
+    <span class="b-label">Home</span>
+  </div>
+  <div class="bot-btn" onclick="go('dump')">
+    <span class="b-glyph">&#9675;</span>
+    <span class="b-label">Reset</span>
+  </div>
+  <div class="bot-btn" onclick="go('today')">
+    <span class="b-glyph">&#10022;</span>
+    <span class="b-label">Today</span>
+  </div>
+  <div class="bot-btn" onclick="go('week')">
+    <span class="b-glyph">&#9649;</span>
+    <span class="b-label">Week</span>
+  </div>
+  <div class="bot-btn" onclick="go('goals')">
+    <span class="b-glyph">&#9678;</span>
+    <span class="b-label">Goals</span>
+  </div>
+  <div class="bot-btn" onclick="go('habits')">
+    <span class="b-glyph">&#8767;</span>
+    <span class="b-label">Habits</span>
+  </div>
+  <div class="bot-btn" onclick="go('cards')">
+    <span class="b-glyph">&#10023;</span>
+    <span class="b-label">Cards</span>
+  </div>
+  <div class="bot-btn" onclick="go('journal')">
+    <span class="b-glyph">&#10000;</span>
+    <span class="b-label">Journal</span>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════ PAGE: HOME -->
+<div class="page active" id="page-home">
+
+  <div class="welcome-strip">
+    <span class="ws-glyph">&#10022;</span>
+    <span class="ws-text">Start here. Open <strong>Mind Reset</strong> to empty your head &#8212; then go to <strong>Today</strong> to choose your 3 things.</span>
+  </div>
+
+  <div class="greeting-card">
+    <div class="g-time" id="g-time"></div>
+    <div class="g-text" id="g-text"></div>
+    <div class="mood-row">
+      <div class="mood-pill" data-mood="calm" onclick="setMood('calm',this)">
+        <div class="mood-dot mood-dot-calm"></div>
+        <span class="mood-word">Calm</span>
+      </div>
+      <div class="mood-pill" data-mood="okay" onclick="setMood('okay',this)">
+        <div class="mood-dot mood-dot-okay"></div>
+        <span class="mood-word">Okay</span>
+      </div>
+      <div class="mood-pill" data-mood="stressed" onclick="setMood('stressed',this)">
+        <div class="mood-dot mood-dot-stressed"></div>
+        <span class="mood-word">Stressed</span>
+      </div>
+      <div class="mood-pill" data-mood="tired" onclick="setMood('tired',this)">
+        <div class="mood-dot mood-dot-tired"></div>
+        <span class="mood-word">Tired</span>
+      </div>
+      <div class="mood-pill" data-mood="good" onclick="setMood('good',this)">
+        <div class="mood-dot mood-dot-good"></div>
+        <span class="mood-word">Good</span>
       </div>
     </div>
-    <div class="subtabs">
-      <button type="button" data-page="home" class="active">Home</button>
-      <button type="button" data-page="planner">Planner</button>
-      <button type="button" data-page="goals">Goals</button>
-      <button type="button" data-page="focus">Focus</button>
-      <button type="button" data-page="habits">Habits</button>
-      <button type="button" data-page="journal">Journal</button>
-      <button type="button" data-page="coach">Coach</button>
-      <button type="button" data-page="money">Money</button>
-      <button type="button" data-page="guide">Guide</button>
+  </div>
+
+  <div class="aff-banner" onclick="cycleAff()">
+    <div class="aff-quote" id="home-aff-quote"></div>
+    <div class="aff-sublabel">Tap for a new affirmation</div>
+  </div>
+
+  <div class="streak-bar">
+    <div class="streak-col">
+      <div class="streak-num" id="s-streak">1</div>
+      <div class="streak-lbl">Day Streak</div>
+    </div>
+    <div class="streak-divider"></div>
+    <div class="streak-col">
+      <div class="streak-num" id="s-resets">0</div>
+      <div class="streak-lbl">Mind Resets</div>
+    </div>
+    <div class="streak-divider"></div>
+    <div class="streak-col">
+      <div class="streak-num" id="s-wins">0</div>
+      <div class="streak-lbl">Small Wins</div>
     </div>
   </div>
 
-  <div class="hero">
-    <div class="date-line" id="heroDate"></div>
-    <h1 id="heroGreeting">Welcome back.</h1>
-    <p id="heroSub">The system that moves with you — not against you.</p>
+  <div class="widget-grid">
+    <div class="widget petal" onclick="go('dump')">
+      <span class="w-glyph">&#9675;</span>
+      <div class="w-title">Mind Reset</div>
+      <div class="w-sub">Release what&#8217;s loud right now</div>
+    </div>
+    <div class="widget" onclick="go('today')">
+      <span class="w-glyph">&#10022;</span>
+      <div class="w-title">Today</div>
+      <div class="w-sub">3 things. That&#8217;s enough.</div>
+    </div>
+    <div class="widget sage" onclick="go('goals')">
+      <span class="w-glyph">&#9678;</span>
+      <div class="w-title">Goals</div>
+      <div class="w-sub">Becoming who you want to be</div>
+    </div>
+    <div class="widget" onclick="go('habits')">
+      <span class="w-glyph">&#8767;</span>
+      <div class="w-title">Habits</div>
+      <div class="w-sub">Small acts that compound</div>
+    </div>
+    <div class="widget" onclick="go('week')">
+      <span class="w-glyph">&#9649;</span>
+      <div class="w-title">My Week</div>
+      <div class="w-sub">Gentle structure, not pressure</div>
+    </div>
+    <div class="widget petal" onclick="go('cards')">
+      <span class="w-glyph">&#10023;</span>
+      <div class="w-title">Affirmations</div>
+      <div class="w-sub">Words you need to hear today</div>
+    </div>
+    <div class="widget sage widget-full" onclick="go('journal')">
+      <span class="w-glyph">&#10000;</span>
+      <div class="w-title">Journal</div>
+      <div class="w-sub">Your quiet reflection space</div>
+    </div>
   </div>
 
-  <div class="content">
-    <section id="pg-home" class="pg on">
-      <div class="card">
-        <div class="small">Daily quote</div>
-        <h2 id="quoteText"></h2>
-        <p>— Clear Mind Co.</p>
-      </div>
-      <div class="card dark">
-        <div class="small">Most Important Task</div>
-        <h2 id="mitTitle">You haven't set your MIT yet.</h2>
-        <p id="mitSub">Go to Planner and choose the one thing that matters most today.</p>
-        <button type="button" id="mitDoneBtn">Mark It Done</button>
-      </div>
-      <div class="grid3">
-        <div class="stat"><div class="kpi" id="tasksLeft">0</div><div class="small">Tasks Left Today</div></div>
-        <div class="stat"><div class="kpi" id="habitsDone">0/0</div><div class="small">Habits Done</div></div>
-        <div class="stat"><div class="kpi" id="dayStreak">0</div><div class="small">Day Streak</div></div>
-      </div>
-      <div class="card">
-        <div class="row" style="justify-content:space-between;">
-          <div>
-            <div class="small" id="growthTitleSmall">Your Garden</div>
-            <h2 id="growthStageLabel">Stage 1</h2>
-          </div>
-          <div class="small" id="growthScoreText">0 pts</div>
-        </div>
-        <div class="focus-emoji" id="growthEmoji">🌱</div>
-        <div class="center" id="growthStatus">Seed planted. Start small and keep moving.</div>
-        <div class="progress"><span id="growthBar"></span></div>
-      </div>
-      <div class="grid2">
-        <button type="button" class="tile goto" data-page="planner">Add Today's Tasks<small>Planner</small></button>
-        <button type="button" class="tile goto" data-page="focus">Start Focus Timer<small>Focus</small></button>
-        <button type="button" class="tile goto" data-page="habits">Log Habits<small>Habits</small></button>
-        <button type="button" class="tile goto" data-page="coach">Talk to Coach<small>Coach</small></button>
-      </div>
-      <div class="card">
-        <div class="collapser" id="brainDumpToggle">
-          <div>
-            <div class="small">Brain Dump</div>
-            <h2 style="margin:2px 0 0">Get it out of your head</h2>
-          </div>
-          <div id="brainChevron">＋</div>
-        </div>
-        <div id="brainDumpBox" class="hidden" style="margin-top:14px;">
-          <textarea id="brainDumpText" placeholder="Dump everything on your mind"></textarea>
-          <div class="row" style="margin-top:10px;">
-            <button type="button" id="organizeDumpBtn">Organize by Priority ✦</button>
-          </div>
-          <div id="brainDumpResults" class="list" style="margin-top:12px;"></div>
-        </div>
-      </div>
-    </section>
-
-    <section id="pg-planner" class="pg">
-      <div class="card">
-        <div class="small">MIT</div>
-        <h2>One thing. Not ten.</h2>
-        <p>A Most Important Task is the single thing that matters most today. Do it first. Everything else is extra.</p>
-      </div>
-      <div id="taskList" class="list"></div>
-      <div class="card">
-        <h2>Add a task</h2>
-        <div class="form-row">
-          <input id="taskInput" maxlength="120" placeholder="What needs to get done?">
-          <select id="taskPriority">
-            <option value="must">Must Do</option>
-            <option value="should">Should Do</option>
-            <option value="bonus">Bonus</option>
-          </select>
-          <button type="button" id="addTaskBtn">Add</button>
-        </div>
-        <div style="margin-top:12px;">
-          <button type="button" id="icsBtn" class="soft">📅 Add to Calendar</button>
-        </div>
-      </div>
-    </section>
-
-    <section id="pg-goals" class="pg">
-      <div id="goalsList"></div>
-      <div class="card">
-        <h2>Add a goal</h2>
-        <input id="goalName" maxlength="120" placeholder="Goal name">
-        <div style="height:10px"></div>
-        <input id="goalWhy" maxlength="200" placeholder="Why it matters">
-        <div style="height:10px"></div>
-        <div class="grid2">
-          <select id="goalCat">
-            <option>Business</option><option>Health</option><option>Money</option><option>Personal</option><option>Relationships</option><option>Content</option>
-          </select>
-          <input id="goalDate" type="date">
-        </div>
-        <div style="margin-top:12px;">
-          <button type="button" id="addGoalBtn">Add This Goal →</button>
-        </div>
-      </div>
-      <div class="card">
-        <h2>Daily Alignment</h2>
-        <input id="align1" maxlength="200" placeholder="Did today move me closer to my goals?">
-        <div style="height:10px"></div>
-        <input id="align2" maxlength="200" placeholder="My biggest win today was:">
-        <div style="height:10px"></div>
-        <input id="align3" maxlength="200" placeholder="Tomorrow I will:">
-        <div style="height:10px"></div>
-        <button type="button" id="logWinBtn">Log a win</button>
-      </div>
-    </section>
-
-    <section id="pg-focus" class="pg">
-      <div class="card dark">
-        <div class="small">Current focus</div>
-        <h2 id="focusMit">No MIT yet</h2>
-        <div style="font-size:52px; font-weight:700; margin:10px 0" id="timerDisplay">25:00</div>
-        <p id="timerPhase">Ready</p>
-        <div class="row wrap">
-          <button type="button" id="startTimerBtn">Start</button>
-          <button type="button" id="pauseTimerBtn" class="soft">Pause</button>
-          <button type="button" id="resetTimerBtn" class="ghost">Reset</button>
-        </div>
-      </div>
-      <div class="card">
-        <div class="small">Task Breaker</div>
-        <h2>One big scary task → 5 steps you can actually start</h2>
-        <input id="avoidTask" maxlength="120" placeholder="The task I'm avoiding:">
-        <div style="height:10px"></div>
-        <div class="list">
-          <input class="stepInput" maxlength="100" placeholder="1. First tiny step">
-          <input class="stepInput" maxlength="100" placeholder="2. Next step">
-          <input class="stepInput" maxlength="100" placeholder="3. Next step">
-          <input class="stepInput" maxlength="100" placeholder="4. Next step">
-          <input class="stepInput" maxlength="100" placeholder="5. Next step">
-        </div>
-        <p style="margin-top:12px;">Focus on Step 1 only.</p>
-      </div>
-    </section>
-
-    <section id="pg-habits" class="pg">
-      <div id="habitList" class="list"></div>
-      <div class="card">
-        <h2>Add a habit</h2>
-        <div class="form-row two">
-          <input id="habitInput" maxlength="80" placeholder="Add a simple repeatable habit">
-          <button type="button" id="addHabitBtn">Add</button>
-        </div>
-      </div>
-      <div class="card">
-        <h2>Mood tracker</h2>
-        <div class="mood-row" id="moodRow">
-          <button type="button" class="mood" data-mood="😭">😭</button>
-          <button type="button" class="mood" data-mood="😔">😔</button>
-          <button type="button" class="mood" data-mood="😐">😐</button>
-          <button type="button" class="mood" data-mood="🙂">🙂</button>
-          <button type="button" class="mood" data-mood="😄">😄</button>
-        </div>
-        <p id="moodMsg" style="margin-top:12px;">Pick how today feels.</p>
-      </div>
-    </section>
-
-    <section id="pg-journal" class="pg">
-      <div class="card">
-        <div class="notice">Your entries stay on your device only. Never sent anywhere.</div>
-        <h2 id="journalDateTitle"></h2>
-        <div class="chips" id="journalChips"></div>
-        <div style="height:10px"></div>
-        <textarea id="journalText" class="journal-text" placeholder="Write without filtering yourself."></textarea>
-        <div style="margin-top:12px;"><button type="button" id="saveJournalBtn">Save Entry →</button></div>
-      </div>
-      <div id="journalEntries"></div>
-    </section>
-
-    <section id="pg-coach" class="pg">
-      <div class="card" style="background:linear-gradient(135deg,var(--hero1),var(--hero2),var(--hero3)); color:#fff; border:0;">
-        <div style="font-size:32px;">✨</div>
-        <h2 id="coachNameCard"></h2>
-        <p style="color:rgba(255,255,255,.88)">Not a generic chatbot. A coach that knows your name, your goal, and your challenges.</p>
-        <div class="badges">
-          <div class="badge">Knows your goal</div>
-          <div class="badge">Adapts to your style</div>
-          <div class="badge">No judgment</div>
-        </div>
-      </div>
-      <div class="chips" id="coachChips">
-        <button type="button" class="chip qchip">I'm stuck and overwhelmed</button>
-        <button type="button" class="chip qchip">Help me plan my next 3 moves</button>
-        <button type="button" class="chip qchip">I need a push to keep going</button>
-        <button type="button" class="chip qchip">I'm doubting myself today</button>
-        <button type="button" class="chip qchip">I keep procrastinating</button>
-      </div>
-      <div class="card">
-        <div class="chat-box" id="chatBox"></div>
-        <div class="input-row" style="margin-top:10px;">
-          <input id="chatInput" maxlength="300" placeholder="Say what's real right now.">
-          <button type="button" id="sendChatBtn">Send</button>
-        </div>
-        <div style="height:10px"></div>
-        <input id="apiKeyInput" placeholder="Optional Anthropic API key (stored only on this device)">
-        <div style="margin-top:10px;"><button type="button" id="saveApiKeyBtn" class="soft">Save API Key</button></div>
-        <p class="notice" style="margin-top:10px;">Everything stays on your device. Nothing is sent to Clear Mind Co.</p>
-      </div>
-    </section>
-
-    <section id="pg-money" class="pg">
-      <div class="card">
-        <h2>Debt Snowball Method</h2>
-        <p>1. List every debt smallest to largest by balance. 2. Pay minimums on everything. 3. Put every extra dollar at the smallest debt. 4. When it's paid, roll that payment to the next debt. 5. Repeat until you're debt free.</p>
-      </div>
-      <div class="card">
-        <div class="notice">Your financial info stays on your device only.</div>
-        <div id="debtsWrap" class="list" style="margin-top:12px;"></div>
-        <div class="row wrap" style="margin-top:12px;">
-          <button type="button" id="addDebtRowBtn" class="soft">＋ Add a debt</button>
-        </div>
-        <div style="height:12px"></div>
-        <input id="extraPay" type="number" min="0" step="0.01" placeholder="Extra monthly payment">
-        <div style="height:12px"></div>
-        <button type="button" id="calcSnowballBtn">Calculate</button>
-      </div>
-      <div id="moneyResults" class="hidden">
-        <div class="card">
-          <h2>Debt Freedom Progress</h2>
-          <div class="progress"><span id="debtProgBar"></span></div>
-          <div class="grid3">
-            <div class="stat"><div class="kpi" id="totalDebtKpi">$0</div><div class="small">Total Debt</div></div>
-            <div class="stat"><div class="kpi" id="debtFreeKpi">0 mo</div><div class="small">Debt Free In</div></div>
-            <div class="stat"><div class="kpi" id="interestSavedKpi">$0</div><div class="small">Interest Paid</div></div>
-          </div>
-        </div>
-        <div class="card">
-          <h2>Payoff Timeline</h2>
-          <div id="payoffList" class="list"></div>
-        </div>
-        <div class="card">
-          <h2>Fastest Payoff Game Plan</h2>
-          <div id="moneyPlanBox" class="money-plan"></div>
-        </div>
-        <div class="card">
-          <h2>Where You Stand Right Now</h2>
-          <div class="small" id="moneySnapshotNote">Enter your current balances, run the plan, and log payments only after you actually make them. You do not need to enter old payments to get started.</div>
-          <div style="height:12px"></div>
-          <div id="moneySnapshotBox" class="money-plan"></div>
-        </div>
-      </div>
-    </section>
-
-    <section id="pg-guide" class="pg">
-      <div class="card dark">
-        <h2>A system that gets out of your way and lets you actually get things done.</h2>
-        <p>This is built for brains that get overloaded, distracted, inconsistent, and tired of pretending rigid systems work.</p>
-        <div class="badges">
-          <div class="badge">Dopamine reward loops</div>
-          <div class="badge">AI coach built in</div>
-          <div class="badge">No shame, ever</div>
-        </div>
-      </div>
-      <div class="card">
-        <h2>Move between devices</h2>
-        <div class="row wrap">
-          <button type="button" id="exportBtn">Export My Data</button>
-          <button type="button" id="importBtn" class="soft">Import Data</button>
-          <input id="importFile" class="hidden" type="file" accept=".json">
-        </div>
-        <p style="margin-top:12px;">Export on one device. Send the JSON file to yourself. On the new device, open this app and import the file. Your API key is never included in export.</p>
-      </div>
-      <div class="card">
-        <h2>Install on home screen</h2>
-        <p>iPhone: Open in Safari → Share → Add to Home Screen.</p>
-        <p>Android: Open in Chrome → menu → Add to Home Screen.</p>
-        <p>Desktop: Use the install icon in the address bar if your browser shows it.</p>
-      </div>
-      <div class="card">
-        <h2>Privacy</h2>
-        <p>Everything is stored locally on this device using localStorage. No account. No cloud sync. No hidden backend. The optional API key stays only in your browser storage and is never exported.</p>
-      </div>
-      <div class="card">
-        <h2>How to use it daily</h2>
-        <p>1. Morning: open Home before your phone.</p>
-        <p>2. Set your MIT in Planner.</p>
-        <p>3. When stuck: start the Focus timer.</p>
-        <p>4. Before bed: log habits.</p>
-        <p>5. Anytime: talk to Coach.</p>
-        <button type="button" id="startTourBtn" class="soft">Start Tour — 2 min ▶</button>
-      </div>
-    </section>
-  </div>
+  <div class="page-footer">You are doing better than you think.</div>
 </div>
 
-<div id="setupModal" class="modal">
-  <div class="modal-card setup-card">
-    <div class="progress-dots" id="setupDots"></div>
-    <div id="setup0" class="setup-pane">
-      <div class="center">
-        <div class="brand" style="font-size:42px">Clear Mind Co.</div>
-        <h1>FOCUS MODE</h1>
-        <p>The system that moves with you — not against you.</p>
-      </div>
-      <div class="feature-grid">
-        <div class="feature"><h3>Built for your brain</h3><p>No rigid planner energy. Just clean structure and momentum.</p></div>
-        <div class="feature"><h3>Personalized to you</h3><p>Your name, goal, challenges, and push style shape the experience.</p></div>
-        <div class="feature"><h3>Coach in your corner</h3><p>Get unstuck fast without shame spirals or generic advice.</p></div>
-      </div>
-      <div class="setup-nav"><div></div><button type="button" id="setupStartBtn">Let's get started →</button></div>
-    </div>
-    <div id="setup1" class="setup-pane">
-      <h1>What's your name?</h1>
-      <input id="setupName" maxlength="30" placeholder="Your name">
-      <div class="setup-nav"><button type="button" class="backSetup">Back</button><button type="button" class="nextSetup">Next</button></div>
-    </div>
-    <div id="setup2" class="setup-pane">
-      <h1>What's your #1 goal right now?</h1>
-      <input id="setupGoal" maxlength="120" placeholder="Your main goal">
-      <div style="height:12px"></div>
-      <textarea id="setupWhy" maxlength="300" placeholder="Why does it matter?"></textarea>
-      <div class="setup-nav"><button type="button" class="backSetup">Back</button><button type="button" class="nextSetup">Next</button></div>
-    </div>
-    <div id="setup3" class="setup-pane">
-      <h1>What gets in the way?</h1>
-      <div class="setup-chips" id="challengeChips">
-        <button type="button" class="chip ch" data-val="Procrastination">Procrastination</button>
-        <button type="button" class="chip ch" data-val="Overwhelm">Overwhelm</button>
-        <button type="button" class="chip ch" data-val="Self-doubt">Self-doubt</button>
-        <button type="button" class="chip ch" data-val="ADHD / Distraction">ADHD / Distraction</button>
-        <button type="button" class="chip ch" data-val="Consistency">Consistency</button>
-      </div>
-      <div class="setup-nav"><button type="button" class="backSetup">Back</button><button type="button" class="nextSetup">Next</button></div>
-    </div>
-    <div id="setup4" class="setup-pane">
-      <h1>What kind of push helps most?</h1>
-      <div class="setup-chips" id="pushChips">
-        <button type="button" class="chip push" data-val="gentle">Gentle: warm and encouraging</button>
-        <button type="button" class="chip push on" data-val="medium">Medium: direct and energized</button>
-        <button type="button" class="chip push" data-val="hard">Hard Mode: no excuses</button>
-      </div>
-      <div class="setup-nav"><button type="button" class="backSetup">Back</button><button type="button" class="nextSetup">Next</button></div>
-    </div>
-    <div id="setup5" class="setup-pane">
-      <h1>Choose your growth journey</h1>
-      <div class="setup-chips" id="growthChips">
-        <button type="button" class="chip gs on" data-val="flower">Flower Garden: plant grows as you complete tasks</button>
-        <button type="button" class="chip gs" data-val="knight">Knight's Quest: warrior levels up with you</button>
-      </div>
-      <div class="setup-nav"><button type="button" class="backSetup">Back</button><button type="button" id="finishSetupBtn">Build My System →</button></div>
+<!-- ═══════════════════════════════════════ PAGE: MIND RESET -->
+<div class="page" id="page-dump">
+  <div class="eyebrow">Mind Reset</div>
+  <div class="page-title">Empty Your Mind</div>
+  <div class="page-sub">Every thought you&#8217;re carrying deserves a place to land.</div>
+
+  <button class="btn-primary" onclick="newDump()" style="margin-bottom:20px">+ New Reset Entry</button>
+
+  <div id="dump-list">
+    <div class="empty-state">
+      <span class="es-glyph">&#9675;</span>
+      <div class="es-text">Your mind is clear right now.<br>Tap above when something needs a place to land.</div>
     </div>
   </div>
+
+  <div class="page-footer">You are allowed to put it down.</div>
 </div>
 
-<div id="weekModal" class="modal">
-  <div class="modal-card">
-    <div class="row" style="justify-content:space-between;">
-      <h1>Week View</h1><button type="button" class="icon closeWeek">✕</button>
-    </div>
-    <div id="weekGrid" class="week-grid"></div>
+<!-- ══════════════════════════════════════════════ PAGE: TODAY -->
+<div class="page" id="page-today">
+  <div class="eyebrow">Daily Clarity</div>
+  <div class="page-title">Today&#8217;s Focus</div>
+  <div class="page-sub">Choose three things that truly matter. Let the rest wait.</div>
+
+  <div class="card">
+    <div class="card-label">How I feel right now</div>
+    <textarea id="feeling-field" rows="3" placeholder="Write freely about how you&#8217;re feeling&#8230;" oninput="sf('feeling',this.value)"></textarea>
   </div>
+
+  <div class="card">
+    <div class="card-label">The only 3 things that matter today</div>
+    <div class="priority-row">
+      <div class="priority-num">1</div>
+      <input type="text" id="p1" placeholder="First priority&#8230;" oninput="sf('p1',this.value)">
+    </div>
+    <div class="priority-row">
+      <div class="priority-num">2</div>
+      <input type="text" id="p2" placeholder="Second priority&#8230;" oninput="sf('p2',this.value)">
+    </div>
+    <div class="priority-row">
+      <div class="priority-num">3</div>
+      <input type="text" id="p3" placeholder="Third priority&#8230;" oninput="sf('p3',this.value)">
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Today&#8217;s Task Path</div>
+    <div class="task-add-row">
+      <input type="text" id="task-in" placeholder="Add a task&#8230;" onkeydown="if(event.key==='Enter')addTask()">
+      <button class="btn-soft" onclick="addTask()" style="white-space:nowrap">Add</button>
+    </div>
+    <ul class="task-list" id="task-list"></ul>
+    <div id="task-progress" style="display:none"></div>
+  </div>
+
+  <div class="release-box">
+    <div class="card-label">One thing I am releasing today</div>
+    <textarea class="petal-input" id="release-field" rows="2" placeholder="I release&#8230;" oninput="sf('release',this.value)"></textarea>
+  </div>
+
+  <div class="win-box">
+    <div class="card-label" style="color:var(--euca-deep)">Today&#8217;s Small Win &#10022;</div>
+    <textarea class="win-input" id="win-field" rows="2" placeholder="Something I did well today&#8230;" oninput="saveWin(this.value)"></textarea>
+  </div>
+
+  <div class="page-footer">One thing at a time is enough.</div>
 </div>
 
-<div id="monthModal" class="modal">
-  <div class="modal-card">
-    <div class="row" style="justify-content:space-between;">
-      <div class="row">
-        <button type="button" id="monthPrev" class="icon ghost">‹</button>
-        <h1 id="monthTitle">Month</h1>
-        <button type="button" id="monthNext" class="icon ghost">›</button>
+<!-- ══════════════════════════════════════════ PAGE: MY WEEK -->
+<div class="page" id="page-week">
+  <div class="eyebrow">Weekly Reset</div>
+  <div class="page-title">My Week, My Way</div>
+  <div class="page-sub">Not every hour planned. Just what matters.</div>
+
+  <div class="focus-bar">
+    <div class="card-label">This week I&#8217;m focusing on</div>
+    <input type="text" id="week-focus" placeholder="This week&#8217;s intention&#8230;" oninput="sf('week-focus',this.value)">
+  </div>
+
+  <div class="day-grid">
+    <div class="day-row"><div class="day-lbl">Monday</div><input class="day-input" type="text" id="day-0" placeholder="Today&#8217;s note&#8230;" oninput="sf('day-0',this.value)"></div>
+    <div class="day-row"><div class="day-lbl">Tuesday</div><input class="day-input" type="text" id="day-1" placeholder="Today&#8217;s note&#8230;" oninput="sf('day-1',this.value)"></div>
+    <div class="day-row"><div class="day-lbl">Wednesday</div><input class="day-input" type="text" id="day-2" placeholder="Today&#8217;s note&#8230;" oninput="sf('day-2',this.value)"></div>
+    <div class="day-row"><div class="day-lbl">Thursday</div><input class="day-input" type="text" id="day-3" placeholder="Today&#8217;s note&#8230;" oninput="sf('day-3',this.value)"></div>
+    <div class="day-row"><div class="day-lbl">Friday</div><input class="day-input" type="text" id="day-4" placeholder="Today&#8217;s note&#8230;" oninput="sf('day-4',this.value)"></div>
+    <div class="day-row"><div class="day-lbl">Saturday</div><input class="day-input" type="text" id="day-5" placeholder="Today&#8217;s note&#8230;" oninput="sf('day-5',this.value)"></div>
+    <div class="day-row"><div class="day-lbl">Sunday</div><input class="day-input" type="text" id="day-6" placeholder="Today&#8217;s note&#8230;" oninput="sf('day-6',this.value)"></div>
+  </div>
+
+  <div class="release-wbar">
+    <div class="card-label">This week I&#8217;m releasing</div>
+    <input type="text" id="week-release" placeholder="What I&#8217;m letting go of&#8230;" oninput="sf('week-release',this.value)">
+  </div>
+
+  <div class="page-footer">Progress does not have to be perfect.</div>
+</div>
+
+<!-- ══════════════════════════════════════════════ PAGE: GOALS -->
+<div class="page" id="page-goals">
+  <div class="eyebrow">Goal Tracker</div>
+  <div class="page-title">Becoming Who You Want to Be</div>
+  <div class="page-sub">One small action at a time. That is all it takes.</div>
+
+  <button class="btn-primary" onclick="addGoal()" style="margin-bottom:20px">+ Add a Goal</button>
+
+  <div id="goals-list">
+    <div class="empty-state">
+      <span class="es-glyph">&#9678;</span>
+      <div class="es-text">Your goals will appear here.<br>Start by adding one small aspiration.</div>
+    </div>
+  </div>
+
+  <div class="page-footer">You are becoming her, slowly and surely.</div>
+</div>
+
+<!-- ════════════════════════════════════════════ PAGE: HABITS -->
+<div class="page" id="page-habits">
+  <div class="eyebrow">Habit Tracker</div>
+  <div class="page-title">Small Acts That Compound</div>
+  <div class="page-sub">You don&#8217;t need a perfect streak. Just keep coming back.</div>
+
+  <div class="habits-card">
+    <div class="habit-add-row">
+      <input type="text" id="habit-in" placeholder="Add a new habit&#8230;" onkeydown="if(event.key==='Enter')addHabit()">
+      <button class="btn-soft" onclick="addHabit()">Add</button>
+    </div>
+    <div class="habit-header-row">
+      <div></div>
+      <div class="habit-day-head">M</div>
+      <div class="habit-day-head">T</div>
+      <div class="habit-day-head">W</div>
+      <div class="habit-day-head">T</div>
+      <div class="habit-day-head">F</div>
+      <div class="habit-day-head">S</div>
+      <div class="habit-day-head">S</div>
+    </div>
+    <div id="habits-list">
+      <div class="empty-state" style="padding:20px 0">
+        <span class="es-text">Add your first habit above. Each dot you tap is a quiet act of self-respect.</span>
       </div>
-      <button type="button" class="icon closeMonth">✕</button>
-    </div>
-    <div class="month-grid" id="monthGrid"></div>
-    <div class="card" id="monthEntryPanel" style="margin-top:14px;">
-      <h2 id="monthEntryTitle">Day Details</h2>
-      <input id="monthDayGoal" maxlength="150" placeholder="Goal for this day">
-      <div style="height:10px"></div>
-      <textarea id="monthDayNote" maxlength="500" placeholder="Notes"></textarea>
-      <div style="margin-top:12px;"><button type="button" id="saveMonthDayBtn">Save</button></div>
     </div>
   </div>
+
+  <div class="page-footer">Your consistency is quiet power.</div>
 </div>
 
-<div id="celeModal" class="modal">
-  <div class="modal-card center" style="max-width:520px">
-    <div style="font-size:58px" id="celeEmoji">✨</div>
-    <h1 id="celeTitle">Nice work</h1>
-    <p id="celeMsg">Keep stacking wins.</p>
-    <p class="small" id="celeReward">Reward suggestion: stretch, breathe, sip water, keep going.</p>
-    <button type="button" id="closeCeleBtn">Keep Going →</button>
+<!-- ═══════════════════════════════════ PAGE: AFFIRMATIONS -->
+<div class="page" id="page-cards">
+  <div class="eyebrow">Affirmation Cards</div>
+  <div class="page-title">Words You Need to Hear Today</div>
+  <div class="page-sub">Screenshot any card. Set it as your phone wallpaper.</div>
+
+  <div class="aff-grid">
+    <div class="aff-card petal-bg">
+      <div class="aff-rule"></div>
+      <div class="aff-card-quote">You are not behind. You are human.</div>
+      <div class="aff-card-brand">Clear Mind Co.</div>
+    </div>
+    <div class="aff-card euca-bg-bg">
+      <div class="aff-rule"></div>
+      <div class="aff-card-quote">Rest is not something you earn.</div>
+      <div class="aff-card-brand">Clear Mind Co.</div>
+    </div>
+    <div class="aff-card euca-bg-bg">
+      <div class="aff-rule"></div>
+      <div class="aff-card-quote">Progress does not have to be perfect.</div>
+      <div class="aff-card-brand">Clear Mind Co.</div>
+    </div>
+    <div class="aff-card petal-bg">
+      <div class="aff-rule"></div>
+      <div class="aff-card-quote">Your overwhelm is not a character flaw.</div>
+      <div class="aff-card-brand">Clear Mind Co.</div>
+    </div>
+    <div class="aff-card petal-bg">
+      <div class="aff-rule"></div>
+      <div class="aff-card-quote">One thing at a time is enough.</div>
+      <div class="aff-card-brand">Clear Mind Co.</div>
+    </div>
+    <div class="aff-card euca-bg-bg">
+      <div class="aff-rule"></div>
+      <div class="aff-card-quote">You are doing better than you think.</div>
+      <div class="aff-card-brand">Clear Mind Co.</div>
+    </div>
+    <div class="aff-card euca-bg-bg">
+      <div class="aff-rule"></div>
+      <div class="aff-card-quote">You are allowed to take up space.</div>
+      <div class="aff-card-brand">Clear Mind Co.</div>
+    </div>
+    <div class="aff-card petal-bg">
+      <div class="aff-rule"></div>
+      <div class="aff-card-quote">Calm is something you return to.</div>
+      <div class="aff-card-brand">Clear Mind Co.</div>
+    </div>
   </div>
+
+  <div class="aff-hint">Tap any card &middot; Screenshot to save &middot; Set as your phone wallpaper</div>
+
+  <div class="page-footer">You already have what you need.</div>
 </div>
 
-<div id="tourCard" class="tour-card">
-  <div class="progress-dots" id="tourDots"></div>
-  <div class="small" id="tourIcon">👋</div>
-  <h2 id="tourTitle">Welcome</h2>
-  <p id="tourBody">Let's take a fast look around.</p>
-  <div class="setup-nav">
-    <button type="button" id="skipTourBtn" class="ghost">Skip</button>
-    <button type="button" id="nextTourBtn">Next</button>
+<!-- ══════════════════════════════════════════ PAGE: JOURNAL -->
+<div class="page" id="page-journal">
+  <div class="eyebrow">Reflection</div>
+  <div class="page-title">Your Quiet Space</div>
+  <div class="page-sub">Write freely. No rules. No judgment. Just you.</div>
+
+  <div class="journal-surface">
+    <div class="j-prompt-zone">
+      <div class="j-date" id="j-date"></div>
+      <div class="j-prompt-label">Today&#8217;s Prompt</div>
+      <div class="j-prompt-text" id="j-prompt"></div>
+      <button class="j-cycle-btn" onclick="cyclePrompt()">Different prompt &#8594;</button>
+    </div>
+    <div class="j-write-zone">
+      <textarea class="j-textarea" id="j-textarea" placeholder="Start writing&#8230; there&#8217;s no wrong way to do this." oninput="jUpdate()"></textarea>
+    </div>
+    <div class="j-footer-bar">
+      <span class="j-privacy">What you write here is only for you.</span>
+      <span class="j-count" id="j-count">0 words</span>
+    </div>
   </div>
+
+  <div class="j-actions">
+    <button class="btn-primary" onclick="saveJEntry()">Save Entry &#10022;</button>
+    <button class="btn-soft" onclick="clearJDraft()">Clear</button>
+  </div>
+
+  <div id="journal-past"></div>
+
+  <div class="page-footer">The act of writing is the act of knowing yourself.</div>
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function(){
-  var SAVE_KEY='cmc_v1';
-  var U={
-    name:'', goal:'', why:'', challenges:[], push:'medium', growthStyle:'flower',
-    tasks:[], goals:[], jEntries:[], habits:[], calNotes:{}, growthScore:0, currentStreak:0,
-    lastOpenDate:'', setupStep:0, mood:'', coachMessages:[], align:{a:'',b:'',c:''}, brainDump:'', brainDumpOrganized:[],
-    focus:{avoid:'',steps:['','','','','']}, monthView:{y:0,m:0}, debts:[]
-  };
-  var quoteSession = "";
-  var timerSecs = 1500, timerInt = null, timerRunning = false, selectedMonthKey = '';
-  var aiCalls = [];
-  var tourStep = -1;
-  var quotes = [
-    "You do not need perfect focus. You need a direction and a start.",
-    "Small movement beats dramatic intention every time.",
-    "Your brain is not broken. It just needs a system that fits.",
-    "Clarity grows after action, not before it.",
-    "Messy progress still counts as progress.",
-    "You are allowed to simplify what used to overwhelm you.",
-    "Momentum starts with one honest move.",
-    "The goal is not to do everything. The goal is to do what matters.",
-    "You do not need a better mood to begin.",
-    "A reset is not failure. It is part of the system.",
-    "The next right step is enough for now.",
-    "Consistency gets built in ordinary moments."
-  ];
-  var DEFAULT_HABITS = [
-    "Drank water first thing","No phone first 30 min","Moved my body","Journaled or reflected","In bed by my target time","Checked my budget"
-  ];
-  var tourSteps = [
-    {icon:"👋", title:"Welcome to Clear Mind Co.", body:"This is your private ADHD-friendly system for focus, planning, habits, and momentum.", page:"home"},
-    {icon:"🎯", title:"Your one focus", body:"Home shows your MIT. One thing matters most today. Do that first.", page:"home"},
-    {icon:"🌱", title:"Dopamine rewards", body:"Every win adds growth points. The goal is visible momentum, not guilt.", page:"home"},
-    {icon:"📝", title:"Daily Planner", body:"Capture tasks, label them, and let your MIT rise to the top.", page:"planner"},
-    {icon:"✅", title:"Habit tracker", body:"Keep streaks alive, but no shame spirals. Reset and keep moving.", page:"habits"},
-    {icon:"⏱️", title:"Focus timer", body:"When you're stuck, run a 25-minute session and stay on one task.", page:"focus"},
-    {icon:"✨", title:"AI Coach", body:"Talk to your coach when your head is crowded or your energy is low.", page:"coach"},
-    {icon:"💸", title:"Money mode", body:"Use the snowball calculator to see exactly how debt can shrink month by month.", page:"money"},
-    {icon:"🚀", title:"You're ready", body:"Open Home, set your MIT, use Focus when stuck, log habits at night, and keep going.", page:"guide"}
-  ];
+// ────────────────────────────────────────────────────────────
+// CONSTANTS
+// ────────────────────────────────────────────────────────────
+const PAGES = ['home','dump','today','week','goals','habits','cards','journal'];
 
-  function esc(str){
-    str = String(str == null ? '' : str);
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-  }
-  function sanitizeInput(val, maxLen){
-    val = String(val == null ? '' : val).trim();
-    if(maxLen && val.length > maxLen) val = val.slice(0,maxLen);
-    return val;
-  }
-  function todayKey(d){
-    d = d || new Date();
-    return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
-  }
-  function fullDate(d){
-    d = d || new Date();
-    return d.toLocaleDateString(undefined,{weekday:'long', month:'long', day:'numeric', year:'numeric'});
-  }
-  function tryLoad(){
-    try{
-      var raw = localStorage.getItem(SAVE_KEY);
-      if(!raw) return;
-      var obj = JSON.parse(raw);
-      applyLoadedData(obj);
-    }catch(e){}
-  }
-  function applyLoadedData(obj){
-    if(!obj || typeof obj !== 'object') return;
-    var allowed = ['name','goal','why','challenges','push','growthStyle','tasks','goals','jEntries','habits','calNotes','growthScore','currentStreak','lastOpenDate','setupStep','mood','coachMessages','align','brainDump','brainDumpOrganized','focus','monthView','debts'];
-    allowed.forEach(function(k){
-      if(Object.prototype.hasOwnProperty.call(obj,k)){
-        U[k] = obj[k];
-      }
-    });
-    if(!Array.isArray(U.tasks)) U.tasks=[];
-    if(!Array.isArray(U.goals)) U.goals=[];
-    if(!Array.isArray(U.jEntries)) U.jEntries=[];
-    if(!Array.isArray(U.habits)) U.habits=[];
-    if(!U.calNotes || typeof U.calNotes!=='object') U.calNotes={};
-    if(!Array.isArray(U.challenges)) U.challenges=[];
-    if(!U.align || typeof U.align!=='object') U.align={a:'',b:'',c:''};
-    if(!Array.isArray(U.brainDumpOrganized)) U.brainDumpOrganized=[];
-    if(!U.focus || typeof U.focus!=='object') U.focus={avoid:'',steps:['','','','','']};
-    if(!Array.isArray(U.debts)) U.debts=[];
-    U.debts = U.debts.map(function(d){ if(!d || typeof d!=='object') d={}; if(!Array.isArray(d.payments)) d.payments=[]; return d; });
-    if(!Array.isArray(U.focus.steps)) U.focus.steps=['','','','',''];
-    if(!Array.isArray(U.debts)) U.debts=[];
-  }
-  function save(){
-    try{ localStorage.setItem(SAVE_KEY, JSON.stringify(U)); }catch(e){}
-  }
-  function getApiKey(){
-    try{ return localStorage.getItem('cmc_api_key') || ''; }catch(e){ return ''; }
-  }
-  function setApiKey(v){
-    try{ localStorage.setItem('cmc_api_key', v); }catch(e){}
-  }
-  function saveTheme(v){
-    try{ localStorage.setItem('cmc_theme', v); }catch(e){}
-  }
-  function loadTheme(){
-    try{ return localStorage.getItem('cmc_theme') || ''; }catch(e){ return ''; }
-  }
-  function validApiKey(v){
-    return /^sk-ant-[a-zA-Z0-9_-]{20,}$/.test(v || '');
-  }
-  function rateLimitOK(){
-    var now = Date.now();
-    aiCalls = aiCalls.filter(function(ts){ return now - ts < 60000; });
-    if(aiCalls.length >= 10) return false;
-    if(aiCalls.length && now - aiCalls[aiCalls.length-1] < 1000) return false;
-    aiCalls.push(now);
-    return true;
-  }
-  function maybeSuppressConsole(){
-    if(location.hostname && /github\.io$/.test(location.hostname)){
-      console.log = function(){};
-      console.debug = function(){};
-    }
-  }
-  function dayOpenLogic(){
-    var today = todayKey();
-    if(!U.lastOpenDate){
-      U.currentStreak = U.currentStreak || 1;
-      U.lastOpenDate = today;
-      dailyReset();
-    } else if(U.lastOpenDate !== today){
-      var prev = new Date(U.lastOpenDate);
-      var now = new Date(today);
-      var diff = Math.round((now - prev)/86400000);
-      if(diff === 1) U.currentStreak = (Number(U.currentStreak)||0)+1;
-      else if(diff > 1) U.currentStreak = 1;
-      U.lastOpenDate = today;
-      dailyReset();
-    }
-    save();
-  }
-  function dailyReset(){
-    U.habits = U.habits.map(function(h){
-      if(h.done){
-        h.streak = (Number(h.streak)||0) + 1;
-      } else {
-        h.streak = 0;
-      }
-      h.done = false;
-      return h;
-    });
-  }
-  function ensureDefaults(){
-    if(!U.habits.length){
-      U.habits = DEFAULT_HABITS.map(function(name){
-        return {name:name, streak:0, done:false, msg:'Nice. That one counts.', tip:''};
-      });
-    }
-    if(!U.debts.length){
-      U.debts = [
-        {name:'Debt 1', balance:'', min:'', rate:''},
-        {name:'Debt 2', balance:'', min:'', rate:''}
-      ];
-    }
-    if(!U.monthView.y || !U.monthView.m){
-      var d = new Date(); U.monthView = {y:d.getFullYear(), m:d.getMonth()};
-    }
-  }
-  function celebrate(emoji,title,msg,reward,points){
-    if(points) addGrowth(points);
-    document.getElementById('celeEmoji').textContent = emoji || '✨';
-    document.getElementById('celeTitle').textContent = title || 'Nice work';
-    document.getElementById('celeMsg').textContent = msg || 'Keep stacking wins.';
-    document.getElementById('celeReward').textContent = reward || 'Reward suggestion: stretch, breathe, sip water, keep going.';
-    document.getElementById('celeModal').classList.add('on');
-    renderAll();
-  }
-  function addGrowth(n){
-    U.growthScore = Number(U.growthScore||0) + Number(n||0);
-    save();
-  }
-  function getGrowthData(){
-    var s = Number(U.growthScore||0);
-    var flower = [
-      {th:0, emoji:'🌱', label:'Stage 1', status:'Seed planted. Start small and keep moving.'},
-      {th:20, emoji:'🌿', label:'Stage 2', status:'You are sprouting. Momentum is real.'},
-      {th:50, emoji:'🌸', label:'Stage 3', status:'Flowers are forming. Keep stacking proof.'},
-      {th:100, emoji:'🌺', label:'Stage 4', status:'Full bloom energy. You are showing up.'},
-      {th:180, emoji:'🌳', label:'Stage 5', status:'A mighty tree. This is who you are becoming.'}
-    ];
-    var knight = [
-      {th:0, emoji:'🗡️', label:'Stage 1', status:'Training begins. Start where you are.'},
-      {th:20, emoji:'🛡️', label:'Stage 2', status:'Shield earned. You can take hits and keep moving.'},
-      {th:50, emoji:'⚔️', label:'Stage 3', status:'Knight in the making. Skill is showing.'},
-      {th:100, emoji:'🏆', label:'Stage 4', status:'Champion rising. Keep your edge.'},
-      {th:180, emoji:'👑', label:'Stage 5', status:'Legend status. Your system works because you use it.'}
-    ];
-    var arr = U.growthStyle === 'knight' ? knight : flower;
-    var idx = 0;
-    for(var i=0;i<arr.length;i++){ if(s >= arr[i].th) idx = i; }
-    var cur = arr[idx];
-    var next = arr[Math.min(idx+1, arr.length-1)];
-    var pct = idx === arr.length-1 ? 100 : Math.max(0, Math.min(100, ((s-cur.th)/(next.th-cur.th))*100));
-    return {cur:cur, pct:pct, score:s, title:U.growthStyle==='knight' ? 'Your Quest' : 'Your Garden'};
-  }
-  function getMIT(){
-    for(var i=0;i<U.tasks.length;i++){
-      if(!U.tasks[i].done && U.tasks[i].pri === 'must') return U.tasks[i];
-    }
-    for(var j=0;j<U.tasks.length;j++){
-      if(!U.tasks[j].done) return U.tasks[j];
-    }
-    return null;
-  }
-  function goPage(page){
-    document.querySelectorAll('.pg').forEach(function(el){ el.classList.remove('on'); });
-    var target = document.getElementById('pg-'+page);
-    if(target) target.classList.add('on');
-    document.querySelectorAll('.subtabs button').forEach(function(btn){
-      btn.classList.toggle('active', btn.getAttribute('data-page') === page);
-    });
-    if(page === 'coach'){
-      setTimeout(function(){
-        var c = document.getElementById('chatBox'); c.scrollTop = c.scrollHeight;
-      },20);
-    }
-  }
-  function currentGoalName(){
-    if(U.goal) return U.goal;
-    var active = (U.goals||[]).find(function(g){ return !g.archived && Number(g.pct||0) < 100; });
-    return active ? active.name : '';
-  }
-  function currentGoalWhy(){
-    if(U.why) return U.why;
-    var active = (U.goals||[]).find(function(g){ return !g.archived && Number(g.pct||0) < 100; });
-    return active ? (active.why || '') : '';
-  }
-  function renderAll(){
-    renderHero();
-    renderQuote();
-    renderHome();
-    renderTasks();
-    renderGoals();
-    renderFocus();
-    renderHabits();
-    renderJournal();
-    renderCoach();
-    renderMoney();
-    renderWeek();
-    renderMonth();
-    save();
-  }
-  function renderHero(){
-    document.getElementById('heroDate').textContent = fullDate();
-    document.getElementById('heroGreeting').textContent = U.name ? ('Hey, ' + U.name + '.') : 'Welcome.';
-    var goalNow = currentGoalName();
-    document.getElementById('heroSub').textContent = goalNow ? ('Your current goal: ' + goalNow) : 'The system that moves with you — not against you.';
-    document.getElementById('journalDateTitle').textContent = fullDate();
-  }
-  function renderQuote(){
-    if(!quoteSession){
-      quoteSession = quotes[Math.floor(Math.random()*quotes.length)];
-    }
-    document.getElementById('quoteText').textContent = quoteSession;
-  }
-  function renderHome(){
-    var mit = getMIT();
-    document.getElementById('mitTitle').textContent = mit ? mit.name : "You haven't set your MIT yet.";
-    document.getElementById('mitSub').textContent = mit ? 'Do this before the rest of the noise.' : 'Go to Planner and choose the one thing that matters most today.';
-    document.getElementById('mitDoneBtn').disabled = !mit;
-    document.getElementById('tasksLeft').textContent = U.tasks.filter(function(t){return !t.done;}).length;
-    document.getElementById('habitsDone').textContent = U.habits.filter(function(h){return h.done;}).length + '/' + U.habits.length;
-    document.getElementById('dayStreak').textContent = Number(U.currentStreak||0);
-    var g = getGrowthData();
-    document.getElementById('growthTitleSmall').textContent = g.title;
-    document.getElementById('growthStageLabel').textContent = g.cur.label;
-    document.getElementById('growthEmoji').textContent = g.cur.emoji;
-    document.getElementById('growthStatus').textContent = g.cur.status;
-    document.getElementById('growthBar').style.width = g.pct + '%';
-    document.getElementById('growthScoreText').textContent = g.score + ' pts';
+const AFFS = [
+  "You are not behind. You are human.",
+  "Rest is not something you earn.",
+  "Progress does not have to be perfect.",
+  "Your overwhelm is not a character flaw.",
+  "One thing at a time is enough.",
+  "You are doing better than you think.",
+  "You don’t have to figure it all out today.",
+  "Small steps still move you forward.",
+  "You are allowed to take up space.",
+  "Calm is something you return to.",
+  "You are enough, exactly as you are.",
+  "Feeling behind is not a fact. It’s a feeling.",
+  "Done is better than perfect, every time.",
+  "Your sensitivity is not weakness. It’s depth."
+];
 
-    document.getElementById('brainDumpText').value = U.brainDump || '';
-    var wrap = document.getElementById('brainDumpResults');
-    wrap.innerHTML = '';
+const J_PROMPTS = [
+  "What felt heavy today?",
+  "What do I need more of right now?",
+  "What am I proud of today?",
+  "What deserves my energy tomorrow?",
+  "What can I let go of tonight?",
+  "What made me smile today, even briefly?",
+  "What would I tell a friend who felt how I feel right now?",
+  "What is one thing I did well today?",
+  "What do I want tomorrow to feel like?",
+  "What am I grateful for in this moment?"
+];
 
-    (U.brainDumpOrganized || []).forEach(function(item, idx){
-      var div = document.createElement('div');
-      div.className = 'item';
-      div.innerHTML =
-        '<button type="button" class="check ' + (item.done ? 'on' : '') + '" data-bd="' + idx + '">' + (item.done ? '✓' : '') + '</button>' +
-        '<div class="' + (item.done ? 'strike' : '') + '">' + esc(item.text) + '</div>' +
-        '<div class="pill ' + esc(item.pri) + '">' + esc(labelPri(item.pri)) + '</div>' +
-        '<button type="button" class="soft" data-bd-add="' + idx + '">' + (item.done ? 'Added' : 'Add to Planner') + '</button>';
-      wrap.appendChild(div);
-    });
+// ────────────────────────────────────────────────────────────
+// LOCALSTORAGE
+// ────────────────────────────────────────────────────────────
+const LS = {
+  get(k, d=null) {
+    try { const v = localStorage.getItem('cmco_'+k); return v !== null ? JSON.parse(v) : d; }
+    catch { return d; }
+  },
+  set(k, v) {
+    try { localStorage.setItem('cmco_'+k, JSON.stringify(v)); flash(); }
+    catch {}
+  }
+};
 
-    wrap.querySelectorAll('.check[data-bd]').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        var idx = Number(btn.getAttribute('data-bd'));
-        if(U.brainDumpOrganized[idx]){
-          U.brainDumpOrganized[idx].done = !U.brainDumpOrganized[idx].done;
-          save();
-          renderHome();
-        }
-      });
-    });
+function sf(k, v) { LS.set('f_'+k, v); }
 
-    wrap.querySelectorAll('[data-bd-add]').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        var idx = Number(btn.getAttribute('data-bd-add'));
-        var item = U.brainDumpOrganized[idx];
-        if(!item) return;
+// ────────────────────────────────────────────────────────────
+// SAVE DOT
+// ────────────────────────────────────────────────────────────
+let _flashTimer;
+function flash() {
+  const dot = document.getElementById('save-dot');
+  dot.classList.add('show');
+  clearTimeout(_flashTimer);
+  _flashTimer = setTimeout(() => dot.classList.remove('show'), 900);
+}
 
-        U.tasks.push({
-          name: item.text,
-          done: false,
-          pri: item.pri || 'should'
-        });
+// ────────────────────────────────────────────────────────────
+// NAVIGATION
+// ────────────────────────────────────────────────────────────
+function go(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  const idx = PAGES.indexOf(id);
+  document.querySelectorAll('.top-link').forEach((el, i) => el.classList.toggle('active', i === idx));
+  document.querySelectorAll('.bot-btn').forEach((el, i) => el.classList.toggle('active', i === idx));
+  window.scrollTo(0, 0);
+}
 
-        U.brainDumpOrganized.splice(idx, 1);
-        save();
-        renderAll();
-      });
-    });
-  }
-  function labelPri(pri){
-    if(pri==='must') return 'Must Do';
-    if(pri==='should') return 'Should Do';
-    return 'Bonus';
-  }
-  function renderTasks(){
-    var list = document.getElementById('taskList');
-    list.innerHTML = '';
-    U.tasks.forEach(function(t, idx){
-      var div = document.createElement('div');
-      div.className = 'item';
-      div.innerHTML =
-        '<button type="button" class="check '+(t.done?'on':'')+'" data-task-check="'+idx+'">'+(t.done?'✓':'')+'</button>'+
-        '<div class="'+(t.done?'strike':'')+'">'+esc(t.name)+'</div>'+
-        '<div class="pill '+esc(t.pri)+'">'+esc(labelPri(t.pri))+'</div>'+
-        '<button type="button" class="icon ghost" data-task-del="'+idx+'">✕</button>';
-      list.appendChild(div);
-    });
-    list.querySelectorAll('[data-task-check]').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        var i = Number(btn.getAttribute('data-task-check'));
-        if(!U.tasks[i]) return;
-        var was = U.tasks[i].done;
-        U.tasks[i].done = !U.tasks[i].done;
-        if(!was && U.tasks[i].done) celebrate('✅','Task complete','You closed a loop. Keep going.','Reward suggestion: stand up, breathe, then hit the next one.',10);
-        save(); renderAll();
-      });
-    });
-    list.querySelectorAll('[data-task-del]').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        var i = Number(btn.getAttribute('data-task-del'));
-        U.tasks.splice(i,1); save(); renderAll();
-      });
-    });
-  }
-  function renderGoals(){
-    var wrap = document.getElementById('goalsList');
-    wrap.innerHTML = '';
-    U.goals.forEach(function(g, idx){
-      var colorClass = g.cat ? g.cat.toLowerCase() : '';
-      var div = document.createElement('div');
-      div.className = 'goal-card';
-      div.innerHTML =
-        '<div class="row" style="justify-content:space-between;"><div><h2>'+esc(g.name)+'</h2><p><em>'+esc(g.why || '')+'</em></p></div><button type="button" class="icon ghost" data-goal-del="'+idx+'">✕</button></div>'+
-        '<div class="badges"><div class="badge">'+esc(g.cat || '')+'</div>'+(g.date?'<div class="badge">'+esc(g.date)+'</div>':'')+'</div>'+
-        '<div style="margin-top:10px; font-weight:700;">'+esc(g.pct || 0)+'%</div>'+
-        '<div class="progress"><span style="width:'+Math.max(0,Math.min(100,Number(g.pct||0)))+'%; background:linear-gradient(90deg,'+goalColor(g.cat)+','+goalColor2(g.cat)+');"></span></div>'+
-        '<input type="range" min="0" max="100" step="1" value="'+Number(g.pct||0)+'" data-goal-range="'+idx+'">';
-      wrap.appendChild(div);
-    });
-    wrap.querySelectorAll('[data-goal-range]').forEach(function(r){
-      r.addEventListener('input', function(){
-        var i = Number(r.getAttribute('data-goal-range'));
-        var before = Number(U.goals[i].pct||0);
-        U.goals[i].pct = Number(r.value);
-        if(before < 100 && Number(r.value) === 100) celebrate('🏁','Goal reached','You did not just think about it. You moved it all the way.','Reward suggestion: pause and actually feel the win.',30);
-        save(); renderGoals();
-      });
-    });
-    wrap.querySelectorAll('[data-goal-del]').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        U.goals.splice(Number(btn.getAttribute('data-goal-del')),1); save(); renderAll();
-      });
-    });
+// ────────────────────────────────────────────────────────────
+// DATE HELPERS
+// ────────────────────────────────────────────────────────────
+function dateStr(d) {
+  const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  return DAYS[d.getDay()] + ', ' + MONTHS[d.getMonth()] + ' ' + d.getDate();
+}
 
-    document.getElementById('align1').value = U.align.a || '';
-    document.getElementById('align2').value = U.align.b || '';
-    document.getElementById('align3').value = U.align.c || '';
-  }
-  function goalColor(cat){
-    var map={Business:'var(--brand)',Health:'var(--sage)',Money:'var(--gold)',Personal:'var(--accent)',Relationships:'var(--rust)',Content:'#7d64b8'};
-    return map[cat] || 'var(--brand)';
-  }
-  function goalColor2(cat){
-    var map={Business:'var(--accent)',Health:'#9ac59a',Money:'#eccb6f',Personal:'#e0a36c',Relationships:'#d08a6f',Content:'#a98ae6'};
-    return map[cat] || 'var(--accent)';
-  }
-  function renderFocus(){
-    var mit = getMIT();
-    document.getElementById('focusMit').textContent = mit ? mit.name : 'No MIT yet';
-    document.getElementById('timerDisplay').textContent = fmtTime(timerSecs);
-    document.getElementById('avoidTask').value = U.focus.avoid || '';
-    document.querySelectorAll('.stepInput').forEach(function(inp, idx){ inp.value = U.focus.steps[idx] || ''; });
-  }
-  function fmtTime(s){
-    var m = Math.floor(s/60), ss = s%60;
-    return String(m).padStart(2,'0')+':'+String(ss).padStart(2,'0');
-  }
-  function moodCoachReply(mood){
-    var n = U.name || 'you';
-    var g = currentGoalName() || 'what matters most';
-    var replies = {
-      '😭': n + ", today is heavy, so the win is tiny. \"You do not need a better mood to begin.\" Pick one five-minute action tied to " + g + " and let that be enough.",
-      '😔': n + ", low energy is not failure. \"Small honest effort still counts.\" Choose one gentle task that protects " + g + " today.",
-      '😐': n + ", neutral is usable. \"Messy progress still counts as progress.\" Take the clearest next step for " + g + " now.",
-      '🙂': n + ", good energy needs direction. \"Protect momentum before you chase more.\" Finish one meaningful thing for " + g + " next.",
-      '😄': n + ", you have real energy today. \"Use your best hours on what matters most.\" Put that energy straight into " + g + " right now."
-    };
-    return replies[mood] || '';
-  }
-  function pushCoachMessage(text){
-    var msg = sanitizeInput(text || '', 300);
-    if(!msg) return;
-    if(!Array.isArray(U.coachMessages)) U.coachMessages = [];
-    U.coachMessages.push({role:'ai', text:msg});
-    if(U.coachMessages.length > 60) U.coachMessages = U.coachMessages.slice(-60);
-  }
-  function renderHabits(){
-    var list = document.getElementById('habitList');
-    list.innerHTML = '';
-    U.habits.forEach(function(h, idx){
-      var div = document.createElement('div');
-      div.className='item';
-      div.innerHTML =
-        '<button type="button" class="check '+(h.done?'on':'')+'" data-habit-check="'+idx+'">'+(h.done?'✓':'')+'</button>'+
-        '<div>'+esc(h.name)+'</div>'+
-        '<div class="small">'+esc(String(h.streak || 0))+' day streak</div>'+
-        '<button type="button" class="icon ghost" data-habit-del="'+idx+'">✕</button>';
-      list.appendChild(div);
-    });
-    list.querySelectorAll('[data-habit-check]').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        var i = Number(btn.getAttribute('data-habit-check'));
-        if(!U.habits[i]) return;
-        var was = U.habits[i].done;
-        U.habits[i].done = !U.habits[i].done;
-        if(!was && U.habits[i].done) celebrate('🌟','Habit logged','That counts. Keep the chain alive.','Reward suggestion: say it out loud — I showed up today.',5);
-        save(); renderAll();
-      });
-    });
-    list.querySelectorAll('[data-habit-del]').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        U.habits.splice(Number(btn.getAttribute('data-habit-del')),1); save(); renderAll();
-      });
-    });
+function todayKey() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
 
-    document.querySelectorAll('.mood').forEach(function(btn){
-      btn.classList.toggle('on', btn.getAttribute('data-mood') === U.mood);
-    });
-    var moodMap = {
-      '😭':'Today feels heavy. “You do not need a better mood to begin.” Make the goal tiny and protect your energy.',
-      '😔':'Low energy is not laziness. “Small honest effort still counts.” Do one gentle thing that moves life forward.',
-      '😐':'Stable is enough. “Messy progress still counts as progress.” Pick the next clear step and knock it out.',
-      '🙂':'Good. “Protect momentum before you chase more.” Keep it simple and finish one meaningful thing.',
-      '😄':'You have energy. “Use your best hours on what matters most.” Aim that momentum at your top priority.'
-    };
-    document.getElementById('moodMsg').textContent = moodMap[U.mood] || 'Pick how today feels.';
-  }
-  function renderJournal(){
-    var chips = document.getElementById('journalChips');
-    chips.innerHTML = '';
-    var prompts = [];
-    var cg = currentGoalName();
-    if(cg) prompts.push('How am I progressing toward: '+cg+'?');
-    prompts.push("What's holding me back right now?");
-    prompts.push("What does my best self look like in 1 year?");
-    prompts.push("What am I most proud of lately?");
-    prompts.forEach(function(txt){
-      var b = document.createElement('button');
-      b.type = 'button'; b.className='chip'; b.textContent = txt;
-      b.addEventListener('click', function(){
-        document.getElementById('journalText').value = txt + '\n\n';
-      });
-      chips.appendChild(b);
-    });
-    var wrap = document.getElementById('journalEntries');
-    wrap.innerHTML = '';
-    (U.jEntries || []).slice().reverse().forEach(function(e){
-      var div = document.createElement('div');
-      div.className='card';
-      div.innerHTML = '<div class="small">'+esc(e.date)+'</div><p><em>'+esc(e.text)+'</em></p>';
-      wrap.appendChild(div);
-    });
-  }
-  function renderCoach(){
-    document.getElementById('coachNameCard').textContent = (U.name || 'Your') + "'s Clear Mind Coach";
-    document.getElementById('apiKeyInput').value = getApiKey();
-    var box = document.getElementById('chatBox');
-    box.innerHTML = '';
-    if(!U.coachMessages.length){
-      U.coachMessages.push({role:'ai', text: coachFallback("general")});
-    }
-    U.coachMessages.forEach(function(m){
-      var div = document.createElement('div');
-      div.className = 'msg ' + (m.role === 'you' ? 'you' : 'ai');
-      div.innerHTML = '<div class="bubble">' + esc(m.role === 'ai' ? ('✨ ' + m.text) : m.text) + '</div>';
-      box.appendChild(div);
-    });
-    box.scrollTop = box.scrollHeight;
-  }
-  function detectIntent(txt){
-    txt = (txt || '').toLowerCase();
-    if(/where do i start|how do i start|start(ing)?$|begin|first step/.test(txt)) return 'start';
-    if(/stuck|funk|frozen|spinning/.test(txt)) return 'stuck';
-    if(/overwhelm|too much|too many|chaos|all over the place/.test(txt)) return 'overwhelmed';
-    if(/procrastinat|avoid|putting off|scrolling|stalling/.test(txt)) return 'procrastinating';
-    if(/doubt|not good enough|can't do this|imposter|not sure i can/.test(txt)) return 'selfdoubt';
-    if(/focus|distract|attention|can't concentrate/.test(txt)) return 'focus';
-    if(/habit|streak|fell off|reset/.test(txt)) return 'habits';
-    if(/money|debt|budget|bills/.test(txt)) return 'money';
-    if(/win|success|did it|finished/.test(txt)) return 'win';
-    if(/tired|burnout|exhausted|drained|low energy/.test(txt)) return 'tired';
-    if(/business|product|launch|sell|listing|content/.test(txt)) return 'business';
-    if(/step|plan|next move|what do i do|help me plan/.test(txt)) return 'steps';
-    if(/perfect|perfection|afraid to mess up/.test(txt)) return 'perfection';
-    return 'general';
-  }
-  function extractCoachTargets(txt){
-    txt = sanitizeInput(txt || '', 220).replace(/[?!.]/g, ',');
-    return txt.split(/,|and/gi).map(function(s){ return sanitizeInput(s, 60); }).filter(function(s){ return s && s.length > 3; }).slice(0,3);
-  }
-  function coachFallback(input){
-    var raw = sanitizeInput(typeof input === 'string' ? input : '', 320);
-    var lower = raw.toLowerCase();
-    var intent = raw && !/\s/.test(raw) ? raw : detectIntent(raw);
-    var n = U.name || 'you';
-    var g = currentGoalName() || 'your goal';
-    var why = currentGoalWhy() || U.why || '';
-    var push = U.push || 'medium';
-    var hardOpen = push === 'hard' ? 'No hiding. ' : push === 'gentle' ? 'Be kind, but do not disappear. ' : '';
-    var targets = extractCoachTargets(raw);
-    var first = targets[0] || 'the next piece';
-    var second = targets[1] || '';
+function daysBetween(a, b) {
+  const [ay,am,ad] = a.split('-').map(Number);
+  const [by,bm,bd] = b.split('-').map(Number);
+  return Math.round((new Date(by,bm-1,bd) - new Date(ay,am-1,ad)) / 86400000);
+}
 
-    function oneLine(txt){ return sanitizeInput(txt, 500); }
+// ────────────────────────────────────────────────────────────
+// HOME
+// ────────────────────────────────────────────────────────────
+let affIdx = 0;
 
-    if(/how do i achieve my goals?|achieve my goals|reach my goals|complete my goals/.test(lower)){
-      return oneLine(hardOpen + n + ", stop chasing the whole mountain. Pick one active goal, define what done looks like this week, choose one task that moves it today, and block 25 minutes for it. Open Goals, pick the one goal that matters most, then create today's one must-do from it now.");
-    }
-    if(/website|site|homepage/.test(lower)){
-      return oneLine(n + ", do not work on the whole website. Tighten three things only: headline, offer, and one clear button. If a stranger landed there in five seconds, could they tell what you do, who it is for, and what to click? Fix those three first, then stop.");
-    }
-    if(/pricing|price|packages|package/.test(lower)){
-      return oneLine(n + ", pricing gets easier when you stop inventing ten options. Build three offers: a starter, a core offer, and a premium. Make the middle one your main choice, make the cheap one simple, and make the premium one feel worth more. Write those three packages before tweaking any numbers again.");
-    }
-    if(/content|post|instagram|tiktok|reel|marketing/.test(lower)){
-      return oneLine(n + ", content gets lighter when you stop asking what to post every day. Pick three pillars tied to " + g + ", make one post idea for each, and publish the easiest one first. Your job today is not strategy overload. Your job is one finished piece.");
-    }
-    if(targets.length > 1 && /(stuck|overwhelm|plan|what do i do|start|begin|goals?)/i.test(raw)){
-      return oneLine(hardOpen + n + ", you are carrying too many open loops. First hit " + first + ". " + (second ? "Leave " + second + " alone until the first 10 minutes are done. " : "") + "Make " + first + " your must-do, then do the first visible step now.");
-    }
-    if(/what should i do next|next move|what now/.test(lower)){
-      return oneLine(n + ", the next move is the one that creates proof, not the one that feels busiest. Pick the task that would make " + g + " more real by tonight, finish that, then reassess. Open Planner and write that one must-do now.");
-    }
+function initHome() {
+  const now = new Date();
+  const h = now.getHours();
+  const greet = h < 12 ? "Good morning. Take a breath first."
+              : h < 17 ? "Good afternoon. You’re doing enough."
+              :           "Good evening. Let’s wind down gently.";
+  document.getElementById('g-time').textContent = dateStr(now);
+  document.getElementById('g-text').textContent = greet;
 
-    var map = {
-      start: hardOpen + n + ", do not start the whole thing. Start the first ugly 10-minute piece of " + g + ". Make the task so small it feels almost stupid, then finish that piece before thinking bigger.",
-      stuck: hardOpen + n + ", you are not stuck on everything. You are stuck on the next edge. Ask: what would prove movement in 10 minutes? Do only that one piece for " + first + ".",
-      overwhelmed: n + ", your brain needs fewer targets. Dump everything, circle one task tied to " + g + ", and ignore the rest until that one is moving. One moving task beats ten worried thoughts.",
-      procrastinating: n + ", procrastination usually means the task is vague, too big, or emotionally annoying. Make it specific, shrink it, and remove the first barrier. Write the first action in seven words or less, then do it immediately.",
-      selfdoubt: n + ", self-doubt is noise, not evidence. You care about " + g + (why ? " because " + why : "") + ". Build proof today with one visible action that can be finished, not admired.",
-      focus: n + ", attention follows clarity. Pick one task, hide the rest, put your phone away, and run one 25-minute block. Your only job is to stay with that one thing until the timer ends.",
-      habits: n + ", a broken streak is not failure. Restart with the easiest possible win and let that count. Small consistency beats dramatic resets.",
-      money: n + ", stop guessing. List the real remaining balances, pay every minimum, and throw every extra dollar at one target only. Fast payoff comes from focus, not spreading money thin.",
-      win: n + ", good. Capture the win, then use that momentum on the next concrete move tied to " + g + ". Momentum dies when you celebrate without assigning the next task.",
-      tired: n + ", low energy changes the size of the task, not the fact that you can move. Cut the task in half, protect one meaningful action, and let that be enough for today.",
-      business: n + ", stop polishing everything at once. Push the part that gets " + g + " closer to real money, real visibility, or a real launch. Pick the task that creates proof outside your head.",
-      steps: n + ", here is the real order: pick one outcome for today, choose the must-do, define the first step, remove one distraction, then run one focus block. Do step one before you optimize the rest.",
-      perfection: n + ", perfection is usually fear wearing good manners. Make it clear, useful, and live. Then improve it after reality gives you feedback.",
-      general: n + ", ask a sharper question and I can help better. Tell me the exact thing you are stuck on, what you have already done, and what feels hardest. Then I will cut it into the next move."
-    };
-    return oneLine(map[intent] || map.general);
-  }
-  async function callCoachAI(userText){
-    var apiKey = getApiKey();
-    if(!validApiKey(apiKey)) return coachFallback(userText);
-    if(!rateLimitOK()) return "Slow down for a second. Send one clear message and I'll help you cut through it.";
-    var recent = (U.coachMessages || []).slice(-6).map(function(m){
-      return { role: m.role === 'you' ? 'user' : 'assistant', content: m.text };
-    });
-    var sys = "You are Clear Mind Coach inside an ADHD planning app. Give practical, emotionally intelligent coaching, not generic inspiration. Keep responses under 130 words. No fluff, no therapy-speak, no generic motivation. Be specific and practical. If the user asks a broad question, narrow it down into concrete steps. If they mention website, pricing, content, launch, debt, habits, or overwhelm, give targeted advice for that topic. If they mention multiple problems, choose the highest-leverage next move. Reference the user's goal when relevant. End with one clear action sentence. User name: " + (U.name||'') + ". Current goal: " + (currentGoalName()||'') + ". Why it matters: " + (currentGoalWhy()||U.why||'') + ". Challenges: " + (U.challenges||[]).join(', ') + ". Push style: " + (U.push||'medium') + ".";
-    try{
-      var res = await fetch('https://api.anthropic.com/v1/messages',{
-        method:'POST',
-        headers:{
-          'content-type':'application/json',
-          'x-api-key':apiKey,
-          'anthropic-version':'2023-06-01'
-        },
-        body: JSON.stringify({
-          model:'claude-sonnet-4-20250514',
-          max_tokens:220,
-          system:sys,
-          messages: recent.concat([{role:'user', content:userText}])
-        })
-      });
-      if(!res.ok) throw new Error('API failed');
-      var data = await res.json();
-      var txt = (((data||{}).content||[])[0]||{}).text || coachFallback(userText);
-      return sanitizeInput(txt, 500);
-    }catch(e){
-      return coachFallback(userText);
-    }
-  }
-  async function organizeDump(){
-    U.brainDump = sanitizeInput(document.getElementById('brainDumpText').value, 4000);
-    save();
-    if(!U.brainDump) return;
-    var apiKey = getApiKey();
-    if(validApiKey(apiKey) && rateLimitOK()){
-      try{
-        var res = await fetch('https://api.anthropic.com/v1/messages',{
-          method:'POST',
-          headers:{
-            'content-type':'application/json',
-            'x-api-key':apiKey,
-            'anthropic-version':'2023-06-01'
-          },
-          body: JSON.stringify({
-            model:'claude-sonnet-4-20250514',
-            max_tokens:220,
-            system:"Organize a brain dump into JSON only. Return {items:[{text:'',pri:'must'|'should'|'bonus'}]}. Keep short actionable items.",
-            messages:[{role:'user', content:U.brainDump}]
-          })
-        });
-        if(!res.ok) throw new Error('bad');
-        var data = await res.json();
-        var txt = (((data||{}).content||[])[0]||{}).text || '';
-        var match = txt.match(/\{[\s\S]*\}/);
-        var parsed = match ? JSON.parse(match[0]) : null;
-        if(parsed && Array.isArray(parsed.items)){
-          U.brainDumpOrganized = parsed.items.slice(0,20).map(function(it){
-            return {text:sanitizeInput(it.text,140), pri:(['must','should','bonus'].includes(it.pri)?it.pri:'should'), done:false};
-          }).filter(function(it){ return it.text; });
-          save(); renderHome(); return;
-        }
-      }catch(e){}
-    }
-    var parts = U.brainDump.split(/\n|,|;|\./).map(function(s){return sanitizeInput(s,140);}).filter(Boolean).slice(0,20);
-    U.brainDumpOrganized = parts.map(function(p){
-      var pri='should';
-      if(/must|urgent|today|deadline|pay|call|submit|important/.test(p.toLowerCase())) pri='must';
-      else if(/later|someday|idea|maybe|eventually/.test(p.toLowerCase())) pri='bonus';
-      return {text:p, pri:pri, done:false};
-    });
-    save(); renderHome();
+  const stored = LS.get('aff-idx');
+  affIdx = stored !== null ? stored : (now.getDate() % AFFS.length);
+  document.getElementById('home-aff-quote').textContent = AFFS[affIdx];
+
+  const savedMood = LS.get('mood');
+  if (savedMood) {
+    const pill = document.querySelector('.mood-pill[data-mood="' + savedMood + '"]');
+    if (pill) pill.classList.add('on');
   }
 
-  function debtMonthKeyNow(){
-    var d = new Date();
-    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
-  }
-  function debtMonthLabel(key){
-    if(!key) return 'this month';
-    var parts = String(key).split('-');
-    if(parts.length < 2) return key;
-    var y = Number(parts[0]), m = Number(parts[1]) - 1;
-    if(!isFinite(y) || !isFinite(m)) return key;
-    return new Date(y, m, 1).toLocaleDateString(undefined,{month:'short', year:'numeric'});
-  }
-  function sortDebtMonthKeys(keys){
-    return keys.slice().sort(function(a,b){ return String(a).localeCompare(String(b)); });
-  }
-  function getDebtPaymentSummary(debt){
-    var arr = Array.isArray(debt && debt.payments) ? debt.payments : [];
-    var total = 0, lastKey = '';
-    arr.forEach(function(p){
-      var amt = Math.max(0, Number(p && p.amount || 0));
-      if(amt > 0){ total += amt; if(p.month) lastKey = String(p.month); }
-    });
-    return {total:+total.toFixed(2), lastKey:lastKey};
-  }
-  function getDebtMonthlyHistory(debt){
-    var arr = Array.isArray(debt && debt.payments) ? debt.payments : [];
-    var grouped = {};
-    arr.forEach(function(p){
-      if(!p || !/^\d{4}-\d{2}$/.test(String(p.month || ''))) return;
-      var key = String(p.month);
-      var amt = Math.max(0, Number(p.amount || 0));
-      if(amt <= 0) return;
-      grouped[key] = +(Number(grouped[key] || 0) + amt).toFixed(2);
-    });
-    return sortDebtMonthKeys(Object.keys(grouped)).map(function(key){
-      return {month:key, amount:grouped[key]};
-    });
-  }
-  function getDebtRemainingBalance(debt){
-    var raw = Math.max(0, Number(debt && debt.balance || 0));
-    var logged = getDebtPaymentSummary(debt).total || 0;
-    return Math.max(0, +(raw - logged).toFixed(2));
-  }
-  function logDebtPaymentAt(idx, amount, monthKey){
-    var debt = U.debts[idx];
-    if(!debt) return false;
-    if(!Array.isArray(debt.payments)) debt.payments = [];
-    amount = Math.max(0, Number(amount || 0));
-    if(!isFinite(amount) || amount <= 0) return false;
-    monthKey = sanitizeInput(monthKey || debtMonthKeyNow(), 7);
-    if(!/^\d{4}-\d{2}$/.test(monthKey)) return false;
-    var remaining = getDebtRemainingBalance(debt);
-    var applied = Math.min(remaining, amount);
-    if(applied <= 0) return false;
-    debt.payments.push({month:monthKey, amount:+applied.toFixed(2)});
-    save();
-    renderMoney();
-    rerunMoneyResultsIfVisible();
-    celebrate('💵','Payment logged','Logged ' + money(applied) + ' for ' + debtMonthLabel(monthKey) + ' and refreshed your payoff map.','Keep your extra money aimed at the current target debt.',0);
-    return true;
-  }
-  function promptDebtPayment(idx){
-    var debt = U.debts[idx];
-    if(!debt) return;
-    var currentBal = Math.max(0, Number(debt.balance || 0));
-    if(currentBal <= 0){
-      celebrate('✅','Already cleared','That balance is already at zero.','Keep the snowball moving to the next debt.',0);
-      return;
-    }
-    var raw = window.prompt('How much did you pay toward "' + (debt.name || 'this debt') + '"? You can log multiple payments in the same month.', '');
-    if(raw === null) return;
-    var amt = Math.max(0, Number(String(raw).replace(/[^0-9.\-]/g,'')));
-    if(!isFinite(amt) || amt <= 0){
-      celebrate('⚠️','Payment not logged','Enter a real payment amount greater than zero.','Try again with just the dollar amount.',0);
-      return;
-    }
-    var monthKey = window.prompt('Which month should this payment count for? Use YYYY-MM.', debtMonthKeyNow());
-    if(monthKey === null) return;
-    if(!logDebtPaymentAt(idx, amt, monthKey)){
-      celebrate('⚠️','Payment not logged','Use a valid month like 2026-04.','Then try the payment again.',0);
-    }
-  }
-  function renderMoney(){
-    var wrap = document.getElementById('debtsWrap');
-    wrap.innerHTML = '';
-    U.debts.forEach(function(d, idx){
-      if(!Array.isArray(d.payments)) d.payments = [];
-      var sum = getDebtPaymentSummary(d);
-      var history = getDebtMonthlyHistory(d);
-      var remaining = getDebtRemainingBalance(d);
-      var historyHtml = history.length ? '<div class="small" style="margin-top:8px;">Payment history: ' + history.map(function(h){ return esc(debtMonthLabel(h.month)) + ' ' + esc(money(h.amount)); }).join(' · ') + '</div>' : '';
-      var div = document.createElement('div');
-      div.className = 'card';
-      div.innerHTML =
-        '<div class="grid2">'+
-        '<input maxlength="60" data-debt-name="'+idx+'" placeholder="Debt Name" value="'+esc(d.name || '')+'">'+
-        '<input type="number" step="0.01" min="0" data-debt-balance="'+idx+'" placeholder="Balance" value="'+esc(d.balance || '')+'">'+
-        '<input type="number" step="0.01" min="0" data-debt-min="'+idx+'" placeholder="Min Payment" value="'+esc(d.min || '')+'">'+
-        '<input type="number" step="0.01" min="0" data-debt-rate="'+idx+'" placeholder="Interest %" value="'+esc(d.rate || '')+'">'+
-        '</div>'+
-        '<div class="small" style="margin-top:10px;">Current remaining balance: <strong>'+esc(money(remaining))+'</strong> · Logged since setup: <strong>'+esc(money(sum.total))+'</strong>' + (sum.lastKey ? ' · Last logged month: ' + esc(debtMonthLabel(sum.lastKey)) : '') + '</div>'+
-        '<div class="small" style="margin-top:4px;">Enter the balance that is left right now. You only log a payment after you actually make one.</div>'+
-        historyHtml +
-        '<div style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap;"><button type="button" class="ghost" data-debt-del="'+idx+'">Delete</button></div>';
-      wrap.appendChild(div);
-    });
-    ['name','balance','min','rate'].forEach(function(kind){
-      wrap.querySelectorAll('[data-debt-'+kind+']').forEach(function(inp){
-        inp.addEventListener('input', function(){
-          var idx = Number(inp.getAttribute('data-debt-'+kind));
-          U.debts[idx][kind === 'min' ? 'min' : kind] = sanitizeInput(inp.value,60);
-          save();
-        });
-      });
-    });
-    wrap.querySelectorAll('[data-debt-del]').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        U.debts.splice(Number(btn.getAttribute('data-debt-del')),1); save(); renderMoney(); rerunMoneyResultsIfVisible();
-      });
-    });
-  }
-  function snowballCalc(){
-    var debts = U.debts.map(function(d, idx){
-      var paymentList = Array.isArray(d.payments) ? d.payments.filter(function(p){ return p && /^\d{4}-\d{2}$/.test(String(p.month || '')); }).map(function(p){
-        return {month:String(p.month), amount:Math.max(0, Number(p.amount || 0))};
-      }) : [];
-      var loggedTotal = paymentList.reduce(function(sum,p){ return sum + p.amount; }, 0);
-      var lastLoggedKey = paymentList.length ? sortDebtMonthKeys(paymentList.map(function(p){ return p.month; })).slice(-1)[0] : '';
-      var rawBalance = Math.max(0, Number(d.balance||0));
-      var remaining = Math.max(0, +(rawBalance - loggedTotal).toFixed(2));
-      return {
-        origIndex: idx,
-        name:sanitizeInput(d.name || 'Debt', 60),
-        balance:remaining,
-        min:Math.max(0,Number(d.min||0)),
-        rate:Math.max(0,Number(d.rate||0)),
-        startBalance:remaining,
-        rawBalance:rawBalance,
-        payoffMonth:null,
-        attackPayment:0,
-        payments:paymentList,
-        loggedTotal:+loggedTotal.toFixed(2),
-        lastLoggedKey:lastLoggedKey
-      };
-    }).filter(function(d){ return d.rawBalance > 0; });
-    var extra = Math.max(0, Number(document.getElementById('extraPay').value || 0));
-    var totalStart = debts.reduce(function(a,b){ return a+b.balance; },0);
-    if(!debts.length){ return null; }
+  updateStreak();
+}
 
-    debts.sort(function(a,b){ return a.balance - b.balance; });
-    var rollingSnowball = extra;
-    debts.forEach(function(d){
-      d.attackPayment = d.min + rollingSnowball;
-      rollingSnowball += d.min;
-    });
+function setMood(mood, el) {
+  document.querySelectorAll('.mood-pill').forEach(p => p.classList.remove('on'));
+  el.classList.add('on');
+  LS.set('mood', mood);
+}
 
-    var allKeys = [];
-    debts.forEach(function(d){ d.payments.forEach(function(p){ if(p.amount > 0) allKeys.push(p.month); }); });
-    allKeys = sortDebtMonthKeys(allKeys.filter(function(v, i, arr){ return arr.indexOf(v) === i; }));
+function cycleAff() {
+  const el = document.getElementById('home-aff-quote');
+  el.style.opacity = '0';
+  setTimeout(() => {
+    affIdx = (affIdx + 1) % AFFS.length;
+    LS.set('aff-idx', affIdx);
+    el.textContent = AFFS[affIdx];
+    el.style.opacity = '1';
+  }, 180);
+}
 
-    var month=0, totalInterest=0, series=[+totalStart.toFixed(2)], safety=0;
-    var monthLabels=['Now'];
-    var paymentTotals=[debts.reduce(function(sum,d){ return sum + (d.loggedTotal || 0); },0)];
-    var actualMonths = allKeys.length;
+function updateStreak() {
+  const today = todayKey();
+  const last  = LS.get('last-open');
+  let streak  = LS.get('streak', 1);
 
-    while(debts.some(function(d){return d.balance > 0.009;}) && safety < 1200){
-      safety++; month++;
-      debts.forEach(function(d){
-        if(d.balance <= 0) return;
-        var interest = d.balance * (d.rate/100/12);
-        d.balance += interest;
-        totalInterest += interest;
-      });
-      var snowball = extra;
-      var paidThisMonth = 0;
-      debts.forEach(function(d){
-        if(d.balance <= 0) return;
-        var pay = Math.min(d.min, d.balance);
-        d.balance -= pay;
-        paidThisMonth += pay;
-        if(d.balance <= 0){
-          snowball += d.min;
-          if(d.payoffMonth === null) d.payoffMonth = month;
-        }
-      });
-      for(var i=0;i<debts.length;i++){
-        if(debts[i].balance > 0){
-          var p = Math.min(snowball, debts[i].balance);
-          debts[i].balance -= p;
-          paidThisMonth += p;
-          if(debts[i].balance <= 0 && debts[i].payoffMonth === null) debts[i].payoffMonth = month;
-          break;
-        }
-      }
-      var total = debts.reduce(function(a,b){ return a + Math.max(0,b.balance); },0);
-      series.push(+total.toFixed(2));
-      monthLabels.push('Proj ' + month);
-      paymentTotals.push(+paidThisMonth.toFixed(2));
-    }
-    return {months:month, interest:totalInterest, totalStart:totalStart, debts:debts, series:series, extra:extra, monthLabels:monthLabels, paymentTotals:paymentTotals, actualMonths:actualMonths};
-  }
-  function buildMoneyPlan(result, extra){
-    extra = typeof extra === 'number' && isFinite(extra) ? extra : Number(result.extra || 0);
-    var totalMin = result.debts.reduce(function(sum, d){ return sum + d.min; }, 0);
-    var power = totalMin + extra;
-    var html = '';
-    html += '<p>Fastest payoff approach: pay every minimum, then throw every extra dollar at the smallest balance until it is gone. Do not split your extra payment across multiple debts.</p>';
-    html += '<div class="notice" style="margin:10px 0 14px;">Your current monthly attack power is <strong>' + esc(money(power)) + '</strong>. That is your minimum payments plus your extra payment working together.</div>';
-    if(result.actualMonths > 0){
-      html += '<div class="notice" style="margin:10px 0 14px;">Logged payment months already in this plan: <strong>' + esc(String(result.actualMonths)) + '</strong>. You can log multiple payments in the same month, and the chart will combine them before projecting the remaining payoff path.</div>';
-    }
-    html += '<div class="list">';
-    result.debts.forEach(function(d, idx){
-      var prevMins = result.debts.slice(0, idx).reduce(function(sum, x){ return sum + x.min; }, 0);
-      var attack = extra + d.min + prevMins;
-      var tip = idx === 0
-        ? 'Target this one first. Pay the minimums on the rest and send every extra dollar here.'
-        : 'When the debt above is gone, roll that freed payment here immediately. Do not increase spending just because a payment disappeared.';
-      html += '<div class="item" style="grid-template-columns:1fr auto;">'
-        + '<div><div style="font-weight:700;">' + esc(String(idx + 1) + '. ' + d.name) + '</div>'
-        + '<div class="small">Starting now at ' + esc(money(d.startBalance)) + ' · Original entered ' + esc(money(d.rawBalance)) + ' · Min ' + esc(money(d.min)) + ' · Rate ' + esc(String(d.rate.toFixed(2))) + '%</div>'
-        + '<div class="small">Logged so far: ' + esc(money(d.loggedTotal || 0)) + (d.lastLoggedKey ? ' · Last logged: ' + esc(debtMonthLabel(d.lastLoggedKey)) : '') + '</div>'
-        + '<div style="margin-top:6px;color:var(--text-2);">Attack payment when this becomes the focus: <strong>' + esc(money(attack)) + '/mo</strong>. ' + esc(tip) + '</div></div>'
-        + '<div class="small">Payoff month ' + esc(String(d.payoffMonth || 0)) + '</div></div>';
-    });
-    html += '</div>';
-    html += '<div style="margin-top:14px;"><h3 style="margin-bottom:8px;">How to speed this up</h3><p>Cut expenses hard for a season, sell unused stuff, pause non-essential subscriptions, use windfalls on the current target debt, and avoid adding new balances while you are cleaning this up. The win comes from intensity and focus, not from being perfect.</p></div>';
-    return html;
+  if (last === null) {
+    streak = 1;
+  } else if (last !== today) {
+    const diff = daysBetween(last, today);
+    streak = diff === 1 ? streak + 1 : 1;
   }
 
-  function bindMoneyResultActions(){
-    var list = document.getElementById('payoffList');
-    if(!list) return;
-    list.querySelectorAll('[data-mark-paid]').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        var idx = Number(btn.getAttribute('data-mark-paid'));
-        if(U.debts[idx]){
-          var remaining = getDebtRemainingBalance(U.debts[idx]);
-          if(remaining > 0){
-            if(!Array.isArray(U.debts[idx].payments)) U.debts[idx].payments = [];
-            U.debts[idx].payments.push({month:debtMonthKeyNow(), amount:+remaining.toFixed(2)});
-          }
-        }
-        save(); renderMoney(); rerunMoneyResultsIfVisible();
-        celebrate('💸','Marked paid','That debt is off the board and the graph was updated. Keep the snowball rolling.','Reward suggestion: look at the next smallest debt and stay aggressive.',0);
-      });
-    });
-    list.querySelectorAll('[data-result-log]').forEach(function(btn){
-      btn.addEventListener('click', function(){ promptDebtPayment(Number(btn.getAttribute('data-result-log'))); });
-    });
+  LS.set('last-open', today);
+  LS.set('streak', streak);
+
+  document.getElementById('s-streak').textContent = streak;
+  document.getElementById('s-resets').textContent = LS.get('total-resets', 0);
+  document.getElementById('s-wins').textContent   = LS.get('total-wins', 0);
+}
+
+// ────────────────────────────────────────────────────────────
+// MIND RESET
+// ────────────────────────────────────────────────────────────
+function initDump() { renderDumps(); }
+
+function newDump() {
+  const dumps = LS.get('dumps', []);
+  const n = LS.get('dump-n', 0) + 1;
+  LS.set('dump-n', n);
+
+  const now = new Date();
+  dumps.unshift({
+    id: n,
+    date: dateStr(now) + ' — ' + now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}),
+    q1:'', q2:'', q3:'', q4:'',
+    released: false
+  });
+  LS.set('dumps', dumps);
+
+  const resets = LS.get('total-resets', 0) + 1;
+  LS.set('total-resets', resets);
+  document.getElementById('s-resets').textContent = resets;
+
+  renderDumps();
+}
+
+function renderDumps() {
+  const dumps = LS.get('dumps', []);
+  const list  = document.getElementById('dump-list');
+  if (!dumps.length) {
+    list.innerHTML = '<div class="empty-state"><span class="es-glyph">&#9675;</span><div class="es-text">Your mind is clear right now.<br>Tap above when something needs a place to land.</div></div>';
+    return;
   }
+  list.innerHTML = dumps.map(d => `
+    <div class="dump-entry${d.released ? ' released' : ''}" id="dump-${d.id}">
+      <div class="dump-header">
+        <span class="dump-date">${d.date}</span>
+        <button class="dump-del" onclick="delDump(${d.id})">&#10005;</button>
+      </div>
+      <div class="dump-q">What is loud in my mind right now?</div>
+      <textarea class="dump-ta" placeholder="Write it all out…" oninput="saveDump(${d.id},'q1',this.value)">${esc(d.q1)}</textarea>
+      <div class="dump-q">What am I afraid I’ll forget?</div>
+      <textarea class="dump-ta" placeholder="List it here…" oninput="saveDump(${d.id},'q2',this.value)">${esc(d.q2)}</textarea>
+      <div class="dump-q">What can wait?</div>
+      <textarea class="dump-ta" placeholder="Give it permission to wait…" oninput="saveDump(${d.id},'q3',this.value)">${esc(d.q3)}</textarea>
+      <div class="dump-q">What do I need to release today?</div>
+      <textarea class="dump-ta" placeholder="Name it to release it…" oninput="saveDump(${d.id},'q4',this.value)">${esc(d.q4)}</textarea>
+      <button class="dump-release-btn" onclick="releaseDump(${d.id})">I feel lighter &#10022;</button>
+      <div class="release-complete">Your mind is a little lighter now.</div>
+    </div>`).join('');
+}
 
-  function renderPayoffTimeline(result){
-    var list = document.getElementById('payoffList');
-    if(!list) return;
-    list.innerHTML='';
-    result.debts.forEach(function(d){
-      var div = document.createElement('div');
-      div.className='item';
-      var loggedLine = '<div class="small">Remaining now ' + money(d.startBalance) + ' · Attack with up to '+money(d.attackPayment)+'/month' + ((d.loggedTotal||0) > 0 ? ' · Logged so far ' + money(d.loggedTotal) : '') + (d.lastLoggedKey ? ' · Last logged ' + esc(debtMonthLabel(d.lastLoggedKey)) : '') + ' · Multiple payments in one month are stored in your history.</div>';
-      div.innerHTML = '<div>✅</div><div><strong>'+esc(d.name)+'</strong>'+loggedLine+'</div><div class="small">Month '+esc(String(d.payoffMonth || 0))+'</div><div style="display:flex; gap:8px; flex-wrap:wrap;"><button type="button" class="ghost" data-result-log="'+d.origIndex+'">Log Payment</button><button type="button" class="soft" data-mark-paid="'+d.origIndex+'">Mark Paid ✓</button></div>';
-      list.appendChild(div);
-    });
-    bindMoneyResultActions();
+function saveDump(id, field, val) {
+  const dumps = LS.get('dumps', []);
+  const d = dumps.find(x => x.id === id);
+  if (d) { d[field] = val; LS.set('dumps', dumps); }
+}
+
+function delDump(id) {
+  LS.set('dumps', LS.get('dumps', []).filter(x => x.id !== id));
+  renderDumps();
+}
+
+function releaseDump(id) {
+  const dumps = LS.get('dumps', []);
+  const d = dumps.find(x => x.id === id);
+  if (d) {
+    d.released = true;
+    LS.set('dumps', dumps);
+    const el = document.getElementById('dump-' + id);
+    if (el) el.classList.add('released');
   }
-  function rerunMoneyResultsIfVisible(){
-    var box = document.getElementById('moneyResults');
-    if(!box || box.classList.contains('hidden')) return;
-    var result = snowballCalc();
-    if(!result) return;
-    document.getElementById('totalDebtKpi').textContent = money(result.totalStart);
-    document.getElementById('debtFreeKpi').textContent = result.months + ' mo';
-    document.getElementById('interestSavedKpi').textContent = money(result.interest);
-    document.getElementById('moneyPlanBox').innerHTML = buildMoneyPlan(result);
-    var snap = document.getElementById('moneySnapshotBox'); if(snap) snap.innerHTML = buildMoneySnapshot(result);
-    renderPayoffTimeline(result);
+}
+
+// ────────────────────────────────────────────────────────────
+// TODAY
+// ────────────────────────────────────────────────────────────
+let _winSaved = false;
+
+function initToday() {
+  [['feeling-field','feeling'],['p1','p1'],['p2','p2'],['p3','p3'],
+   ['release-field','release'],['win-field','win']].forEach(([id,k]) => {
+    const el = document.getElementById(id);
+    if (el) el.value = LS.get('f_'+k, '');
+  });
+  renderTasks();
+}
+
+function addTask() {
+  const inp = document.getElementById('task-in');
+  const val = inp.value.trim();
+  if (!val) return;
+  const tasks = LS.get('tasks', []);
+  tasks.push({ id: Date.now(), text: val, done: false });
+  LS.set('tasks', tasks);
+  inp.value = '';
+  renderTasks();
+}
+
+function renderTasks() {
+  const tasks = LS.get('tasks', []);
+  const list  = document.getElementById('task-list');
+  const prog  = document.getElementById('task-progress');
+
+  if (!tasks.length) { list.innerHTML = ''; prog.style.display = 'none'; return; }
+
+  list.innerHTML = tasks.map(t => `
+    <li class="task-item">
+      <div class="task-cb${t.done ? ' done' : ''}" onclick="toggleTask(${t.id})"></div>
+      <span class="task-text${t.done ? ' done' : ''}">${esc(t.text)}</span>
+      <button class="task-del" onclick="delTask(${t.id})">&#10005;</button>
+    </li>`).join('');
+
+  const done = tasks.filter(t => t.done).length;
+  prog.className = 'task-progress';
+  prog.style.display = 'inline-block';
+  prog.textContent = done === tasks.length
+    ? 'All done. You showed up today.'
+    : done + ' of ' + tasks.length + ' complete';
+}
+
+function toggleTask(id) {
+  const tasks = LS.get('tasks', []);
+  const t = tasks.find(x => x.id === id);
+  if (t) { t.done = !t.done; LS.set('tasks', tasks); renderTasks(); }
+}
+
+function delTask(id) {
+  LS.set('tasks', LS.get('tasks', []).filter(x => x.id !== id));
+  renderTasks();
+}
+
+function saveWin(val) {
+  sf('win', val);
+  if (!_winSaved && val.trim()) {
+    const wins = LS.get('total-wins', 0) + 1;
+    LS.set('total-wins', wins);
+    document.getElementById('s-wins').textContent = wins;
+    _winSaved = true;
   }
-  function buildMoneySnapshot(result){
-    if(!result || !Array.isArray(result.debts) || !result.debts.length){
-      return '<div class="small">No debts yet. Add at least one debt to see your starting point.</div>';
-    }
-    var rows = result.debts.map(function(d, i){
-      var paid = Math.max(0, (Number(d.rawBalance||0) - Number(d.startBalance||0)));
-      return '<div class="card" style="padding:14px 16px; margin:0 0 10px 0;">'+
-        '<div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:center;">'+
-        '<div><strong>'+esc((i+1)+'. '+(d.name||'Debt'))+'</strong><div class="small">Current balance: '+esc(money(d.startBalance||0))+' · Logged since setup: '+esc(money(paid))+'</div></div>'+
-        '<div class="small">Projected payoff month '+esc(String(d.payoffMonth||0))+'</div>'+
-        '</div></div>';
-    }).join('');
-    return '<div class="small" style="margin-bottom:10px;">This view keeps it simple: current balance now, what you have logged since setup, and the projected payoff month if you stay on plan.</div>'+rows;
+}
+
+// ────────────────────────────────────────────────────────────
+// MY WEEK
+// ────────────────────────────────────────────────────────────
+function initWeek() {
+  ['week-focus','week-release'].forEach(k => {
+    const el = document.getElementById(k);
+    if (el) el.value = LS.get('f_'+k, '');
+  });
+  for (let i = 0; i < 7; i++) {
+    const el = document.getElementById('day-'+i);
+    if (el) el.value = LS.get('f_day-'+i, '');
   }
+}
 
-  function drawDebtChart(series, debts, monthLabels, paymentTotals){
-    var c = document.getElementById('debtChart');
-    if(!c) return;
-    var ctx = c.getContext('2d');
-    var w = c.width, h = c.height;
-    ctx.clearRect(0,0,w,h);
-    var styles = getComputedStyle(document.body);
-    var card2 = styles.getPropertyValue('--card-2').trim();
-    var border = styles.getPropertyValue('--border').trim();
-    var brand = styles.getPropertyValue('--brand').trim();
-    var accent = styles.getPropertyValue('--accent').trim() || brand;
-    var text = styles.getPropertyValue('--text').trim();
-    var text2 = styles.getPropertyValue('--text-2').trim();
-    ctx.fillStyle = card2;
-    ctx.fillRect(0,0,w,h);
+// ────────────────────────────────────────────────────────────
+// GOALS
+// ────────────────────────────────────────────────────────────
+function initGoals() { renderGoals(); }
 
-    monthLabels = Array.isArray(monthLabels) ? monthLabels : [];
-    paymentTotals = Array.isArray(paymentTotals) ? paymentTotals : [];
-    var padL = 76, padR = 26, padT = 24, padB = 54;
-    var plotW = w - padL - padR, plotH = h - padT - padB;
-    var max = Math.max.apply(null, series.concat([1]));
-    var gridSteps = 5;
+function addGoal() {
+  const goals = LS.get('goals', []);
+  goals.push({ id: Date.now(), title: '', milestones: [] });
+  LS.set('goals', goals);
+  renderGoals();
+}
 
-    ctx.font = '12px DM Sans, sans-serif';
-    ctx.textBaseline = 'middle';
-    ctx.strokeStyle = border;
-    ctx.lineWidth = 1;
-
-    for(var i=0;i<gridSteps;i++){
-      var val = max - (max * (i/(gridSteps-1)));
-      var y = padT + (plotH * (i/(gridSteps-1)));
-      ctx.beginPath(); ctx.moveTo(padL,y); ctx.lineTo(w-padR,y); ctx.stroke();
-      ctx.fillStyle = text2;
-      ctx.textAlign = 'right';
-      ctx.fillText(money(val), padL - 10, y);
-    }
-
-    var points = [];
-    series.forEach(function(v, idx){
-      var x = padL + (plotW * (idx/Math.max(1,series.length-1)));
-      var y = padT + plotH - ((v/max) * plotH);
-      points.push({x:x,y:y,v:v,idx:idx});
-    });
-    if(!points.length) return;
-
-    var currentIdx = 0;
-    for(var pi=0; pi<paymentTotals.length; pi++){
-      if(Number(paymentTotals[pi] || 0) > 0) currentIdx = pi;
-    }
-    if(currentIdx >= points.length) currentIdx = points.length - 1;
-
-    function strokeSegment(startIdx, endIdx, color, width, dashed){
-      if(endIdx <= startIdx) return;
-      ctx.save();
-      ctx.strokeStyle = color;
-      ctx.lineWidth = width;
-      if(dashed) ctx.setLineDash([8,6]); else ctx.setLineDash([]);
-      ctx.beginPath();
-      for(var i=startIdx; i<=endIdx; i++){
-        var p = points[i];
-        if(i===startIdx) ctx.moveTo(p.x,p.y); else ctx.lineTo(p.x,p.y);
-      }
-      ctx.stroke();
-      ctx.restore();
-    }
-
-    if(currentIdx > 0){
-      strokeSegment(0, currentIdx, brand, 4, false);
-    }
-    if(currentIdx < points.length - 1){
-      strokeSegment(currentIdx, points.length - 1, accent, 3, true);
-    } else if(points.length > 1){
-      strokeSegment(0, points.length - 1, brand, 4, false);
-    }
-
-    function drawPoint(p, color, radius){
-      ctx.fillStyle = card2;
-      ctx.beginPath(); ctx.arc(p.x, p.y, radius, 0, Math.PI*2); ctx.fill();
-      ctx.strokeStyle = color; ctx.lineWidth = 3; ctx.stroke();
-    }
-    drawPoint(points[0], brand, 5);
-    drawPoint(points[currentIdx], brand, 6);
-    if(points.length > 1) drawPoint(points[points.length-1], accent, 5);
-
-    function labelBox(p, title, subtitle, align){
-      ctx.save();
-      ctx.font = 'bold 12px DM Sans, sans-serif';
-      var titleW = ctx.measureText(title).width;
-      ctx.font = '10px DM Sans, sans-serif';
-      var subW = subtitle ? ctx.measureText(subtitle).width : 0;
-      var boxW = Math.max(86, Math.max(titleW, subW) + 18);
-      var boxH = subtitle ? 34 : 22;
-      var x = p.x - boxW/2;
-      if(align === 'left') x = p.x + 10;
-      if(align === 'right') x = p.x - boxW - 10;
-      x = Math.max(padL, Math.min(w - padR - boxW, x));
-      var y = p.y - boxH - 12;
-      if(y < padT) y = p.y + 12;
-      ctx.fillStyle = card2;
-      roundRect(ctx, x, y, boxW, boxH, 10, true, false);
-      ctx.strokeStyle = border;
-      roundRect(ctx, x, y, boxW, boxH, 10, false, true);
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillStyle = text;
-      ctx.font = 'bold 12px DM Sans, sans-serif';
-      ctx.fillText(title, x + boxW/2, y + (subtitle ? 12 : boxH/2));
-      if(subtitle){
-        ctx.fillStyle = text2;
-        ctx.font = '10px DM Sans, sans-serif';
-        ctx.fillText(subtitle, x + boxW/2, y + 24);
-      }
-      ctx.restore();
-    }
-
-    var currentPaid = Number(paymentTotals[currentIdx] || 0);
-    labelBox(points[currentIdx], money(points[currentIdx].v), currentIdx > 0 ? ('Now · Paid ' + money(currentPaid || 0)) : 'Current balance', currentIdx > points.length - 4 ? 'right' : 'left');
-    if(points.length > 1){
-      labelBox(points[points.length-1], money(points[points.length-1].v), 'Projected payoff', 'right');
-    }
-
-    ctx.save();
-    ctx.fillStyle = text2;
-    ctx.font = '11px DM Sans, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'top';
-    var marks = [0];
-    if(currentIdx > 0 && currentIdx < points.length - 1) marks.push(currentIdx);
-    if(points.length - 1 !== 0) marks.push(points.length - 1);
-    marks.filter(function(v, i, a){ return a.indexOf(v) === i; }).forEach(function(m){
-      var x = padL + (plotW * (m/Math.max(1,series.length-1)));
-      var label = m === 0 ? 'Now' : (m === currentIdx && currentIdx > 0 ? 'Now' : (m === points.length - 1 ? 'Projected payoff' : (monthLabels[m] || ('Month ' + m))));
-      ctx.fillText(label, x, h - padB + 12);
-    });
-    ctx.restore();
-
-    if(currentIdx > 0 && currentIdx < points.length - 1){
-      ctx.save();
-      ctx.strokeStyle = border;
-      ctx.setLineDash([4,4]);
-      ctx.beginPath();
-      ctx.moveTo(points[currentIdx].x, padT);
-      ctx.lineTo(points[currentIdx].x, h - padB);
-      ctx.stroke();
-      ctx.restore();
-    }
+function renderGoals() {
+  const goals = LS.get('goals', []);
+  const list  = document.getElementById('goals-list');
+  if (!goals.length) {
+    list.innerHTML = '<div class="empty-state"><span class="es-glyph">&#9678;</span><div class="es-text">Your goals will appear here.<br>Start by adding one small aspiration.</div></div>';
+    return;
   }
-  function roundRect(ctx, x, y, width, height, radius, fill, stroke){
-    if (typeof radius === 'number') radius = {tl: radius, tr: radius, br: radius, bl: radius};
-    else radius = radius || {tl:0,tr:0,br:0,bl:0};
-    ctx.beginPath();
-    ctx.moveTo(x + radius.tl, y);
-    ctx.lineTo(x + width - radius.tr, y);
-    ctx.quadraticCurveTo(x + width, y, x + width, y + radius.tr);
-    ctx.lineTo(x + width, y + height - radius.br);
-    ctx.quadraticCurveTo(x + width, y + height, x + width - radius.br, y + height);
-    ctx.lineTo(x + radius.bl, y + height);
-    ctx.quadraticCurveTo(x, y + height, x, y + height - radius.bl);
-    ctx.lineTo(x, y + radius.tl);
-    ctx.quadraticCurveTo(x, y, x + radius.tl, y);
-    ctx.closePath();
-    if(fill) ctx.fill();
-    if(stroke) ctx.stroke();
-  }
-  function renderWeek(){
-    var grid = document.getElementById('weekGrid');
-    grid.innerHTML = '';
-    var now = new Date();
-    var start = new Date(now);
-    start.setDate(now.getDate() - now.getDay());
-    for(var i=0;i<7;i++){
-      var d = new Date(start); d.setDate(start.getDate()+i);
-      var key = 'week-'+todayKey(d);
-      var entry = U.calNotes[key] || {};
-      var div = document.createElement('div');
-      div.className = 'week-day';
-      div.innerHTML = '<div class="small">'+d.toLocaleDateString(undefined,{weekday:'short'})+'</div><h3>'+d.getDate()+'</h3><input data-week-note="'+key+'" maxlength="140" placeholder="Daily goal / intention" value="'+esc(entry.goal || '')+'">';
-      grid.appendChild(div);
-    }
-    grid.querySelectorAll('[data-week-note]').forEach(function(inp){
-      inp.addEventListener('input', function(){
-        var key = inp.getAttribute('data-week-note');
-        if(!U.calNotes[key]) U.calNotes[key] = {};
-        U.calNotes[key].goal = sanitizeInput(inp.value, 140);
-        save();
-      });
-    });
-  }
-  function renderMonth(){
-    var y = U.monthView.y, m = U.monthView.m;
-    document.getElementById('monthTitle').textContent = new Date(y,m,1).toLocaleDateString(undefined,{month:'long', year:'numeric'});
-    var grid = document.getElementById('monthGrid');
-    grid.innerHTML = '';
-    var first = new Date(y,m,1);
-    var startDay = first.getDay();
-    var days = new Date(y,m+1,0).getDate();
-    for(var i=0;i<startDay;i++){
-      var empty = document.createElement('div');
-      empty.className='month-day'; empty.style.visibility='hidden';
-      grid.appendChild(empty);
-    }
-    var today = todayKey();
-    for(var d=1; d<=days; d++){
-      var key = y+'-'+(m+1)+'-'+d;
-      var div = document.createElement('div');
-      var hasNote = U.calNotes[key] && (U.calNotes[key].goal || U.calNotes[key].note);
-      div.className = 'month-day' + (key===today ? ' today':'');
-      div.setAttribute('data-day-key', key);
-      div.innerHTML = '<div class="num">'+d+'</div>' + (hasNote ? '<div class="note-dot"></div>' : '');
-      grid.appendChild(div);
-    }
-    grid.querySelectorAll('[data-day-key]').forEach(function(day){
-      day.addEventListener('click', function(){
-        selectedMonthKey = day.getAttribute('data-day-key');
-        var entry = U.calNotes[selectedMonthKey] || {};
-        document.getElementById('monthEntryTitle').textContent = 'Details for ' + selectedMonthKey;
-        document.getElementById('monthDayGoal').value = entry.goal || '';
-        document.getElementById('monthDayNote').value = entry.note || '';
-      });
-    });
-  }
-  function showSetup(){
-    document.getElementById('setupModal').classList.add('on');
-    renderSetup();
-  }
-  function renderSetup(){
-    var step = Number(U.setupStep||0);
-    var dots = document.getElementById('setupDots');
-    dots.innerHTML = '';
-    for(var i=0;i<6;i++){
-      var dot = document.createElement('div'); dot.className='dot' + (i===step?' on':'');
-      dots.appendChild(dot);
-    }
-    document.querySelectorAll('.setup-pane').forEach(function(p){ p.classList.remove('on'); });
-    var pane = document.getElementById('setup'+step);
-    if(pane) pane.classList.add('on');
+  list.innerHTML = goals.map(g => {
+    const total = g.milestones.length;
+    const done  = g.milestones.filter(m => m.done).length;
+    const pct   = total > 0 ? Math.round(done / total * 100) : 0;
+    const track = total > 0 ? `
+      <div class="goal-progress-track"><div class="goal-progress-fill" style="width:${pct}%"></div></div>
+      <div class="goal-progress-text">${pct}% complete — ${done} of ${total} milestones</div>` : '';
+    return `
+    <div class="goal-card" id="goal-${g.id}">
+      <div class="goal-header">
+        <input class="goal-title-in" type="text" placeholder="Name your goal…" value="${esc(g.title)}" oninput="saveGoalTitle(${g.id},this.value)">
+        <button class="goal-del" onclick="delGoal(${g.id})">&#10005;</button>
+      </div>
+      ${track}
+      <ul class="milestone-list">
+        ${g.milestones.map(m => `
+          <li class="milestone-item">
+            <div class="ms-cb${m.done ? ' done' : ''}" onclick="toggleMs(${g.id},${m.id})"></div>
+            <span class="ms-text${m.done ? ' done' : ''}">${esc(m.text)}</span>
+            <button class="ms-del" onclick="delMs(${g.id},${m.id})">&#10005;</button>
+          </li>`).join('')}
+      </ul>
+      <div class="ms-add-row">
+        <input type="text" placeholder="Add a milestone…" id="ms-in-${g.id}" onkeydown="if(event.key==='Enter')addMs(${g.id})">
+        <button class="ms-add-btn" onclick="addMs(${g.id})">+ Add</button>
+      </div>
+    </div>`;
+  }).join('');
+}
 
-    document.getElementById('setupName').value = U.name || '';
-    document.getElementById('setupGoal').value = U.goal || '';
-    document.getElementById('setupWhy').value = U.why || '';
-    document.querySelectorAll('.chip.ch').forEach(function(b){
-      b.classList.toggle('on', U.challenges.indexOf(b.getAttribute('data-val')) > -1);
-    });
-    document.querySelectorAll('.chip.push').forEach(function(b){
-      b.classList.toggle('on', U.push === b.getAttribute('data-val'));
-    });
-    document.querySelectorAll('.chip.gs').forEach(function(b){
-      b.classList.toggle('on', U.growthStyle === b.getAttribute('data-val'));
-    });
+function saveGoalTitle(id, val) {
+  const goals = LS.get('goals', []);
+  const g = goals.find(x => x.id === id);
+  if (g) { g.title = val; LS.set('goals', goals); }
+}
+
+function delGoal(id) {
+  LS.set('goals', LS.get('goals', []).filter(x => x.id !== id));
+  renderGoals();
+}
+
+function addMs(gid) {
+  const inp = document.getElementById('ms-in-'+gid);
+  const val = inp.value.trim();
+  if (!val) return;
+  const goals = LS.get('goals', []);
+  const g = goals.find(x => x.id === gid);
+  if (g) { g.milestones.push({ id: Date.now(), text: val, done: false }); LS.set('goals', goals); renderGoals(); }
+}
+
+function toggleMs(gid, mid) {
+  const goals = LS.get('goals', []);
+  const g = goals.find(x => x.id === gid);
+  if (g) {
+    const m = g.milestones.find(x => x.id === mid);
+    if (m) { m.done = !m.done; LS.set('goals', goals); renderGoals(); }
   }
-  function validateSetupStep(step){
-    if(step===1){
-      U.name = sanitizeInput(document.getElementById('setupName').value,30);
-      return !!U.name;
-    }
-    if(step===2){
-      U.goal = sanitizeInput(document.getElementById('setupGoal').value,120);
-      U.why = sanitizeInput(document.getElementById('setupWhy').value,300);
-      return !!U.goal;
-    }
-    if(step===3){ return Array.isArray(U.challenges) && U.challenges.length > 0; }
-    return true;
+}
+
+function delMs(gid, mid) {
+  const goals = LS.get('goals', []);
+  const g = goals.find(x => x.id === gid);
+  if (g) { g.milestones = g.milestones.filter(x => x.id !== mid); LS.set('goals', goals); renderGoals(); }
+}
+
+// ────────────────────────────────────────────────────────────
+// HABITS
+// ────────────────────────────────────────────────────────────
+function initHabits() { renderHabits(); }
+
+function addHabit() {
+  const inp = document.getElementById('habit-in');
+  const val = inp.value.trim();
+  if (!val) return;
+  const habits = LS.get('habits', []);
+  habits.push({ id: Date.now(), name: val, days: [0,0,0,0,0,0,0] });
+  LS.set('habits', habits);
+  inp.value = '';
+  renderHabits();
+}
+
+function renderHabits() {
+  const habits = LS.get('habits', []);
+  const list   = document.getElementById('habits-list');
+  if (!habits.length) {
+    list.innerHTML = '<div class="empty-state" style="padding:20px 0"><span class="es-text">Add your first habit above. Each dot you tap is a quiet act of self-respect.</span></div>';
+    return;
   }
-  function finishSetup(){
-    U.name = sanitizeInput(document.getElementById('setupName').value,30);
-    U.goal = sanitizeInput(document.getElementById('setupGoal').value,120);
-    U.why = sanitizeInput(document.getElementById('setupWhy').value,300);
-    U.setupStep = 6;
-    ensureDefaults();
-    save();
-    document.getElementById('setupModal').classList.remove('on');
-    celebrate('✨','System ready','Your Focus Mode is live. Start with one clear move.','Reward suggestion: take a breath, then set today’s MIT.',0);
-    renderAll();
-  }
-  function exportJSON(){
-    var copy = JSON.parse(JSON.stringify(U));
-    var blob = new Blob([JSON.stringify(copy,null,2)], {type:'application/json'});
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'clear-mind-co-backup.json';
-    a.click();
-    setTimeout(function(){ URL.revokeObjectURL(a.href); },500);
-  }
-  function validImportShape(obj){
-    if(!obj || typeof obj !== 'object') return false;
-    var keys = ['name','goal','why','challenges','push','growthStyle','tasks','goals','jEntries','habits','calNotes'];
-    return keys.every(function(k){ return Object.prototype.hasOwnProperty.call(obj,k); });
-  }
-  function exportICS(){
-    var today = new Date();
-    var y = today.getFullYear(), m = String(today.getMonth()+1).padStart(2,'0'), d = String(today.getDate()).padStart(2,'0');
-    var date = ''+y+m+d;
-    var text = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Clear Mind Co//Focus Mode//EN\n";
-    U.tasks.filter(function(t){ return !t.done; }).forEach(function(t, idx){
-      text += "BEGIN:VTODO\nUID:cmc-"+Date.now()+"-"+idx+"\nDTSTAMP:"+date+"T090000Z\nDUE;VALUE=DATE:"+date+"\nSUMMARY:"+String(t.name).replace(/\n/g,' ')+"\nEND:VTODO\n";
-    });
-    text += "END:VCALENDAR";
-    var blob = new Blob([text], {type:'text/calendar'});
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'cmc-tasks.ics';
-    a.click();
-    setTimeout(function(){ URL.revokeObjectURL(a.href); },500);
-  }
-  function setupListeners(){
-    document.querySelectorAll('.subtabs button').forEach(function(btn){
-      btn.addEventListener('click', function(){ goPage(btn.getAttribute('data-page')); });
-    });
-    document.querySelectorAll('.goto').forEach(function(btn){
-      btn.addEventListener('click', function(){ goPage(btn.getAttribute('data-page')); });
-    });
-    document.getElementById('coachBtn').addEventListener('click', function(){ goPage('coach'); });
-    document.getElementById('themeBtn').addEventListener('click', function(){
-      document.body.classList.toggle('dark-mode');
-      saveTheme(document.body.classList.contains('dark-mode') ? 'dark' : 'light');
-      renderMoney();
-      if(!document.getElementById('moneyResults').classList.contains('hidden')){
-        var r = snowballCalc(); if(r) drawDebtChart(r.series, r.debts);
-      }
-    });
-    document.getElementById('weekBtn').addEventListener('click', function(){ document.getElementById('weekModal').classList.add('on'); });
-    document.getElementById('monthBtn').addEventListener('click', function(){ document.getElementById('monthModal').classList.add('on'); });
-    document.querySelector('.closeWeek').addEventListener('click', function(){ document.getElementById('weekModal').classList.remove('on'); });
-    document.querySelector('.closeMonth').addEventListener('click', function(){ document.getElementById('monthModal').classList.remove('on'); });
-    document.getElementById('closeCeleBtn').addEventListener('click', function(){ document.getElementById('celeModal').classList.remove('on'); });
+  list.innerHTML = habits.map(h => `
+    <div class="habit-row">
+      <div class="habit-name" title="${esc(h.name)}">${esc(h.name)}</div>
+      ${h.days.map((d,i) => `<div class="habit-dot${d ? ' done' : ''}" onclick="toggleHabit(${h.id},${i})"></div>`).join('')}
+    </div>`).join('');
+}
 
-    document.getElementById('brainDumpToggle').addEventListener('click', function(){
-      document.getElementById('brainDumpBox').classList.toggle('hidden');
-      document.getElementById('brainChevron').textContent = document.getElementById('brainDumpBox').classList.contains('hidden') ? '＋' : '−';
-    });
-    document.getElementById('brainDumpText').addEventListener('input', function(){
-      U.brainDump = sanitizeInput(this.value, 4000); save();
-    });
-    document.getElementById('organizeDumpBtn').addEventListener('click', organizeDump);
+function toggleHabit(id, day) {
+  const habits = LS.get('habits', []);
+  const h = habits.find(x => x.id === id);
+  if (h) { h.days[day] = h.days[day] ? 0 : 1; LS.set('habits', habits); renderHabits(); }
+}
 
-    document.getElementById('addTaskBtn').addEventListener('click', function(){
-      var name = sanitizeInput(document.getElementById('taskInput').value,120);
-      var pri = document.getElementById('taskPriority').value;
-      if(!name) return;
-      U.tasks.push({name:name, done:false, pri:pri});
-      document.getElementById('taskInput').value = '';
-      save(); renderAll();
-    });
-    document.getElementById('icsBtn').addEventListener('click', exportICS);
-    document.getElementById('mitDoneBtn').addEventListener('click', function(){
-      var mit = getMIT();
-      if(!mit) return;
-      mit.done = true;
-      celebrate('✅','MIT complete','That was the one thing. That matters.','Reward suggestion: take 60 seconds, then choose the next clean move.',10);
-      save(); renderAll();
-    });
+// ────────────────────────────────────────────────────────────
+// JOURNAL
+// ────────────────────────────────────────────────────────────
+let jPromptIdx = 0;
 
-    document.getElementById('addGoalBtn').addEventListener('click', function(){
-      var name = sanitizeInput(document.getElementById('goalName').value,120);
-      if(!name) return;
-      U.goals.push({
-        name:name,
-        why:sanitizeInput(document.getElementById('goalWhy').value,200),
-        pct:0,
-        cat:document.getElementById('goalCat').value,
-        date:document.getElementById('goalDate').value || ''
-      });
-      document.getElementById('goalName').value='';
-      document.getElementById('goalWhy').value='';
-      document.getElementById('goalDate').value='';
-      save(); renderAll();
-    });
-    ['align1','align2','align3'].forEach(function(id, idx){
-      document.getElementById(id).addEventListener('input', function(){
-        var key = idx===0?'a':idx===1?'b':'c';
-        U.align[key] = sanitizeInput(this.value,200); save();
-      });
-    });
-    document.getElementById('logWinBtn').addEventListener('click', function(){
-      celebrate('🏆','Win logged','Count your progress or your brain will erase it.','Reward suggestion: write one line about why this win matters.',5);
-    });
+function initJournal() {
+  const now = new Date();
+  document.getElementById('j-date').textContent = dateStr(now);
 
-    document.getElementById('startTimerBtn').addEventListener('click', function(){
-      if(timerRunning) return;
-      timerRunning = true;
-      document.getElementById('timerPhase').textContent = "Focus. You've got this.";
-      timerInt = setInterval(function(){
-        timerSecs--;
-        document.getElementById('timerDisplay').textContent = fmtTime(Math.max(0,timerSecs));
-        if(timerSecs <= 0){
-          clearInterval(timerInt); timerInt = null; timerRunning = false;
-          document.getElementById('timerPhase').textContent = 'Session complete';
-          celebrate('⏱️','Focus session complete','You stayed with it. That is a real win.','Reward suggestion: stand up, stretch, then decide whether to run another.',15);
-        }
-      },1000);
-    });
-    document.getElementById('pauseTimerBtn').addEventListener('click', function(){
-      if(timerInt){ clearInterval(timerInt); timerInt=null; timerRunning=false; document.getElementById('timerPhase').textContent='Ready'; }
-    });
-    document.getElementById('resetTimerBtn').addEventListener('click', function(){
-      if(timerInt){ clearInterval(timerInt); timerInt=null; }
-      timerRunning=false; timerSecs=1500;
-      document.getElementById('timerDisplay').textContent='25:00';
-      document.getElementById('timerPhase').textContent='Ready';
-    });
-    document.getElementById('avoidTask').addEventListener('input', function(){ U.focus.avoid = sanitizeInput(this.value,120); save(); });
-    document.querySelectorAll('.stepInput').forEach(function(inp, idx){
-      inp.addEventListener('input', function(){
-        U.focus.steps[idx] = sanitizeInput(this.value,100); save();
-      });
-    });
+  const stored = LS.get('j-prompt-idx');
+  jPromptIdx = stored !== null ? stored : (now.getDate() % J_PROMPTS.length);
+  document.getElementById('j-prompt').textContent = J_PROMPTS[jPromptIdx];
 
-    document.getElementById('addHabitBtn').addEventListener('click', function(){
-      var name = sanitizeInput(document.getElementById('habitInput').value,80);
-      if(!name) return;
-      U.habits.push({name:name, streak:0, done:false, msg:'Good.', tip:''});
-      document.getElementById('habitInput').value='';
-      save(); renderAll();
-    });
-    document.querySelectorAll('.mood').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        U.mood = btn.getAttribute('data-mood');
-        pushCoachMessage(moodCoachReply(U.mood));
-        save(); renderHabits(); renderCoach();
-      });
-    });
+  const draft = LS.get('f_j-today', '');
+  document.getElementById('j-textarea').value = draft;
+  updateJCount(draft);
+  renderJEntries();
+}
 
-    document.getElementById('saveJournalBtn').addEventListener('click', function(){
-      var txt = sanitizeInput(document.getElementById('journalText').value,5000);
-      if(!txt) return;
-      U.jEntries.push({text:txt, date:fullDate()});
-      document.getElementById('journalText').value='';
-      celebrate('📝','Entry saved','You got it out instead of carrying it around.','Reward suggestion: close your eyes for ten seconds and breathe.',5);
-      save(); renderAll();
-    });
+function cyclePrompt() {
+  const el = document.getElementById('j-prompt');
+  el.style.opacity = '0';
+  setTimeout(() => {
+    jPromptIdx = (jPromptIdx + 1) % J_PROMPTS.length;
+    LS.set('j-prompt-idx', jPromptIdx);
+    el.textContent = J_PROMPTS[jPromptIdx];
+    el.style.opacity = '1';
+  }, 160);
+}
 
-    document.querySelectorAll('.qchip').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        document.getElementById('chatInput').value = btn.textContent;
-        sendCoach();
-      });
-    });
-    document.getElementById('sendChatBtn').addEventListener('click', sendCoach);
-    document.getElementById('chatInput').addEventListener('keydown', function(e){
-      if(e.key === 'Enter'){ e.preventDefault(); sendCoach(); }
-    });
-    document.getElementById('saveApiKeyBtn').addEventListener('click', function(){
-      var v = sanitizeInput(document.getElementById('apiKeyInput').value,200);
-      if(v && !validApiKey(v)){
-        celebrate('🔒','Key format looks wrong','That API key does not match the expected format.','Paste a valid key that starts with sk-ant-.',0);
-        return;
-      }
-      setApiKey(v);
-      celebrate('🔑','Saved locally','Your API key was stored only in this browser on this device.','You can remove it anytime by clearing the field and saving again.',0);
-    });
+function jUpdate() {
+  const val = document.getElementById('j-textarea').value;
+  sf('j-today', val);
+  updateJCount(val);
+}
 
-    document.getElementById('addDebtRowBtn').addEventListener('click', function(){
-      U.debts.push({name:'', balance:'', min:'', rate:'', payments:[]}); save(); renderMoney();
-    });
-    document.getElementById('calcSnowballBtn').addEventListener('click', function(){
-      var result = snowballCalc();
-      if(!result) return;
-      document.getElementById('moneyResults').classList.remove('hidden');
-      document.getElementById('debtProgBar').style.width = '100%';
-      document.getElementById('totalDebtKpi').textContent = money(result.totalStart);
-      document.getElementById('debtFreeKpi').textContent = result.months + ' mo';
-      document.getElementById('interestSavedKpi').textContent = money(result.interest);
-      renderPayoffTimeline(result);
-      document.getElementById('moneyPlanBox').innerHTML = buildMoneyPlan(result);
-      var snap = document.getElementById('moneySnapshotBox'); if(snap) snap.innerHTML = buildMoneySnapshot(result);
-    });
+function updateJCount(text) {
+  const w = text.trim() ? text.trim().split(/\s+/).length : 0;
+  document.getElementById('j-count').textContent = w + (w === 1 ? ' word' : ' words');
+}
 
-    document.getElementById('exportBtn').addEventListener('click', exportJSON);
-    document.getElementById('importBtn').addEventListener('click', function(){ document.getElementById('importFile').click(); });
-    document.getElementById('importFile').addEventListener('change', function(e){
-      var file = e.target.files && e.target.files[0];
-      if(!file) return;
-      if(!/\.json$/i.test(file.name) || file.size > 2*1024*1024){
-        celebrate('⚠️','Import failed','Use a JSON file under 2MB.','Try the export file from this app.',0);
-        return;
-      }
-      var reader = new FileReader();
-      reader.onload = function(){
-        try{
-          var obj = JSON.parse(String(reader.result || '{}'));
-          if(!validImportShape(obj)) throw new Error('bad shape');
-          applyLoadedData(obj); save(); renderAll();
-          celebrate('📦','Import complete','Your data was restored on this device.','Look through each page to confirm everything looks right.',0);
-        }catch(err){
-          celebrate('⚠️','Import failed','That file is not a valid Clear Mind Co. backup.','Use the export file created by this app.',0);
-        }
-      };
-      reader.readAsText(file);
-    });
+function saveJEntry() {
+  const text = document.getElementById('j-textarea').value.trim();
+  if (!text) return;
+  const entries = LS.get('j-entries', []);
+  entries.unshift({ id: Date.now(), date: dateStr(new Date()), prompt: J_PROMPTS[jPromptIdx], text });
+  LS.set('j-entries', entries);
+  document.getElementById('j-textarea').value = '';
+  LS.set('f_j-today', '');
+  updateJCount('');
+  renderJEntries();
+}
 
-    document.getElementById('startTourBtn').addEventListener('click', function(){ startTour(); });
-    document.getElementById('skipTourBtn').addEventListener('click', endTour);
-    document.getElementById('nextTourBtn').addEventListener('click', nextTour);
+function clearJDraft() {
+  document.getElementById('j-textarea').value = '';
+  LS.set('f_j-today', '');
+  updateJCount('');
+}
 
-    document.getElementById('monthPrev').addEventListener('click', function(){
-      U.monthView.m--;
-      if(U.monthView.m < 0){ U.monthView.m = 11; U.monthView.y--; }
-      save(); renderMonth();
-    });
-    document.getElementById('monthNext').addEventListener('click', function(){
-      U.monthView.m++;
-      if(U.monthView.m > 11){ U.monthView.m = 0; U.monthView.y++; }
-      save(); renderMonth();
-    });
-    document.getElementById('saveMonthDayBtn').addEventListener('click', function(){
-      if(!selectedMonthKey) return;
-      if(!U.calNotes[selectedMonthKey]) U.calNotes[selectedMonthKey] = {};
-      U.calNotes[selectedMonthKey].goal = sanitizeInput(document.getElementById('monthDayGoal').value,150);
-      U.calNotes[selectedMonthKey].note = sanitizeInput(document.getElementById('monthDayNote').value,500);
-      save(); renderMonth(); celebrate('🗓️','Day saved','Your note is attached to that date.','Close the calendar and keep moving.',0);
-    });
+function renderJEntries() {
+  const entries = LS.get('j-entries', []);
+  const container = document.getElementById('journal-past');
+  if (!entries.length) { container.innerHTML = ''; return; }
+  container.innerHTML = '<div class="past-heading">Past Entries</div>' +
+    entries.map(e => `
+    <div class="j-entry">
+      <div class="j-entry-header">
+        <span class="j-entry-date">${e.date}</span>
+        <button class="j-entry-del" onclick="delJEntry(${e.id})">&#10005;</button>
+      </div>
+      <div class="j-entry-prompt">${esc(e.prompt)}</div>
+      <div class="j-entry-text">${esc(e.text)}</div>
+    </div>`).join('');
+}
 
-    document.getElementById('todayBtn').addEventListener('click', function(){ goPage('home'); });
+function delJEntry(id) {
+  LS.set('j-entries', LS.get('j-entries', []).filter(x => x.id !== id));
+  renderJEntries();
+}
 
-    document.getElementById('setupStartBtn').addEventListener('click', function(){ U.setupStep=1; renderSetup(); });
-    document.querySelectorAll('.backSetup').forEach(function(btn){
-      btn.addEventListener('click', function(){ U.setupStep=Math.max(0,Number(U.setupStep)-1); renderSetup(); });
-    });
-    document.querySelectorAll('.nextSetup').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        if(!validateSetupStep(Number(U.setupStep))){
-          celebrate('⚠️','One thing first','Complete this step before moving on.','Keep it simple and honest.',0);
-          return;
-        }
-        U.setupStep=Math.min(5,Number(U.setupStep)+1); renderSetup();
-      });
-    });
-    document.querySelectorAll('.chip.ch').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        var v = btn.getAttribute('data-val');
-        var idx = U.challenges.indexOf(v);
-        if(idx > -1) U.challenges.splice(idx,1); else U.challenges.push(v);
-        renderSetup();
-      });
-    });
-    document.querySelectorAll('.chip.push').forEach(function(btn){
-      btn.addEventListener('click', function(){ U.push = btn.getAttribute('data-val'); renderSetup(); });
-    });
-    document.querySelectorAll('.chip.gs').forEach(function(btn){
-      btn.addEventListener('click', function(){ U.growthStyle = btn.getAttribute('data-val'); renderSetup(); });
-    });
-    document.getElementById('finishSetupBtn').addEventListener('click', function(){
-      if(!validateSetupStep(2) || !validateSetupStep(3)){ celebrate('⚠️','Finish the setup','Add your goal and at least one challenge.','Then build your system.',0); return; }
-      finishSetup();
-    });
-  }
-  async function sendCoach(){
-    var input = document.getElementById('chatInput');
-    var txt = sanitizeInput(input.value,300);
-    if(!txt) return;
-    U.coachMessages.push({role:'you', text:txt});
-    input.value = '';
-    renderCoach(); save();
-    var reply = await callCoachAI(txt);
-    U.coachMessages.push({role:'ai', text:reply});
-    renderCoach(); save();
-  }
-  function money(n){
-    return new Intl.NumberFormat(undefined,{style:'currency',currency:'USD',maximumFractionDigits:0}).format(Number(n||0));
-  }
-  function startTour(){
-    tourStep = 0; renderTour();
-  }
-  function nextTour(){
-    tourStep++;
-    if(tourStep >= tourSteps.length){ endTour(); return; }
-    renderTour();
-  }
-  function endTour(){
-    tourStep = -1;
-    document.getElementById('tourCard').classList.remove('on');
-  }
-  function renderTour(){
-    if(tourStep < 0 || tourStep >= tourSteps.length){ endTour(); return; }
-    var step = tourSteps[tourStep];
-    goPage(step.page);
-    document.getElementById('tourCard').classList.add('on');
-    var dots = document.getElementById('tourDots'); dots.innerHTML='';
-    for(var i=0;i<tourSteps.length;i++){
-      var d = document.createElement('div'); d.className='dot'+(i===tourStep?' on':''); dots.appendChild(d);
-    }
-    document.getElementById('tourIcon').textContent = step.icon;
-    document.getElementById('tourTitle').textContent = step.title;
-    document.getElementById('tourBody').textContent = step.body;
-    document.getElementById('nextTourBtn').textContent = tourStep === tourSteps.length-1 ? 'Done' : 'Next';
-  }
+// ────────────────────────────────────────────────────────────
+// UTILITY
+// ────────────────────────────────────────────────────────────
+function esc(s) {
+  return String(s)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
 
-  maybeSuppressConsole();
-  tryLoad();
-  ensureDefaults();
-  dayOpenLogic();
-  if(loadTheme() === 'dark') document.body.classList.add('dark-mode');
-  setupListeners();
-  renderAll();
-  if(Number(U.setupStep||0) < 6) showSetup();
+// ────────────────────────────────────────────────────────────
+// BOOT
+// ────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  initHome();
+  initToday();
+  initWeek();
+  initDump();
+  initGoals();
+  initHabits();
+  initJournal();
 });
 </script>
 </body>
