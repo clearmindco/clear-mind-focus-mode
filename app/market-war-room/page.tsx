@@ -5,16 +5,23 @@ import Navbar from "@/components/Navbar";
 
 // ─── Signal Engine types ───────────────────────────────────────────────────────
 
+interface ScoreBreakdown {
+  factor: string;
+  score: number;
+  max: number;
+  description: string;
+}
+
 interface EdgeSignalResponse {
   ticker: string;
-  status: "Bullish Watch" | "Bearish Warning" | "Wait";
+  status: "Strong Bullish Watch" | "Bullish Watch" | "Wait" | "Bearish Warning" | "Strong Bearish Warning";
   score: number;
-  confidence: number;
-  reasons: string[];
+  trendBias: "Bullish" | "Bearish" | "Neutral";
+  scoreBreakdown: ScoreBreakdown[];
+  analysisText: string;
   confirms: string[];
   invalidates: string[];
   riskLevel: "Low" | "Medium" | "High" | "Very High";
-  beginnerExplanation: string;
   entryZone: string | null;
   stopLevel: string | null;
   target1: string | null;
@@ -36,9 +43,11 @@ interface EdgeSignalResponse {
 }
 
 const SIGNAL_STATUS_META: Record<string, { dot: string; label: string; color: string; bg: string; border: string }> = {
-  "Bullish Watch":   { dot: "#10b981", label: "Bullish Watch",   color: "#10b981", bg: "rgba(16,185,129,0.08)",  border: "rgba(16,185,129,0.3)"  },
-  "Bearish Warning": { dot: "#ef4444", label: "Bearish Warning", color: "#ef4444", bg: "rgba(239,68,68,0.08)",   border: "rgba(239,68,68,0.3)"   },
-  "Wait":            { dot: "#f59e0b", label: "Wait / No Clean Setup", color: "#f59e0b", bg: "rgba(245,158,11,0.08)", border: "rgba(245,158,11,0.3)" },
+  "Strong Bullish Watch":   { dot: "#059669", label: "Strong Bullish Watch",   color: "#059669", bg: "rgba(5,150,105,0.10)",   border: "rgba(5,150,105,0.35)"   },
+  "Bullish Watch":          { dot: "#10b981", label: "Bullish Watch",          color: "#10b981", bg: "rgba(16,185,129,0.08)",  border: "rgba(16,185,129,0.3)"   },
+  "Bearish Warning":        { dot: "#ef4444", label: "Bearish Warning",        color: "#ef4444", bg: "rgba(239,68,68,0.08)",   border: "rgba(239,68,68,0.3)"    },
+  "Strong Bearish Warning": { dot: "#b91c1c", label: "Strong Bearish Warning", color: "#b91c1c", bg: "rgba(185,28,28,0.10)",   border: "rgba(185,28,28,0.35)"   },
+  "Wait":                   { dot: "#f59e0b", label: "Wait / No Clean Setup",  color: "#f59e0b", bg: "rgba(245,158,11,0.08)",  border: "rgba(245,158,11,0.3)"   },
 };
 
 const RISK_COLORS: Record<string, string> = {
@@ -53,6 +62,7 @@ const SIGNAL_CHECKLIST = [
   { id: "news",    label: "News catalyst checked — no negative surprise coming?" },
   { id: "rr",      label: "Risk/reward is at least 2:1 using the signal levels?" },
   { id: "chasing", label: "NOT chasing — entering near the setup, not after the move?" },
+  { id: "market",  label: "Broader market (SPY) direction checked and aligned?" },
 ];
 
 // ─── Interfaces ────────────────────────────────────────────────────────────────
@@ -111,6 +121,9 @@ const TICKERS = [
   { label: "XLE",  symbol: "AMEX:XLE" },
   { label: "NVDA", symbol: "NASDAQ:NVDA" },
   { label: "TSLA", symbol: "NASDAQ:TSLA" },
+  { label: "AAPL", symbol: "NASDAQ:AAPL" },
+  { label: "MSFT", symbol: "NASDAQ:MSFT" },
+  { label: "AMD",  symbol: "NASDAQ:AMD" },
 ];
 
 const TIMEFRAMES = [
@@ -757,21 +770,20 @@ export default function MarketWarRoom() {
           {signalData && !signalLoading && (() => {
             const meta = SIGNAL_STATUS_META[signalData.status] ?? SIGNAL_STATUS_META["Wait"];
             const allChecked = signalChecked.size === SIGNAL_CHECKLIST.length;
+            const circ = 226.195;
+            const gaugeColor =
+              signalData.score >= 80 ? "#059669" :
+              signalData.score >= 60 ? "#10b981" :
+              signalData.score >= 40 ? "#f59e0b" :
+              signalData.score >= 20 ? "#ef4444" : "#b91c1c";
             return (
-              <div
-                className="rounded-2xl overflow-hidden"
-                style={{ border: `1px solid ${meta.border}`, background: "#0f1117" }}
-              >
+              <div className="rounded-2xl overflow-hidden" style={{ border: `1px solid ${meta.border}`, background: "#0f1117" }}>
+
                 {/* ── Card header ── */}
-                <div
-                  className="px-5 py-3 flex items-center justify-between flex-wrap gap-3"
-                  style={{ background: meta.bg, borderBottom: `1px solid ${meta.border}` }}
-                >
+                <div className="px-5 py-3 flex items-center justify-between flex-wrap gap-3" style={{ background: meta.bg, borderBottom: `1px solid ${meta.border}` }}>
                   <div className="flex items-center gap-3">
                     <div>
-                      <div className="text-xs font-semibold uppercase tracking-widest mb-0.5" style={{ color: "#5a6075" }}>
-                        EDGE Signal Engine
-                      </div>
+                      <div className="text-xs font-semibold uppercase tracking-widest mb-0.5" style={{ color: "#5a6075" }}>EDGE Signal Engine</div>
                       <div className="flex items-center gap-2">
                         <span className="font-bold text-base" style={{ color: "#e8eaf0" }}>{signalData.ticker}</span>
                         {!signalData.isPlaceholder && signalData.quote.price && (
@@ -785,35 +797,14 @@ export default function MarketWarRoom() {
                       </div>
                     </div>
                   </div>
-
                   <div className="flex items-center gap-3 flex-wrap">
-                    {/* Status badge */}
                     <div
                       className="flex items-center gap-2 px-3 py-1.5 rounded-full font-bold text-sm"
                       style={{ background: `${meta.dot}15`, color: meta.color, border: `1px solid ${meta.border}` }}
                     >
-                      <span
-                        className="w-2 h-2 rounded-full flex-shrink-0"
-                        style={{ background: meta.dot, boxShadow: `0 0 6px ${meta.dot}` }}
-                      />
+                      <span className="w-2 h-2 rounded-full flex-shrink-0 animate-pulse" style={{ background: meta.dot, boxShadow: `0 0 6px ${meta.dot}` }} />
                       {meta.label}
                     </div>
-
-                    {/* Confidence */}
-                    <div className="text-right">
-                      <div className="text-xs" style={{ color: "#5a6075" }}>Confidence</div>
-                      <div className="font-bold text-sm" style={{ color: meta.color }}>{signalData.confidence}%</div>
-                    </div>
-
-                    {/* Score */}
-                    <div className="text-right">
-                      <div className="text-xs" style={{ color: "#5a6075" }}>Score</div>
-                      <div className="font-bold text-sm font-mono" style={{ color: signalData.score >= 0 ? "#10b981" : "#ef4444" }}>
-                        {signalData.score >= 0 ? "+" : ""}{signalData.score}
-                      </div>
-                    </div>
-
-                    {/* Refresh */}
                     <button
                       onClick={() => {
                         setSignalLoading(true);
@@ -826,139 +817,129 @@ export default function MarketWarRoom() {
                       className="text-xs px-2.5 py-1.5 rounded-lg transition-all"
                       style={{ background: "#141720", color: "#5a6075", border: "1px solid #1e2433" }}
                       title="Refresh signal"
-                    >
-                      ↻
-                    </button>
+                    >↻</button>
                   </div>
                 </div>
 
                 {/* ── Main body ── */}
                 <div className="p-5">
-                  {/* Placeholder message */}
                   {signalData.isPlaceholder && (
                     <div className="rounded-xl p-4 mb-4" style={{ background: "rgba(245,158,11,0.06)", border: "1px solid rgba(245,158,11,0.2)" }}>
-                      <p className="text-xs" style={{ color: "#f59e0b" }}>
-                        Live signal requires <code>FINNHUB_API_KEY</code> in Netlify environment variables. Add it to see real-time scoring.
-                      </p>
+                      <p className="text-xs" style={{ color: "#f59e0b" }}>Live signal requires <code>FINNHUB_API_KEY</code> in Netlify environment variables.</p>
                     </div>
                   )}
 
-                  {/* Top grid: reasons + levels */}
+                  {/* Score gauge + breakdown */}
                   <div className="grid lg:grid-cols-2 gap-4 mb-4">
 
-                    {/* Why this signal */}
+                    {/* Left: gauge + analysis text */}
                     <div className="rounded-xl p-4" style={{ background: "#141720", border: "1px solid #1e2433" }}>
-                      <div className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: meta.color }}>
-                        Why This Signal Appears
+                      <div className="flex items-center gap-4 mb-3">
+                        <svg viewBox="0 0 80 80" className="w-20 h-20 flex-shrink-0">
+                          <circle cx="40" cy="40" r="36" fill="none" stroke="#1e2433" strokeWidth="6" />
+                          <circle
+                            cx="40" cy="40" r="36" fill="none"
+                            stroke={gaugeColor} strokeWidth="6"
+                            strokeDasharray={`${(signalData.score / 100) * circ} ${circ}`}
+                            strokeLinecap="round"
+                            transform="rotate(-90 40 40)"
+                          />
+                          <text x="40" y="37" textAnchor="middle" fill="#e8eaf0" fontSize="16" fontWeight="bold" fontFamily="monospace">{signalData.score}</text>
+                          <text x="40" y="50" textAnchor="middle" fill="#5a6075" fontSize="8" fontFamily="sans-serif">/100</text>
+                        </svg>
+                        <div>
+                          <div className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: "#5a6075" }}>Composite Score</div>
+                          <div className="text-sm font-bold mb-1.5" style={{ color: meta.color }}>{signalData.trendBias} Bias</div>
+                          <span
+                            className="text-xs px-2 py-0.5 rounded-full font-semibold"
+                            style={{ background: `${RISK_COLORS[signalData.riskLevel]}15`, color: RISK_COLORS[signalData.riskLevel], border: `1px solid ${RISK_COLORS[signalData.riskLevel]}30` }}
+                          >
+                            {signalData.riskLevel} Risk
+                          </span>
+                        </div>
                       </div>
-                      <ul className="space-y-1.5">
-                        {signalData.reasons.map((r, i) => (
-                          <li key={i} className="flex items-start gap-2 text-xs" style={{ color: "#9aa0b4" }}>
-                            <span className="flex-shrink-0 mt-0.5" style={{ color: meta.dot }}>▸</span>
-                            {r}
-                          </li>
-                        ))}
-                      </ul>
+                      <div className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "#00d4ff" }}>Why This Signal</div>
+                      <p className="text-xs leading-relaxed" style={{ color: "#9aa0b4" }}>{signalData.analysisText}</p>
                     </div>
 
-                    {/* Signal levels */}
+                    {/* Right: factor breakdown bars */}
                     <div className="rounded-xl p-4" style={{ background: "#141720", border: "1px solid #1e2433" }}>
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="text-xs font-semibold uppercase tracking-widest" style={{ color: "#9aa0b4" }}>
-                          Signal Levels
-                        </div>
-                        <span className="text-xs px-2 py-0.5 rounded" style={{ background: "rgba(245,158,11,0.1)", color: "#f59e0b" }}>
-                          Educational only
-                        </span>
-                      </div>
-
-                      {signalData.status === "Wait" || !signalData.entryZone ? (
-                        <p className="text-xs" style={{ color: "#5a6075" }}>
-                          No level calculations for a Wait signal. Wait for a Bullish Watch or Bearish Warning before mapping levels.
-                        </p>
-                      ) : (
-                        <div className="space-y-2.5">
-                          {[
-                            { label: "Possible Entry Zone",  value: signalData.entryZone,  color: meta.color },
-                            { label: "Stop / Invalidation",  value: signalData.stopLevel,  color: "#ef4444" },
-                            { label: "Take-profit Area 1",   value: signalData.target1,    color: "#10b981" },
-                            { label: "Take-profit Area 2",   value: signalData.target2,    color: "#10b981" },
-                          ].map(({ label, value, color }) => value && (
-                            <div key={label} className="flex items-center justify-between">
-                              <span className="text-xs" style={{ color: "#5a6075" }}>{label}</span>
-                              <span className="text-sm font-bold font-mono" style={{ color }}>{value}</span>
+                      <div className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "#9aa0b4" }}>Score Breakdown</div>
+                      <div className="space-y-3">
+                        {signalData.scoreBreakdown.map((item) => {
+                          const pct = Math.round((item.score / item.max) * 100);
+                          const barColor = pct >= 65 ? "#10b981" : pct >= 40 ? "#f59e0b" : "#ef4444";
+                          return (
+                            <div key={item.factor}>
+                              <div className="flex items-center justify-between mb-1">
+                                <span className="text-xs font-medium" style={{ color: "#9aa0b4" }}>{item.factor}</span>
+                                <span className="text-xs font-bold font-mono" style={{ color: barColor }}>{item.score}/{item.max}</span>
+                              </div>
+                              <div className="h-1.5 rounded-full overflow-hidden mb-0.5" style={{ background: "#1e2433" }}>
+                                <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, background: barColor }} />
+                              </div>
+                              <p className="text-xs leading-tight" style={{ color: "#3a4060" }}>{item.description}</p>
                             </div>
-                          ))}
-                          <p className="text-xs pt-1" style={{ color: "#3a4060" }}>
-                            Levels derived from today&apos;s price structure. Not a recommendation to buy or sell.
-                          </p>
-                        </div>
-                      )}
-
-                      {/* Risk level */}
-                      <div className="mt-4 flex items-center gap-2">
-                        <span className="text-xs" style={{ color: "#5a6075" }}>Risk Level:</span>
-                        <span
-                          className="text-xs px-2.5 py-1 rounded-full font-bold"
-                          style={{
-                            background: `${RISK_COLORS[signalData.riskLevel]}15`,
-                            color: RISK_COLORS[signalData.riskLevel],
-                            border: `1px solid ${RISK_COLORS[signalData.riskLevel]}35`,
-                          }}
-                        >
-                          {signalData.riskLevel}
-                        </span>
+                          );
+                        })}
                       </div>
                     </div>
                   </div>
 
-                  {/* Confirms / invalidates */}
+                  {/* Signal levels */}
+                  <div className="rounded-xl p-4 mb-4" style={{ background: "#141720", border: "1px solid #1e2433" }}>
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="text-xs font-semibold uppercase tracking-widest" style={{ color: "#9aa0b4" }}>Signal Levels</div>
+                      <span className="text-xs px-2 py-0.5 rounded" style={{ background: "rgba(245,158,11,0.1)", color: "#f59e0b" }}>Educational only</span>
+                    </div>
+                    {signalData.status === "Wait" || !signalData.entryZone ? (
+                      <p className="text-xs" style={{ color: "#5a6075" }}>No level calculations for a Wait signal. Wait for a directional signal before mapping levels.</p>
+                    ) : (
+                      <div className="grid sm:grid-cols-2 gap-x-6 gap-y-2.5">
+                        {[
+                          { label: "Possible Entry Zone", value: signalData.entryZone, color: meta.color },
+                          { label: "Stop / Invalidation", value: signalData.stopLevel, color: "#ef4444" },
+                          { label: "Take-profit Area 1",  value: signalData.target1,   color: "#10b981" },
+                          { label: "Take-profit Area 2",  value: signalData.target2,   color: "#10b981" },
+                        ].map(({ label, value, color }) => value && (
+                          <div key={label} className="flex items-center justify-between">
+                            <span className="text-xs" style={{ color: "#5a6075" }}>{label}</span>
+                            <span className="text-sm font-bold font-mono" style={{ color }}>{value}</span>
+                          </div>
+                        ))}
+                        <p className="text-xs sm:col-span-2 pt-1" style={{ color: "#3a4060" }}>Levels derived from today&apos;s price structure. Not a recommendation to buy or sell.</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Confirms / Invalidates */}
                   <div className="grid sm:grid-cols-2 gap-3 mb-4">
                     <div className="rounded-xl p-4" style={{ background: "rgba(16,185,129,0.04)", border: "1px solid rgba(16,185,129,0.15)" }}>
-                      <div className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "#10b981" }}>
-                        What Confirms It
-                      </div>
+                      <div className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "#10b981" }}>What Confirms It</div>
                       <ul className="space-y-1.5">
                         {signalData.confirms.map((c, i) => (
                           <li key={i} className="flex items-start gap-2 text-xs" style={{ color: "#9aa0b4" }}>
-                            <span className="flex-shrink-0" style={{ color: "#10b981" }}>✓</span>
-                            {c}
+                            <span className="flex-shrink-0" style={{ color: "#10b981" }}>✓</span>{c}
                           </li>
                         ))}
                       </ul>
                     </div>
-
                     <div className="rounded-xl p-4" style={{ background: "rgba(239,68,68,0.04)", border: "1px solid rgba(239,68,68,0.15)" }}>
-                      <div className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "#ef4444" }}>
-                        What Invalidates It
-                      </div>
+                      <div className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "#ef4444" }}>What Invalidates It</div>
                       <ul className="space-y-1.5">
                         {signalData.invalidates.map((inv, i) => (
                           <li key={i} className="flex items-start gap-2 text-xs" style={{ color: "#9aa0b4" }}>
-                            <span className="flex-shrink-0" style={{ color: "#ef4444" }}>✗</span>
-                            {inv}
+                            <span className="flex-shrink-0" style={{ color: "#ef4444" }}>✗</span>{inv}
                           </li>
                         ))}
                       </ul>
                     </div>
-                  </div>
-
-                  {/* Beginner explanation */}
-                  <div className="rounded-xl p-4 mb-4" style={{ background: "rgba(0,212,255,0.04)", border: "1px solid rgba(0,212,255,0.15)" }}>
-                    <div className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "#00d4ff" }}>
-                      Beginner Explanation
-                    </div>
-                    <p className="text-xs leading-relaxed" style={{ color: "#9aa0b4" }}>
-                      {signalData.beginnerExplanation}
-                    </p>
                   </div>
 
                   {/* Pre-trade checklist */}
                   <div className="rounded-xl p-4 mb-4" style={{ background: "#141720", border: "1px solid #1e2433" }}>
                     <div className="flex items-center justify-between mb-3">
-                      <div className="text-xs font-semibold uppercase tracking-widest" style={{ color: "#9aa0b4" }}>
-                        Pre-Trade Checklist
-                      </div>
+                      <div className="text-xs font-semibold uppercase tracking-widest" style={{ color: "#9aa0b4" }}>Pre-Trade Checklist</div>
                       <span className="text-xs" style={{ color: allChecked ? "#10b981" : "#5a6075" }}>
                         {signalChecked.size}/{SIGNAL_CHECKLIST.length}{allChecked && " — Ready to analyse"}
                       </span>
@@ -975,10 +956,7 @@ export default function MarketWarRoom() {
                               return next;
                             })}
                             className="w-full text-left flex items-start gap-3 rounded-lg px-3 py-2 transition-all"
-                            style={{
-                              background: checked ? "rgba(0,212,255,0.05)" : "transparent",
-                              border: `1px solid ${checked ? "rgba(0,212,255,0.15)" : "transparent"}`,
-                            }}
+                            style={{ background: checked ? "rgba(0,212,255,0.05)" : "transparent", border: `1px solid ${checked ? "rgba(0,212,255,0.15)" : "transparent"}` }}
                           >
                             <div
                               className="flex-shrink-0 w-4 h-4 rounded border flex items-center justify-center mt-0.5"
@@ -986,9 +964,7 @@ export default function MarketWarRoom() {
                             >
                               {checked && <CheckIcon />}
                             </div>
-                            <span className="text-xs" style={{ color: checked ? "#e8eaf0" : "#9aa0b4" }}>
-                              {item.label}
-                            </span>
+                            <span className="text-xs" style={{ color: checked ? "#e8eaf0" : "#9aa0b4" }}>{item.label}</span>
                           </button>
                         );
                       })}
@@ -996,10 +972,7 @@ export default function MarketWarRoom() {
                     <div className="mt-3 h-1 rounded-full overflow-hidden" style={{ background: "#1e2433" }}>
                       <div
                         className="h-full rounded-full transition-all duration-300"
-                        style={{
-                          width: `${(signalChecked.size / SIGNAL_CHECKLIST.length) * 100}%`,
-                          background: allChecked ? "#10b981" : "#00d4ff",
-                        }}
+                        style={{ width: `${(signalChecked.size / SIGNAL_CHECKLIST.length) * 100}%`, background: allChecked ? "#10b981" : "#00d4ff" }}
                       />
                     </div>
                   </div>
@@ -1007,28 +980,14 @@ export default function MarketWarRoom() {
                   {/* Recent news */}
                   {signalData.recentNews.length > 0 && (
                     <div className="rounded-xl p-4 mb-4" style={{ background: "#141720", border: "1px solid #1e2433" }}>
-                      <div className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "#9aa0b4" }}>
-                        Catalyst Check — Recent News
-                      </div>
+                      <div className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "#9aa0b4" }}>Catalyst Check — Recent News</div>
                       <div className="space-y-2.5">
                         {signalData.recentNews.map((item, i) => (
                           <div key={i} className="flex items-start gap-2">
-                            <span className="text-xs flex-shrink-0 px-1.5 py-0.5 rounded mt-0.5" style={{ background: "rgba(16,185,129,0.1)", color: "#10b981" }}>
-                              news
-                            </span>
+                            <span className="text-xs flex-shrink-0 px-1.5 py-0.5 rounded mt-0.5" style={{ background: "rgba(16,185,129,0.1)", color: "#10b981" }}>news</span>
                             <div>
-                              <a
-                                href={item.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-xs font-medium leading-snug hover:underline"
-                                style={{ color: "#e8eaf0" }}
-                              >
-                                {item.headline}
-                              </a>
-                              <div className="text-xs mt-0.5" style={{ color: "#5a6075" }}>
-                                {item.source} · {new Date(item.datetime).toLocaleDateString()}
-                              </div>
+                              <a href={item.url} target="_blank" rel="noopener noreferrer" className="text-xs font-medium leading-snug hover:underline" style={{ color: "#e8eaf0" }}>{item.headline}</a>
+                              <div className="text-xs mt-0.5" style={{ color: "#5a6075" }}>{item.source} · {new Date(item.datetime).toLocaleDateString()}</div>
                             </div>
                           </div>
                         ))}
@@ -1041,9 +1000,7 @@ export default function MarketWarRoom() {
                     <p className="text-xs leading-relaxed" style={{ color: "#5a6075" }}>
                       <strong style={{ color: "#9aa0b4" }}>⚠️ {signalData.riskWarning}</strong>
                     </p>
-                    <p className="text-xs mt-1.5" style={{ color: "#3a4060" }}>
-                      {signalData.disclaimer}
-                    </p>
+                    <p className="text-xs mt-1.5" style={{ color: "#3a4060" }}>{signalData.disclaimer}</p>
                   </div>
                 </div>
               </div>

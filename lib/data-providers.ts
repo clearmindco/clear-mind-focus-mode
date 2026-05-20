@@ -64,16 +64,23 @@ export interface CongressionalTrade {
   isPlaceholder: boolean;
 }
 
+export interface ScoreBreakdown {
+  factor: string;
+  score: number;
+  max: number;
+  description: string;
+}
+
 export interface SignalData {
   ticker: string;
-  status: "Bullish Watch" | "Bearish Warning" | "Wait";
+  status: "Strong Bullish Watch" | "Bullish Watch" | "Wait" | "Bearish Warning" | "Strong Bearish Warning";
   score: number;
-  confidence: number;
-  reasons: string[];
+  trendBias: "Bullish" | "Bearish" | "Neutral";
+  scoreBreakdown: ScoreBreakdown[];
+  analysisText: string;
   confirms: string[];
   invalidates: string[];
   riskLevel: "Low" | "Medium" | "High" | "Very High";
-  beginnerExplanation: string;
   entryZone: string | null;
   stopLevel: string | null;
   target1: string | null;
