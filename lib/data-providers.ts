@@ -89,6 +89,57 @@ export interface SignalData {
   isPlaceholder: boolean;
 }
 
+export interface EconomicEvent {
+  event: string;
+  time: string;
+  impact: "high" | "medium" | "low";
+  country: string;
+  estimate: string | null;
+  actual: string | null;
+  unit: string;
+  isPlaceholder: boolean;
+}
+
+export interface MarketInstrument {
+  symbol: string;
+  displaySymbol: string;
+  name: string;
+  price: number | null;
+  change: number | null;
+  changePercent: number | null;
+  direction: "Bullish" | "Bearish" | "Neutral";
+  isProxy: boolean;
+  isPlaceholder: boolean;
+}
+
+export interface SectorPerformance {
+  symbol: string;
+  name: string;
+  price: number | null;
+  changePercent: number | null;
+  isPlaceholder: boolean;
+}
+
+export interface NewsIntelligenceItem {
+  headline: string;
+  source: string;
+  datetime: string;
+  summary: string;
+  url: string;
+  category: string;
+  isPlaceholder: boolean;
+}
+
+export interface WatchlistQuoteData {
+  ticker: string;
+  price: number | null;
+  change: number | null;
+  changePercent: number | null;
+  high: number | null;
+  low: number | null;
+  isPlaceholder: boolean;
+}
+
 // ─── Client-safe connection flags ─────────────────────────────────────────────
 // These check NEXT_PUBLIC_ booleans — never the actual key values.
 // Set NEXT_PUBLIC_FINNHUB_CONNECTED=true when FINNHUB_API_KEY is configured on the server.

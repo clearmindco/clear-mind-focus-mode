@@ -82,6 +82,19 @@ const SECTIONS = [
     badgeColor: "#ef4444",
     badgeBg: "rgba(239,68,68,0.1)",
   },
+  {
+    id: "market-command-center",
+    href: "/market-command-center",
+    icon: "📊",
+    label: "EDGE Market Command Center",
+    sub: "Institutional-Style Market Intelligence",
+    desc: "Market overview (SPY, QQQ, VIX, DXY proxy), sector heatmap, breadth analysis, personal watchlist with localStorage persistence, economic calendar, and categorized news intelligence with 'why this matters' context.",
+    color: "#00d4ff",
+    stats: ["8 Market Instruments", "Sector Heatmap", "News Intelligence"],
+    badge: "NEW",
+    badgeColor: "#00d4ff",
+    badgeBg: "rgba(0,212,255,0.1)",
+  },
 ];
 
 export default function PlatformHub() {

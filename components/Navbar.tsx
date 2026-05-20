@@ -11,6 +11,7 @@ const NAV = [
   { label: "Research Lab", href: "/research", match: ["/research"] },
   { label: "Whale Tracker", href: "/whale-tracker", match: ["/whale-tracker"] },
   { label: "Paper Lab", href: "/paper-lab", match: ["/paper-lab"] },
+  { label: "Command", href: "/market-command-center", match: ["/market-command-center"], icon: "📊" },
   { label: "API Setup", href: "/api-setup", match: ["/api-setup"], icon: "⚙️" },
 ];
 
