@@ -66,10 +66,18 @@ export interface CongressionalTrade {
 
 export interface SignalData {
   ticker: string;
-  status: "BUY WATCH" | "WAIT" | "AVOID";
+  status: "Bullish Watch" | "Bearish Warning" | "Wait";
   score: number;
   confidence: number;
   reasons: string[];
+  confirms: string[];
+  invalidates: string[];
+  riskLevel: "Low" | "Medium" | "High" | "Very High";
+  beginnerExplanation: string;
+  entryZone: string | null;
+  stopLevel: string | null;
+  target1: string | null;
+  target2: string | null;
   riskWarning: string;
   isPlaceholder: boolean;
 }
