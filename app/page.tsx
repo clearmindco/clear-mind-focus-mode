@@ -69,6 +69,19 @@ const SECTIONS = [
     badgeColor: "#10b981",
     badgeBg: "rgba(16,185,129,0.1)",
   },
+  {
+    id: "market-war-room",
+    href: "/market-war-room",
+    icon: "⚔️",
+    label: "EDGE Market War Room",
+    sub: "Session Intelligence & Live Analysis",
+    desc: "Session playbooks for Asian, London, New York, and Overlap. TradingView advanced chart with VWAP. AI-powered A+/A/B/C/NO TRADE setup grading. The operating room for active traders.",
+    color: "#ef4444",
+    stats: ["4 Session Playbooks", "Live Chart + VWAP", "AI Setup Grader"],
+    badge: "NEW",
+    badgeColor: "#ef4444",
+    badgeBg: "rgba(239,68,68,0.1)",
+  },
 ];
 
 export default function PlatformHub() {
@@ -90,7 +103,7 @@ export default function PlatformHub() {
             EDGE<span style={{ color: "#00d4ff" }}>OS</span>
           </h1>
           <p className="text-xl md:text-2xl max-w-2xl mx-auto mb-4" style={{ color: "#9aa0b4" }}>
-            Trading education · Market intelligence · Smart money tracking · Paper trade discipline
+            Trading education · Market intelligence · War Room · Smart money tracking · Paper trade discipline
           </p>
           <p className="text-sm" style={{ color: "#5a6075" }}>
             The complete platform for developing your trading edge — before risking real capital.
