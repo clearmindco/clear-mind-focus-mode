@@ -3,13 +3,18 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import ModeToggle from "@/components/ModeToggle";
 
 const NAV = [
+  { label: "Dashboard", href: "/dashboard", match: ["/dashboard"], icon: "🏠" },
   { label: "Academy", href: "/academy", match: ["/academy", "/module", "/final-test"] },
-  { label: "Terminal", href: "/terminal", match: ["/terminal"] },
+  { label: "Trade Engine", href: "/trade-engine", match: ["/trade-engine"], icon: "⚡" },
+  { label: "Structure", href: "/market-structure", match: ["/market-structure"], icon: "🔬" },
+  { label: "Edge Scanner", href: "/live-edge-scanner", match: ["/live-edge-scanner"], icon: "🎯" },
+  { label: "Scanner", href: "/scanner", match: ["/scanner"], icon: "📡" },
   { label: "War Room", href: "/market-war-room", match: ["/market-war-room"], icon: "⚔️" },
-  { label: "Research Lab", href: "/research", match: ["/research"] },
-  { label: "Whale Tracker", href: "/whale-tracker", match: ["/whale-tracker"] },
+  { label: "Command", href: "/market-command-center", match: ["/market-command-center"], icon: "📊" },
+  { label: "Playbooks", href: "/playbooks", match: ["/playbooks"], icon: "📖" },
   { label: "Paper Lab", href: "/paper-lab", match: ["/paper-lab"] },
   { label: "API Setup", href: "/api-setup", match: ["/api-setup"], icon: "⚙️" },
 ];
@@ -59,6 +64,9 @@ export default function Navbar() {
               </Link>
             );
           })}
+          <div className="ml-1">
+            <ModeToggle />
+          </div>
         </nav>
 
         {/* Mobile hamburger — visible only on small screens */}

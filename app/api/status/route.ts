@@ -6,10 +6,7 @@
  */
 
 import { NextResponse } from "next/server";
-
-function isRealKey(val: string | undefined): boolean {
-  return !!val && !val.startsWith("your_") && val.length > 10;
-}
+import { isRealKey } from "@/lib/server-data";
 
 export async function GET() {
   const status = {

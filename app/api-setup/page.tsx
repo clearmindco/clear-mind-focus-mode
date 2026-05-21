@@ -1,6 +1,7 @@
 // Server component — reads env vars at build time.
 // Shows Connected / Missing only — never renders actual key values.
 import Navbar from "@/components/Navbar";
+import { isRealKey } from "@/lib/server-data";
 
 interface ApiEntry {
   name: string;
@@ -12,10 +13,6 @@ interface ApiEntry {
   getFrom: string;
   tier: string;
   category: "data" | "news" | "backend" | "ai";
-}
-
-function isRealKey(val: string | undefined): boolean {
-  return !!val && !val.startsWith("your_") && val.length > 10;
 }
 
 const APIS: ApiEntry[] = [

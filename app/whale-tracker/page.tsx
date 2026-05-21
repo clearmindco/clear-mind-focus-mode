@@ -376,7 +376,7 @@ export default function WhaleTracker() {
             <p className="font-semibold" style={{ color: "#00d4ff" }}>APIs needed for live data</p>
             <ul className="space-y-0.5">
               <li>• <strong style={{ color: "#e8eaf0" }}>Unusual options flow:</strong> unusualwhales.com (paid) · Barchart premium · Market Chameleon</li>
-              <li>• <strong style={{ color: "#e8eaf0" }}>Live insider trades:</strong> Finnhub (<code>NEXT_PUBLIC_FINNHUB_API_KEY</code>) — free tier available</li>
+              <li>• <strong style={{ color: "#e8eaf0" }}>Live insider trades:</strong> Finnhub (<code>FINNHUB_API_KEY</code>) — free tier available</li>
               <li>• <strong style={{ color: "#e8eaf0" }}>Congressional trades:</strong> quiverquant.com (paid) · capitoltrades.com</li>
               <li>• <strong style={{ color: "#e8eaf0" }}>13F institutional:</strong> SEC EDGAR free API · Whalewisdom.com</li>
               <li>• <strong style={{ color: "#e8eaf0" }}>Dark pool / whale alerts:</strong> unusualwhales.com · Darkpool.com (paid)</li>

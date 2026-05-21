@@ -5,6 +5,19 @@ import Navbar from "@/components/Navbar";
 
 const SECTIONS = [
   {
+    id: "dashboard",
+    href: "/dashboard",
+    icon: "🏠",
+    label: "EDGE Mission Control",
+    sub: "Market Regime · Session · Alerts",
+    desc: "What matters right now. Live market regime classification (Trend/Range/Compression/Gap&Go), active session intelligence, alert feed, quote bar, and quick access to all platform tools.",
+    color: "#00d4ff",
+    stats: ["Market Regime Engine", "Session Intelligence", "Alert Feed"],
+    badge: "NEW",
+    badgeColor: "#00d4ff",
+    badgeBg: "rgba(0,212,255,0.1)",
+  },
+  {
     id: "academy",
     href: "/academy",
     icon: "🎓",

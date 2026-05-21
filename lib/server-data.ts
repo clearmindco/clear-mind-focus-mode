@@ -6,7 +6,7 @@
 
 import type { QuoteData, NewsItem, TechnicalData, InsiderTrade } from "./data-providers";
 
-function isRealKey(val: string | undefined): boolean {
+export function isRealKey(val: string | undefined): boolean {
   return !!val && !val.startsWith("your_") && val.length > 10;
 }
 
