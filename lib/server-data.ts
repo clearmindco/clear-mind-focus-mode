@@ -5,6 +5,7 @@
  */
 
 import type { QuoteData, NewsItem, TechnicalData, InsiderTrade, EconomicEvent, NewsIntelligenceItem } from "./data-providers";
+import type { Candle } from "./ict-analysis";
 
 function isRealKey(val: string | undefined): boolean {
   return !!val && !val.startsWith("your_") && val.length > 10;
@@ -163,6 +164,45 @@ export async function serverGetTechnicalIndicators(ticker: string): Promise<Tech
     return { ticker, rsi, macd: null, sma20: null, sma50: null, isPlaceholder: false };
   } catch {
     return placeholder;
+  }
+}
+
+// ─── Candle data ─────────────────────────────────────────────────────────────
+
+export type CandleResolution = "1" | "5" | "15" | "30" | "60" | "D" | "W";
+
+export async function serverGetCandles(
+  ticker: string,
+  resolution: CandleResolution,
+  fromTs: number,
+  toTs: number
+): Promise<Candle[]> {
+  const key = process.env.FINNHUB_API_KEY;
+  if (!isRealKey(key)) return [];
+  try {
+    const url = `https://finnhub.io/api/v1/stock/candle?symbol=${encodeURIComponent(ticker)}&resolution=${resolution}&from=${fromTs}&to=${toTs}&token=${key}`;
+    const res = await fetch(url, { next: { revalidate: 300 } });
+    if (!res.ok) return [];
+    const raw = await res.json() as {
+      s: string;
+      c: number[];
+      h: number[];
+      l: number[];
+      o: number[];
+      t: number[];
+      v: number[];
+    };
+    if (raw.s !== "ok" || !Array.isArray(raw.c)) return [];
+    return raw.t.map((t, i) => ({
+      time: t,
+      open: raw.o[i],
+      high: raw.h[i],
+      low: raw.l[i],
+      close: raw.c[i],
+      volume: raw.v[i],
+    }));
+  } catch {
+    return [];
   }
 }
 

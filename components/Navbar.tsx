@@ -6,12 +6,12 @@ import { useState } from "react";
 
 const NAV = [
   { label: "Academy", href: "/academy", match: ["/academy", "/module", "/final-test"] },
-  { label: "Terminal", href: "/terminal", match: ["/terminal"] },
+  { label: "Scanner", href: "/scanner", match: ["/scanner"], icon: "📡" },
+  { label: "Structure", href: "/market-structure", match: ["/market-structure"], icon: "🔬" },
+  { label: "Playbooks", href: "/playbooks", match: ["/playbooks"], icon: "📖" },
   { label: "War Room", href: "/market-war-room", match: ["/market-war-room"], icon: "⚔️" },
-  { label: "Research Lab", href: "/research", match: ["/research"] },
-  { label: "Whale Tracker", href: "/whale-tracker", match: ["/whale-tracker"] },
-  { label: "Paper Lab", href: "/paper-lab", match: ["/paper-lab"] },
   { label: "Command", href: "/market-command-center", match: ["/market-command-center"], icon: "📊" },
+  { label: "Paper Lab", href: "/paper-lab", match: ["/paper-lab"] },
   { label: "API Setup", href: "/api-setup", match: ["/api-setup"], icon: "⚙️" },
 ];
 
