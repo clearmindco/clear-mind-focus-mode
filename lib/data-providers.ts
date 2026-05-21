@@ -64,13 +64,79 @@ export interface CongressionalTrade {
   isPlaceholder: boolean;
 }
 
+export interface ScoreBreakdown {
+  factor: string;
+  score: number;
+  max: number;
+  description: string;
+}
+
 export interface SignalData {
   ticker: string;
-  status: "BUY WATCH" | "WAIT" | "AVOID";
+  status: "Strong Bullish Watch" | "Bullish Watch" | "Wait" | "Bearish Warning" | "Strong Bearish Warning";
   score: number;
-  confidence: number;
-  reasons: string[];
+  trendBias: "Bullish" | "Bearish" | "Neutral";
+  scoreBreakdown: ScoreBreakdown[];
+  analysisText: string;
+  confirms: string[];
+  invalidates: string[];
+  riskLevel: "Low" | "Medium" | "High" | "Very High";
+  entryZone: string | null;
+  stopLevel: string | null;
+  target1: string | null;
+  target2: string | null;
   riskWarning: string;
+  isPlaceholder: boolean;
+}
+
+export interface EconomicEvent {
+  event: string;
+  time: string;
+  impact: "high" | "medium" | "low";
+  country: string;
+  estimate: string | null;
+  actual: string | null;
+  unit: string;
+  isPlaceholder: boolean;
+}
+
+export interface MarketInstrument {
+  symbol: string;
+  displaySymbol: string;
+  name: string;
+  price: number | null;
+  change: number | null;
+  changePercent: number | null;
+  direction: "Bullish" | "Bearish" | "Neutral";
+  isProxy: boolean;
+  isPlaceholder: boolean;
+}
+
+export interface SectorPerformance {
+  symbol: string;
+  name: string;
+  price: number | null;
+  changePercent: number | null;
+  isPlaceholder: boolean;
+}
+
+export interface NewsIntelligenceItem {
+  headline: string;
+  source: string;
+  datetime: string;
+  summary: string;
+  url: string;
+  category: string;
+  isPlaceholder: boolean;
+}
+
+export interface WatchlistQuoteData {
+  ticker: string;
+  price: number | null;
+  change: number | null;
+  changePercent: number | null;
+  high: number | null;
+  low: number | null;
   isPlaceholder: boolean;
 }
 

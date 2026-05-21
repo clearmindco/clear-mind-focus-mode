@@ -4,7 +4,8 @@
  * Uses process.env without NEXT_PUBLIC_ prefix so keys are never sent to the browser.
  */
 
-import type { QuoteData, NewsItem, TechnicalData, InsiderTrade } from "./data-providers";
+import type { QuoteData, NewsItem, TechnicalData, InsiderTrade, EconomicEvent, NewsIntelligenceItem } from "./data-providers";
+import type { Candle } from "./ict-analysis";
 
 export function isRealKey(val: string | undefined): boolean {
   return !!val && !val.startsWith("your_") && val.length > 10;
@@ -164,6 +165,158 @@ export async function serverGetTechnicalIndicators(ticker: string): Promise<Tech
   } catch {
     return placeholder;
   }
+}
+
+// ─── Candle data ─────────────────────────────────────────────────────────────
+
+export type CandleResolution = "1" | "5" | "15" | "30" | "60" | "D" | "W";
+
+export async function serverGetCandles(
+  ticker: string,
+  resolution: CandleResolution,
+  fromTs: number,
+  toTs: number
+): Promise<Candle[]> {
+  const key = process.env.FINNHUB_API_KEY;
+  if (!isRealKey(key)) return [];
+  try {
+    const url = `https://finnhub.io/api/v1/stock/candle?symbol=${encodeURIComponent(ticker)}&resolution=${resolution}&from=${fromTs}&to=${toTs}&token=${key}`;
+    const res = await fetch(url, { next: { revalidate: 300 } });
+    if (!res.ok) return [];
+    const raw = await res.json() as {
+      s: string;
+      c: number[];
+      h: number[];
+      l: number[];
+      o: number[];
+      t: number[];
+      v: number[];
+    };
+    if (raw.s !== "ok" || !Array.isArray(raw.c)) return [];
+    return raw.t.map((t, i) => ({
+      time: t,
+      open: raw.o[i],
+      high: raw.h[i],
+      low: raw.l[i],
+      close: raw.c[i],
+      volume: raw.v[i],
+    }));
+  } catch {
+    return [];
+  }
+}
+
+// ─── Economic calendar ────────────────────────────────────────────────────────
+
+export async function serverGetEconomicCalendar(): Promise<EconomicEvent[]> {
+  const key = process.env.FINNHUB_API_KEY;
+  const placeholder: EconomicEvent[] = [
+    {
+      event: "API not connected — configure FINNHUB_API_KEY",
+      time: "",
+      impact: "medium",
+      country: "US",
+      estimate: null,
+      actual: null,
+      unit: "",
+      isPlaceholder: true,
+    },
+  ];
+  if (!isRealKey(key)) return placeholder;
+  const from = new Date().toISOString().split("T")[0];
+  const to = new Date(Date.now() + 14 * 86_400_000).toISOString().split("T")[0];
+  try {
+    const res = await fetch(
+      `https://finnhub.io/api/v1/calendar/economic?from=${from}&to=${to}&token=${key}`,
+      { next: { revalidate: 3600 } }
+    );
+    if (!res.ok) return placeholder;
+    const raw = await res.json() as {
+      economicCalendar?: Array<{
+        event: string;
+        time: string;
+        impact: string;
+        country: string;
+        estimate: number | null;
+        actual: number | null;
+        unit: string;
+      }>;
+    };
+    const events = (raw.economicCalendar ?? [])
+      .filter(e => e.country === "US" && (e.impact === "high" || e.impact === "medium"))
+      .slice(0, 12);
+    if (!events.length) return placeholder;
+    return events.map(e => ({
+      event: e.event,
+      time: e.time,
+      impact: (e.impact === "high" ? "high" : "medium") as EconomicEvent["impact"],
+      country: e.country,
+      estimate: e.estimate != null ? String(e.estimate) : null,
+      actual: e.actual != null ? String(e.actual) : null,
+      unit: e.unit ?? "",
+      isPlaceholder: false,
+    }));
+  } catch {
+    return placeholder;
+  }
+}
+
+// ─── News intelligence (categorised) ─────────────────────────────────────────
+
+const NEWS_CATEGORIES = [
+  { id: "fed", label: "Fed & Rates", query: "Federal Reserve interest rates monetary policy" },
+  { id: "macro", label: "Macro", query: "GDP inflation jobs report CPI economic data" },
+  { id: "earnings", label: "Earnings", query: "earnings results revenue profit quarterly" },
+  { id: "geopolitical", label: "Geopolitical", query: "geopolitical trade war tariffs sanctions" },
+  { id: "crypto", label: "Crypto / Digital Assets", query: "Bitcoin Ethereum crypto digital assets SEC" },
+  { id: "energy", label: "Energy / Commodities", query: "oil crude OPEC energy commodities gold" },
+] as const;
+
+const WHY_IT_MATTERS: Record<string, string> = {
+  fed: "Fed language directly sets the risk-on / risk-off tone. Rate-hike fears compress multiples; pivot hopes ignite rallies. Track for shifts in language around 'data dependent', 'pause', or 'restrictive'.",
+  macro: "Macro data drives sector rotation. Hot CPI = defensive rotation; weak jobs = recession fear. Use these as the backdrop before placing any directional trade.",
+  earnings: "Earnings drive the biggest single-day moves. Watch guidance over actuals — forward-looking statements move stock price more than historical results.",
+  geopolitical: "Tariffs and sanctions create supply-chain repricing overnight. Energy, semis, and defense are most exposed. Track for sudden sector dislocations.",
+  crypto: "Crypto correlates with risk appetite and acts as a leading indicator for speculative appetite in growth stocks. Also watch regulatory headlines for sector-wide repricing.",
+  energy: "Energy prices flow through to PPI, CPI, and transportation cost inputs. Rising oil = inflation risk = Fed hawkishness. OPEC surprises move the whole market.",
+};
+
+export async function serverGetNewsIntelligence(): Promise<NewsIntelligenceItem[]> {
+  const key = process.env.NEWS_API_KEY;
+  if (!isRealKey(key)) {
+    return NEWS_CATEGORIES.map(cat => ({
+      headline: `${cat.label} — API not connected. Add NEWS_API_KEY to Netlify environment variables.`,
+      source: "PLACEHOLDER",
+      datetime: new Date().toISOString(),
+      summary: WHY_IT_MATTERS[cat.id],
+      url: "#",
+      category: cat.label,
+      isPlaceholder: true,
+    }));
+  }
+  const results = await Promise.allSettled(
+    NEWS_CATEGORIES.map(async cat => {
+      const res = await fetch(
+        `https://newsapi.org/v2/everything?q=${encodeURIComponent(cat.query)}&language=en&pageSize=3&sortBy=publishedAt&apiKey=${key}`,
+        { next: { revalidate: 900 } }
+      );
+      if (!res.ok) return [];
+      const data = await res.json() as { articles?: Array<{ title: string | null; source: { name: string }; publishedAt: string; description: string | null; url: string }> };
+      return (data.articles ?? [])
+        .filter(a => a.title != null)
+        .slice(0, 3)
+        .map(a => ({
+          headline: a.title!,
+          source: a.source?.name ?? "Unknown",
+          datetime: a.publishedAt,
+          summary: WHY_IT_MATTERS[cat.id],
+          url: a.url,
+          category: cat.label,
+          isPlaceholder: false,
+        }));
+    })
+  );
+  return results.flatMap(r => (r.status === "fulfilled" ? r.value : []));
 }
 
 // ─── Insider trades ───────────────────────────────────────────────────────────
