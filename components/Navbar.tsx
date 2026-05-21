@@ -7,6 +7,7 @@ import { useState } from "react";
 const NAV = [
   { label: "Academy", href: "/academy", match: ["/academy", "/module", "/final-test"] },
   { label: "Scanner", href: "/scanner", match: ["/scanner"], icon: "📡" },
+  { label: "Edge Scanner", href: "/live-edge-scanner", match: ["/live-edge-scanner"], icon: "🎯" },
   { label: "Structure", href: "/market-structure", match: ["/market-structure"], icon: "🔬" },
   { label: "Playbooks", href: "/playbooks", match: ["/playbooks"], icon: "📖" },
   { label: "War Room", href: "/market-war-room", match: ["/market-war-room"], icon: "⚔️" },

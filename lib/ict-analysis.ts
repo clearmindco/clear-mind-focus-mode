@@ -376,6 +376,31 @@ export function calcATR(candles: Candle[], period = 14): number {
   return recent.reduce((a, b) => a + b, 0) / recent.length;
 }
 
+// ─── SMA helper ───────────────────────────────────────────────────────────────
+
+export function calcSMA(candles: Candle[], period = 20): number {
+  const slice = candles.slice(-period);
+  if (!slice.length) return 0;
+  return slice.reduce((a, c) => a + c.close, 0) / slice.length;
+}
+
+// ─── RSI helper ───────────────────────────────────────────────────────────────
+
+export function calcRSI(candles: Candle[], period = 14): number {
+  if (candles.length < period + 1) return 50;
+  const changes = candles
+    .slice(-(period + 1))
+    .map((c, i, arr) => (i === 0 ? 0 : c.close - arr[i - 1].close))
+    .slice(1);
+  const gains = changes.filter(c => c > 0);
+  const losses = changes.filter(c => c < 0).map(Math.abs);
+  const avgGain = gains.reduce((a, b) => a + b, 0) / period;
+  const avgLoss = losses.reduce((a, b) => a + b, 0) / period;
+  if (avgLoss === 0) return 100;
+  const rs = avgGain / avgLoss;
+  return Math.round((100 - 100 / (1 + rs)) * 10) / 10;
+}
+
 // ─── Relative Volume ──────────────────────────────────────────────────────────
 
 export function calcRelativeVolume(candles: Candle[], avgPeriod = 20): number {
