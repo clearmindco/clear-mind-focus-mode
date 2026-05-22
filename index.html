@@ -225,6 +225,45 @@ hr.sep{border:none; border-top:1px solid var(--border); margin:16px 0}
   }
   .month-day .num{font-size:11px}
 }
+
+/* YouTube Channel Planner */
+.yt-hero{
+  background:linear-gradient(135deg,#1a0a2e 0%,#3d1878 55%,#6c2bd9 100%);
+  color:#fff; border:0;
+}
+.yt-hero p{color:rgba(255,255,255,.85)}
+.yt-step{
+  display:grid; grid-template-columns:34px 1fr auto; gap:10px; align-items:center;
+  padding:12px 14px; border:1px solid var(--border); border-radius:16px; background:var(--card-2);
+}
+.yt-step.yt-run{border-color:#6c2bd9; animation:ytPulse 1.2s ease-in-out infinite}
+.yt-step.yt-done{border-color:#5e3da8; background:rgba(108,43,217,.06)}
+.yt-dot{
+  width:30px; height:30px; border-radius:50%; border:2px solid var(--border); background:transparent;
+  display:grid; place-items:center; font-size:15px; flex:0 0 auto;
+}
+.yt-dot.run{background:#6c2bd9; border-color:transparent; color:#fff}
+.yt-dot.done{background:#5e3da8; border-color:transparent; color:#fff}
+@keyframes ytPulse{0%,100%{opacity:1}50%{opacity:.6}}
+.yt-rcard{padding:14px; border-radius:18px; background:var(--card-2); border:1px solid var(--border); margin-bottom:12px}
+.yt-rcard h3{font-family:'Cormorant Garamond',serif; font-size:20px; margin-bottom:10px; color:var(--text)}
+.yt-tag{
+  display:inline-block; padding:4px 10px; border-radius:999px;
+  background:rgba(108,43,217,.12); color:#6c2bd9; font-size:12px; font-weight:700; margin:3px 3px 3px 0;
+}
+body.dark-mode .yt-tag{background:rgba(140,80,255,.18); color:#c4a0ff}
+.yt-video{
+  padding:12px; border-radius:14px; background:var(--page-bg); border:1px solid var(--border); margin-bottom:8px;
+}
+.yt-vnum{font-size:22px; font-weight:700; font-family:'Cormorant Garamond',serif; color:#6c2bd9}
+.yt-hint{
+  padding:12px 14px; border-radius:14px; background:rgba(108,43,217,.08);
+  border:1px solid rgba(108,43,217,.2); margin-top:10px;
+}
+body.dark-mode .yt-hint{background:rgba(140,80,255,.1); border-color:rgba(140,80,255,.25)}
+.yt-task{padding:6px 0; border-bottom:1px solid var(--border); font-size:14px}
+.yt-task:last-child{border-bottom:0}
+.yt-swatch{width:28px; height:28px; border-radius:8px; display:inline-block; margin-right:6px; border:1px solid rgba(0,0,0,.1)}
 </style>
 </head>
 <body>
@@ -250,6 +289,7 @@ hr.sep{border:none; border-top:1px solid var(--border); margin:16px 0}
       <button type="button" data-page="coach">Coach</button>
       <button type="button" data-page="money">Money</button>
       <button type="button" data-page="guide">Guide</button>
+      <button type="button" data-page="youtube">YouTube</button>
     </div>
   </div>
 
@@ -542,6 +582,53 @@ hr.sep{border:none; border-top:1px solid var(--border); margin:16px 0}
         <button type="button" id="startTourBtn" class="soft">Start Tour — 2 min ▶</button>
       </div>
     </section>
+
+    <section id="pg-youtube" class="pg">
+      <div class="card yt-hero">
+        <div style="font-size:30px; margin-bottom:6px">▶</div>
+        <h2 style="color:#fff; font-size:26px">YouTube Channel Planner</h2>
+        <p>8 AI agents run in sequence — each one building on the last — to deliver a complete channel strategy: niche validation, content pillars, 10 video ideas with hooks, SEO, visual identity, upload schedule, and a 7-day sprint to get your first video live.</p>
+        <div class="badges" style="margin-top:10px">
+          <div class="badge" style="background:rgba(255,255,255,.18); color:#fff">Niche Validator</div>
+          <div class="badge" style="background:rgba(255,255,255,.18); color:#fff">Channel Position</div>
+          <div class="badge" style="background:rgba(255,255,255,.18); color:#fff">10 Video Ideas</div>
+          <div class="badge" style="background:rgba(255,255,255,.18); color:#fff">Launch This Week</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="small">Step 1 — Define your niche</div>
+        <h2>What's your channel about?</h2>
+        <p>Be as specific as you can. The agents will refine it.</p>
+        <textarea id="ytNicheInput" maxlength="400" placeholder="Example: SnifflePaws — educational songs for toddlers starring a fox character, teaching ABCs, colors, and numbers..." style="min-height:88px"></textarea>
+        <div class="yt-hint" id="ytNicheHint" style="display:none">
+          <div class="small" style="margin-bottom:4px">Smart pick for your brand</div>
+          <strong id="ytNicheHintText"></strong>
+        </div>
+        <div class="row wrap" style="margin-top:12px; gap:10px">
+          <button type="button" id="ytFillNicheBtn" class="soft">Use Smart Recommendation</button>
+          <button type="button" id="ytRunBtn">Run 8 Agents ▶</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Workflow</h2>
+        <p class="small">Each agent hands its output to the next. The final report assembles everything.</p>
+        <div id="ytWorkflowSteps" class="list" style="margin-top:10px"></div>
+      </div>
+
+      <div id="ytResults" class="hidden">
+        <div class="card" style="background:linear-gradient(135deg,#1a0a2e,#3d1878);color:#fff;border:0">
+          <div style="font-size:32px; margin-bottom:6px">✅</div>
+          <h2 style="color:#fff">Channel Strategy Report</h2>
+          <p style="color:rgba(255,255,255,.85)">All 8 agents complete. Your full YouTube strategy is below.</p>
+        </div>
+        <div id="ytReportCards"></div>
+        <div class="card">
+          <button type="button" id="ytResetBtn" class="soft">Reset &amp; Start New Strategy</button>
+        </div>
+      </div>
+    </section>
   </div>
 </div>
 
@@ -662,7 +749,8 @@ document.addEventListener('DOMContentLoaded', function(){
     name:'', goal:'', why:'', challenges:[], push:'medium', growthStyle:'flower',
     tasks:[], goals:[], jEntries:[], habits:[], calNotes:{}, growthScore:0, currentStreak:0,
     lastOpenDate:'', setupStep:0, mood:'', coachMessages:[], align:{a:'',b:'',c:''}, brainDump:'', brainDumpOrganized:[],
-    focus:{avoid:'',steps:['','','','','']}, monthView:{y:0,m:0}, debts:[]
+    focus:{avoid:'',steps:['','','','','']}, monthView:{y:0,m:0}, debts:[],
+    ytChannel:{niche:'', results:[], lastRun:''}
   };
   var quoteSession = "";
   var timerSecs = 1500, timerInt = null, timerRunning = false, selectedMonthKey = '';
@@ -724,7 +812,7 @@ document.addEventListener('DOMContentLoaded', function(){
   }
   function applyLoadedData(obj){
     if(!obj || typeof obj !== 'object') return;
-    var allowed = ['name','goal','why','challenges','push','growthStyle','tasks','goals','jEntries','habits','calNotes','growthScore','currentStreak','lastOpenDate','setupStep','mood','coachMessages','align','brainDump','brainDumpOrganized','focus','monthView','debts'];
+    var allowed = ['name','goal','why','challenges','push','growthStyle','tasks','goals','jEntries','habits','calNotes','growthScore','currentStreak','lastOpenDate','setupStep','mood','coachMessages','align','brainDump','brainDumpOrganized','focus','monthView','debts','ytChannel'];
     allowed.forEach(function(k){
       if(Object.prototype.hasOwnProperty.call(obj,k)){
         U[k] = obj[k];
@@ -902,6 +990,7 @@ document.addEventListener('DOMContentLoaded', function(){
     renderMoney();
     renderWeek();
     renderMonth();
+    renderYouTube();
     save();
   }
   function renderHero(){
@@ -1314,6 +1403,280 @@ document.addEventListener('DOMContentLoaded', function(){
     });
     save(); renderHome();
   }
+
+  /* ── YouTube Channel Planner ─────────────────────────────── */
+  var YT_AGENTS = [
+    {id:'niche',    icon:'🎯', title:'Niche Validator',     desc:'Validates market size, competition & verdict'},
+    {id:'position', icon:'🏆', title:'Channel Position',    desc:'Unique angle, channel name options & tagline'},
+    {id:'pillars',  icon:'🏛️', title:'Content Pillars',     desc:'5 core content themes with examples'},
+    {id:'videos',   icon:'🎬', title:'First 10 Videos',     desc:'SEO titles, hooks & video type for each'},
+    {id:'seo',      icon:'🔍', title:'SEO Strategy',        desc:'Keywords, tags & description template'},
+    {id:'visual',   icon:'🎨', title:'Visual Identity',     desc:'Thumbnail formula, color palette & face rule'},
+    {id:'schedule', icon:'📅', title:'Upload Schedule',     desc:'Optimal posting frequency & batch strategy'},
+    {id:'plan',     icon:'🚀', title:'Launch This Week',     desc:'Today, days 2–3, and days 4–7 to get your first video live'}
+  ];
+  var YT_NICHE_SUGGESTION = 'SnifflePaws — educational cartoon songs for toddlers & babies (ages 1–5) starring a cute fox character. Teaching ABCs, numbers, colors, shapes, and everyday life skills through original catchy songs. Channel already created, character already designed.';
+
+  var YT_FALLBACKS = {
+    niche: {refined_niche:'Educational cartoon animation for toddlers ages 1–5 — ABCs, 123s, colors, shapes, and life skills through original catchy songs and bright 2D characters', market_size:'Massive — 2.2 billion children under 15 worldwide. Cocomelon alone has 170B+ views. Top kids channels average 500M–2B views per month. Parents actively loop the same videos for hours.', competition:'High at surface level — but only 3–4 mega channels dominate. Strong openings exist in bilingual content, character-driven stories, specific learning themes, and higher-quality animation.', monetization:'YouTube ad revenue (high CPM on YouTube Kids), merchandise licensing, streaming licensing deals (Netflix/Amazon), educational app licensing, toy brand partnerships, plush characters', verdict:'Green light', why:'Kids content is the single highest-view category on YouTube. A catchy song with a bright character can hit 500 million views on a single video. The algorithm auto-plays and parents leave it running — this is the best passive-view niche on the platform. The key is one memorable character, one repeatable song formula, and consistent posting.'},
+    position: {channel_name:['SnifflePaws','SnifflePaws World','SnifflePaws Kids'], tagline:'Sing, learn, and grow with SnifflePaws!', unique_angle:'SnifflePaws is a lovable fox character that toddlers instantly recognize and ask for by name. Every video is one song teaching one concept — simple, bright, and perfectly loopable. The character becomes the brand, and the brand becomes what parents search for by name.', target_viewer:'Parents of children ages 1–5 searching for safe, educational, character-driven screen time. They want something their toddler loves AND learns from. Once a kid bonds with SnifflePaws they ask to watch it again and again — that repeat viewing is exactly how channels explode.'},
+    pillars: {pillars:[{name:'ABCs & Phonics',description:'The most searched kids content on YouTube. Alphabet songs, letter recognition, phonics sounds, and beginner reading concepts.',example:'ABC Song for Kids | Sing Along with Sunny the Sun | Tiny Bright World'},{name:'Numbers & Counting',description:'Counting 1–10, 1–20, simple addition, number recognition — with objects kids can count on screen.',example:'1 to 10 Counting Song | Count with Benny the Bear | Tiny Bright World'},{name:'Colors, Shapes & Patterns',description:'Learn colors, basic shapes, and visual patterns. Highly searchable and parents loop these for hours.',example:'Colors Song for Babies | Red Blue Yellow Green | Learn Colors'},{name:'Songs & Movement',description:'Action songs, nursery rhyme remixes, and movement videos. Highest raw view counts in kids content globally.',example:'Baby Shark Style Original Song | Sunny Sprouts Dance Along'},{name:'Life Skills & Social Stories',description:'Bedtime routines, sharing, eating vegetables, brushing teeth, managing big feelings — stories kids see themselves in.',example:'Time to Sleep Song | Bedtime Routine for Toddlers | Goodnight Song'}]},
+    videos: {videos:[{title:'ABC Song for Kids | Sing the Alphabet | Tiny Bright World',hook:'[Bright character waves] A is for Apple! B is for Ball! Sing along with Sunny and learn ALL your letters today!',pillar:'ABCs & Phonics',type:'Song'},{title:'Colors Song for Babies | Red Blue Yellow Green | Learn Colors',hook:'[Red apple bounces on screen] What color is THIS? RED! Can you say RED? Lets find ALL the colors together!',pillar:'Colors, Shapes & Patterns',type:'Song'},{title:'1 to 10 Counting Song | Numbers for Toddlers | Count with Benny',hook:'One little star... two little stars... can you COUNT with Benny? Lets count ALL the way to 10!',pillar:'Numbers & Counting',type:'Song'},{title:'Shapes Song | Circle Square Triangle | Learn Shapes for Kids',hook:'A CIRCLE is round like the sun! A SQUARE has four sides! Sing along and learn every shape!',pillar:'Colors, Shapes & Patterns',type:'Song'},{title:'Animal Sounds Song | What Does the Dog Say | Tiny Bright World',hook:'The dog says WOOF! The cat says MEOW! What does the COW say? Sing along and find out!',pillar:'Songs & Movement',type:'Song'},{title:'Good Morning Song | Wake Up with Sunny | Kids Morning Routine',hook:'Good morning good morning its time to wake UP! Stretch your arms and open your eyes — a brand new day is here!',pillar:'Life Skills & Social Stories',type:'Song'},{title:'Bath Time Song | Splish Splash | Clean Up Song for Kids',hook:'Splish splash its BATH TIME! Wash your hands wash your face — lets get CLEAN with Benny!',pillar:'Life Skills & Social Stories',type:'Song'},{title:'Wheels on the Bus | NEW Version | Tiny Bright World Nursery Rhyme',hook:'The wheels on the bus go round and round... ALL through the town! Sing along with your favorite characters!',pillar:'Songs & Movement',type:'Song'},{title:'Goodnight Song | Bedtime Routine for Toddlers | Sleep Tight',hook:'The stars are out the moon is bright — time to say goodnight goodnight! Sing Sunny to sleep with this gentle lullaby.',pillar:'Life Skills & Social Stories',type:'Song'},{title:'Phonics Song | Letter Sounds A to Z | Learn to Read for Kids',hook:'A says AH like an Apple! B says BUH like a Ball! Every letter has a SOUND — lets learn them all!',pillar:'ABCs & Phonics',type:'Song'}]},
+    seo: {primary_keywords:['ABC song for kids','educational videos for toddlers','nursery rhymes','learn colors for babies','numbers song for kids'], long_tail:['abc song for toddlers and babies','learn colors with cartoon characters','educational cartoon for 2 year olds','kids learning songs playlist','toddler learning videos free'], channel_tags:['kids','toddlers','educational','nursery rhymes','ABC','babies','learning','cartoon','kids songs','preschool'], description_template:'Fun animated educational cartoons for toddlers and babies! Learn ABCs, numbers, colors, and shapes with [Character Names]. New videos every week! #KidsLearning #NurseryRhymes #ToddlerVideos #ABCSong', seo_tip:'Title formula: [Concept] + Song or for Kids + | [Channel Name] — for example "ABC Song for Kids | Tiny Bright World". YouTube Kids surfaces content by topic cluster, so keeping your title format consistent trains the algorithm to categorize and recommend your full channel correctly.'},
+    visual: {thumbnail_style:'Bright character close-up showing a relevant happy expression + bold title text in a child-friendly rounded font + clean solid-color background + one key learning visual (letter block, number, or color swatch)', color_palette:['#FF6B6B','#FFE66D','#4ECDC4'], font_style:'Rounded bubbly sans-serif — Nunito or Baloo style. No sharp edges. Minimum 48pt equivalent. High contrast. Letters must be readable on a phone screen 3 feet away.', face_rule:'No human face — fully character-based channel. Consistent animated characters build brand recognition faster with toddlers and are safe for YouTube Kids distribution.', template:'[Character face showing excitement — 50% of frame] + [Bright solid background from palette] + [Bold subject word in large rounded text] + [1–2 colorful learning icons at bottom]'},
+    schedule: {frequency:'2 videos per week minimum', days:['Wednesday','Saturday'], time:'Publish 8am–10am EST — parents search for screen time during morning routines and weekend mornings when they need their toddler occupied', batch_strategy:'Plan 8 videos as a themed batch (e.g., All About Colors). Script all 8 first. Record all voiceovers in one 2-hour session. Animate using a reusable character template in Canva, Adobe Express, or Vyond. Export and schedule all 8 at once.', minimum_viable:'1 video per week — never miss 2 weeks in a row or the algorithm deprioritizes your channel. Consistency over quantity always.'},
+    plan: {today:{goal:'ABC Song scripted, voiceover recorded — SnifflePaws posts its first video',tasks:['Write your ABC Song lyrics right now — 26 lines, one per letter, 5 words max each. SnifflePaws sings it.','Open a voice memo app and record the full song in one take. Your phone mic is fine. Do not wait.','In Canva or CapCut, place the SnifflePaws character on screen and sync it to your audio — a simple bounce animation is enough','Write the title: "ABC Song for Kids | Sing with SnifflePaws | Learn the Alphabet"']},day2_3:{goal:'Video polished, thumbnail done, uploaded',tasks:['Add bright colored letter cards appearing on screen as SnifflePaws sings each letter — this keeps toddler eyes locked in','Export at 1080p and upload to YouTube Studio as Public — not Unlisted, not Private','Build the thumbnail: SnifflePaws face + bold "ABC SONG" text + bright solid background color','Paste your keywords from Agent 5 into the description and tags — do not skip this step']},day4_7:{goal:'Second video live, playlist created, channel optimized',tasks:['Script and record your Colors Song — "Red! Blue! Yellow! Green! — SnifflePaws loves every color he has seen!"','Create your first playlist: "Learn with SnifflePaws" — add both videos to it','Update your channel description and banner to match the SnifflePaws brand','Share the channel with one parent you know and ask them to play it for their kid']},right_now:'You already have the channel and the character. The ONLY thing stopping you is not recording the ABC Song. Open a voice memo app right now and record it — one take, no editing, just sing the alphabet with SnifflePaws energy.'}
+  };
+
+  function ensureYtChannel(){
+    if(!U.ytChannel || typeof U.ytChannel !== 'object') U.ytChannel = {niche:'', results:[], lastRun:''};
+    if(!Array.isArray(U.ytChannel.results)) U.ytChannel.results = [];
+    if(!U.ytChannel.niche) U.ytChannel.niche = '';
+  }
+
+  function renderYouTube(){
+    ensureYtChannel();
+    var nicheEl = document.getElementById('ytNicheInput');
+    if(nicheEl && !nicheEl.value && U.ytChannel.niche) nicheEl.value = U.ytChannel.niche;
+
+    var hintEl = document.getElementById('ytNicheHint');
+    var hintTxt = document.getElementById('ytNicheHintText');
+    if(hintEl && hintTxt){
+      hintEl.style.display = 'block';
+      hintTxt.textContent = YT_NICHE_SUGGESTION;
+    }
+
+    var stepsEl = document.getElementById('ytWorkflowSteps');
+    if(!stepsEl) return;
+    stepsEl.innerHTML = '';
+    YT_AGENTS.forEach(function(agent, i){
+      var result = (U.ytChannel.results || []).find(function(r){ return r.id === agent.id; });
+      var isDone = !!result;
+      var div = document.createElement('div');
+      div.className = 'yt-step' + (isDone ? ' yt-done' : '');
+      var dotClass = isDone ? 'done' : '';
+      div.innerHTML =
+        '<div class="yt-dot ' + dotClass + '">' + (isDone ? '✓' : esc(agent.icon)) + '</div>' +
+        '<div><strong>' + esc(agent.title) + '</strong><div class="small" style="margin-top:2px">' + esc(agent.desc) + '</div></div>' +
+        '<div class="small">' + (isDone ? '<span style="color:#6c2bd9; font-weight:700">Done</span>' : '<span style="color:var(--muted)">Waiting</span>') + '</div>';
+      stepsEl.appendChild(div);
+    });
+
+    var resultsEl = document.getElementById('ytResults');
+    var reportEl = document.getElementById('ytReportCards');
+    if(!resultsEl || !reportEl) return;
+
+    var hasResults = U.ytChannel.results && U.ytChannel.results.length === YT_AGENTS.length;
+    resultsEl.classList.toggle('hidden', !hasResults);
+
+    if(hasResults){
+      reportEl.innerHTML = '';
+      U.ytChannel.results.forEach(function(r){
+        var card = document.createElement('div');
+        card.className = 'yt-rcard';
+        card.innerHTML = ytRenderResult(r);
+        reportEl.appendChild(card);
+      });
+    }
+  }
+
+  function ytRenderResult(r){
+    var agent = YT_AGENTS.find(function(a){ return a.id === r.id; });
+    var label = agent ? (agent.icon + ' ' + agent.title) : r.id;
+    var d = r.data || {};
+    var html = '<h3>' + esc(label) + '</h3>';
+
+    if(r.id === 'niche'){
+      html += '<div class="grid2" style="gap:10px; margin-bottom:10px">';
+      html += ytStat('Verdict', esc(d.verdict || ''));
+      html += ytStat('Market', esc(d.market_size || ''));
+      html += '</div>';
+      html += '<p><strong>Refined niche:</strong> ' + esc(d.refined_niche || '') + '</p>';
+      html += '<p style="margin-top:8px"><strong>Monetization:</strong> ' + esc(d.monetization || '') + '</p>';
+      html += '<p style="margin-top:8px; color:var(--muted)">' + esc(d.why || '') + '</p>';
+    } else if(r.id === 'position'){
+      html += '<p><strong>Channel names to consider:</strong></p>';
+      html += '<div style="margin:8px 0">';
+      var names = Array.isArray(d.channel_name) ? d.channel_name : [d.channel_name || ''];
+      names.forEach(function(n){ html += '<span class="yt-tag">' + esc(n) + '</span>'; });
+      html += '</div>';
+      html += '<p><strong>Tagline:</strong> ' + esc(d.tagline || '') + '</p>';
+      html += '<p style="margin-top:8px"><strong>Unique angle:</strong> ' + esc(d.unique_angle || '') + '</p>';
+      html += '<p style="margin-top:8px; color:var(--muted)"><strong>Target viewer:</strong> ' + esc(d.target_viewer || '') + '</p>';
+    } else if(r.id === 'pillars'){
+      var pillars = Array.isArray(d.pillars) ? d.pillars : [];
+      pillars.forEach(function(p, i){
+        html += '<div class="yt-task" style="padding:10px 0">';
+        html += '<span class="yt-tag">Pillar ' + (i+1) + '</span> ';
+        html += '<strong>' + esc(p.name || '') + '</strong>';
+        html += '<div style="margin:4px 0 4px 0; color:var(--text-2)">' + esc(p.description || '') + '</div>';
+        html += '<div class="small" style="color:var(--muted)">Example: ' + esc(p.example || '') + '</div>';
+        html += '</div>';
+      });
+    } else if(r.id === 'videos'){
+      var videos = Array.isArray(d.videos) ? d.videos : [];
+      videos.forEach(function(v, i){
+        html += '<div class="yt-video">';
+        html += '<div class="row" style="gap:10px; align-items:flex-start; margin-bottom:6px">';
+        html += '<div class="yt-vnum">' + (i+1) + '</div>';
+        html += '<div><strong>' + esc(v.title || '') + '</strong>';
+        html += '<div style="margin-top:2px"><span class="yt-tag">' + esc(v.type || '') + '</span><span class="yt-tag">' + esc(v.pillar || '') + '</span></div></div></div>';
+        html += '<div class="small" style="color:var(--muted); font-style:italic">"' + esc(v.hook || '') + '"</div>';
+        html += '</div>';
+      });
+    } else if(r.id === 'seo'){
+      html += '<p><strong>Primary keywords:</strong></p><div style="margin:6px 0">';
+      (Array.isArray(d.primary_keywords) ? d.primary_keywords : []).forEach(function(k){ html += '<span class="yt-tag">' + esc(k) + '</span>'; });
+      html += '</div>';
+      html += '<p style="margin-top:8px"><strong>Long-tail phrases:</strong></p><div style="margin:6px 0">';
+      (Array.isArray(d.long_tail) ? d.long_tail : []).forEach(function(k){ html += '<span class="yt-tag">' + esc(k) + '</span>'; });
+      html += '</div>';
+      html += '<p style="margin-top:8px"><strong>Channel tags:</strong></p><div style="margin:6px 0">';
+      (Array.isArray(d.channel_tags) ? d.channel_tags : []).forEach(function(k){ html += '<span class="yt-tag">' + esc(k) + '</span>'; });
+      html += '</div>';
+      if(d.seo_tip) html += '<div class="yt-hint" style="margin-top:10px"><strong>Pro tip:</strong> ' + esc(d.seo_tip) + '</div>';
+    } else if(r.id === 'visual'){
+      html += '<p><strong>Thumbnail formula:</strong> ' + esc(d.thumbnail_style || '') + '</p>';
+      html += '<p style="margin-top:8px"><strong>Face rule:</strong> ' + esc(d.face_rule || '') + '</p>';
+      html += '<p style="margin-top:8px"><strong>Template:</strong> ' + esc(d.template || '') + '</p>';
+      if(Array.isArray(d.color_palette) && d.color_palette.length){
+        html += '<div style="margin-top:10px"><strong>Color palette:</strong><div style="margin-top:6px; display:flex; gap:8px; align-items:center">';
+        d.color_palette.forEach(function(c){
+          var safeC = /^#[0-9a-fA-F]{3,8}$/.test(c) ? c : '#888888';
+          html += '<span class="yt-swatch" style="background:' + safeC + '"></span><span class="small">' + esc(safeC) + '</span>';
+        });
+        html += '</div></div>';
+      }
+      if(d.font_style) html += '<p style="margin-top:8px; color:var(--muted)"><strong>Font style:</strong> ' + esc(d.font_style) + '</p>';
+    } else if(r.id === 'schedule'){
+      html += '<div class="grid2" style="gap:10px; margin-bottom:10px">';
+      html += ytStat('Frequency', esc(d.frequency || ''));
+      html += ytStat('Best days', Array.isArray(d.days) ? esc(d.days.join(' & ')) : esc(d.days || ''));
+      html += '</div>';
+      html += '<p><strong>Publish time:</strong> ' + esc(d.time || '') + '</p>';
+      html += '<p style="margin-top:8px"><strong>Batch strategy:</strong> ' + esc(d.batch_strategy || '') + '</p>';
+      html += '<p style="margin-top:8px; color:var(--muted)"><strong>Minimum viable:</strong> ' + esc(d.minimum_viable || '') + '</p>';
+    } else if(r.id === 'plan'){
+      var phases = [{key:'today',label:'Today'},{key:'day2_3',label:'Days 2–3'},{key:'day4_7',label:'Days 4–7'}];
+      phases.forEach(function(ph){
+        var mo = d[ph.key] || {};
+        html += '<div style="margin-bottom:14px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span class="yt-tag">' + esc(ph.label) + '</span><strong>' + esc(mo.goal || '') + '</strong></div>';
+        var tasks = Array.isArray(mo.tasks) ? mo.tasks : [];
+        tasks.forEach(function(t){ html += '<div class="yt-task">→ ' + esc(t) + '</div>'; });
+        html += '</div>';
+      });
+      if(d.right_now){
+        html += '<div class="yt-hint" style="margin-top:10px; border-color:#6c2bd9"><strong>Do this right now:</strong> ' + esc(d.right_now) + '</div>';
+      }
+    }
+    return html;
+  }
+
+  function ytStat(label, val){
+    return '<div class="stat"><div class="kpi" style="font-size:16px; line-height:1.2">' + val + '</div><div class="small">' + esc(label) + '</div></div>';
+  }
+
+  function ytAgentPrompt(id, niche, prevResults){
+    var ctx = prevResults.map(function(r){ return r.id + ': ' + JSON.stringify(r.data).slice(0,600); }).join('\n');
+    var base = 'YouTube channel niche: ' + niche + '\nPrevious agent outputs:\n' + ctx + '\nReturn ONLY valid JSON. No markdown, no explanation.';
+    var prompts = {
+      niche: {sys:'You are a YouTube niche strategist. Analyze the niche. Return JSON: {refined_niche,market_size,competition,monetization,verdict,why}', user:base},
+      position: {sys:'You are a YouTube brand strategist. Create channel positioning. Return JSON: {channel_name:[3 options as array],tagline,unique_angle,target_viewer}', user:base},
+      pillars: {sys:'You are a YouTube content strategist. Define 5 content pillars. Return JSON: {pillars:[{name,description,example}]}', user:base},
+      videos: {sys:'You are a YouTube video strategist. Create 10 video ideas. Return JSON: {videos:[{title,hook,pillar,type}]}', user:base},
+      seo: {sys:'You are a YouTube SEO specialist. Return JSON: {primary_keywords:[5],long_tail:[5],channel_tags:[10],description_template,seo_tip}', user:base},
+      visual: {sys:'You are a YouTube thumbnail and visual brand designer. Return JSON: {thumbnail_style,color_palette:[3 hex],font_style,face_rule,template}', user:base},
+      schedule: {sys:'You are a YouTube growth strategist. Return JSON: {frequency,days:[array],time,batch_strategy,minimum_viable}', user:base},
+      plan: {sys:'You are a YouTube launch strategist focused on immediate action. Return JSON: {today:{goal,tasks:[4]},day2_3:{goal,tasks:[4]},day4_7:{goal,tasks:[4]},right_now}. No long-term planning. Get the first video live within 7 days.', user:base}
+    };
+    return prompts[id] || {sys:'Return JSON only.', user:base};
+  }
+
+  async function callYouTubeAgent(id, niche, prevResults){
+    var apiKey = getApiKey();
+    if(!validApiKey(apiKey)) return YT_FALLBACKS[id] || {};
+    if(!rateLimitOK()) return YT_FALLBACKS[id] || {};
+    var p = ytAgentPrompt(id, niche, prevResults);
+    try{
+      var res = await fetch('https://api.anthropic.com/v1/messages',{
+        method:'POST',
+        headers:{
+          'content-type':'application/json',
+          'x-api-key':apiKey,
+          'anthropic-version':'2023-06-01'
+        },
+        body: JSON.stringify({
+          model:'claude-sonnet-4-20250514',
+          max_tokens:1200,
+          system: p.sys,
+          messages:[{role:'user', content:p.user}]
+        })
+      });
+      if(!res.ok) throw new Error('API error');
+      var data = await res.json();
+      var txt = (((data||{}).content||[])[0]||{}).text || '';
+      var match = txt.match(/\{[\s\S]*\}/);
+      if(match){ var parsed = JSON.parse(match[0]); return parsed; }
+    }catch(e){}
+    return YT_FALLBACKS[id] || {};
+  }
+
+  function ytMarkStepRunning(idx){
+    var steps = document.querySelectorAll('#ytWorkflowSteps .yt-step');
+    if(steps[idx]){
+      steps[idx].classList.add('yt-run');
+      var dot = steps[idx].querySelector('.yt-dot');
+      if(dot){ dot.className='yt-dot run'; dot.textContent='…'; }
+      var status = steps[idx].querySelectorAll('.small');
+      if(status[1]) status[1].innerHTML = '<span style="color:#6c2bd9; font-weight:700">Running…</span>';
+    }
+  }
+
+  function ytMarkStepDone(idx){
+    var steps = document.querySelectorAll('#ytWorkflowSteps .yt-step');
+    if(steps[idx]){
+      steps[idx].classList.remove('yt-run');
+      steps[idx].classList.add('yt-done');
+      var dot = steps[idx].querySelector('.yt-dot');
+      if(dot){ dot.className='yt-dot done'; dot.textContent='✓'; }
+      var status = steps[idx].querySelectorAll('.small');
+      if(status[1]) status[1].innerHTML = '<span style="color:#6c2bd9; font-weight:700">Done</span>';
+    }
+  }
+
+  async function runYouTubeWorkflow(){
+    var nicheEl = document.getElementById('ytNicheInput');
+    var niche = sanitizeInput(nicheEl ? nicheEl.value : '', 400);
+    if(!niche){ celebrate('⚠️','Add your niche first','Describe what your YouTube channel is about, then run the workflow.','',0); return; }
+
+    ensureYtChannel();
+    U.ytChannel.niche = niche;
+    U.ytChannel.results = [];
+    U.ytChannel.lastRun = new Date().toISOString();
+
+    document.getElementById('ytResults').classList.add('hidden');
+    var runBtn = document.getElementById('ytRunBtn');
+    if(runBtn){ runBtn.disabled = true; runBtn.textContent = 'Agents Running…'; }
+
+    save(); renderYouTube();
+
+    var prevResults = [];
+    for(var i = 0; i < YT_AGENTS.length; i++){
+      var agent = YT_AGENTS[i];
+      ytMarkStepRunning(i);
+      var data = await callYouTubeAgent(agent.id, niche, prevResults);
+      var result = {id:agent.id, data:data};
+      U.ytChannel.results.push(result);
+      prevResults.push(result);
+      ytMarkStepDone(i);
+      save();
+    }
+
+    if(runBtn){ runBtn.disabled = false; runBtn.textContent = 'Run 8 Agents ▶'; }
+    renderYouTube();
+    celebrate('▶','Channel strategy complete','All 8 agents finished. Your full YouTube plan is ready below.','Review the report and take your Day 1 action today.',50);
+  }
+  /* ── End YouTube Channel Planner ─────────────────────────── */
 
   function debtMonthKeyNow(){
     var d = new Date();
@@ -2095,6 +2458,20 @@ document.addEventListener('DOMContentLoaded', function(){
         }
       };
       reader.readAsText(file);
+    });
+
+    document.getElementById('ytRunBtn').addEventListener('click', function(){ runYouTubeWorkflow(); });
+    document.getElementById('ytFillNicheBtn').addEventListener('click', function(){
+      var el = document.getElementById('ytNicheInput');
+      if(el){ el.value = YT_NICHE_SUGGESTION; el.focus(); }
+    });
+    document.getElementById('ytResetBtn').addEventListener('click', function(){
+      ensureYtChannel();
+      U.ytChannel.results = [];
+      U.ytChannel.niche = '';
+      var el = document.getElementById('ytNicheInput');
+      if(el) el.value = '';
+      save(); renderYouTube();
     });
 
     document.getElementById('startTourBtn').addEventListener('click', function(){ startTour(); });

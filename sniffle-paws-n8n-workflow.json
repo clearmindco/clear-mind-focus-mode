@@ -1,0 +1,710 @@
+{
+  "name": "SnifflePaws — Full YouTube Automation",
+  "nodes": [
+
+    {
+      "id": "n01",
+      "name": "🕐 Daily Schedule",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [0, 300],
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "cronExpression", "expression": "0 11 * * *" }]
+        }
+      },
+      "notes": "Runs every day at 11am server time. Video gets scheduled to go live at 3pm EST weekdays / 9am EST weekends — calculated in node 'Calculate Peak Time'."
+    },
+
+    {
+      "id": "n02",
+      "name": "📋 Read Content Queue",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [240, 300],
+      "parameters": {
+        "operation": "read",
+        "documentId": { "__rl": true, "mode": "id", "value": "={{ $env.CONTENT_SHEET_ID }}" },
+        "sheetName": { "__rl": true, "mode": "name", "value": "Queue" },
+        "options": {}
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": { "id": "cred-sheets", "name": "Google Sheets OAuth2" }
+      }
+    },
+
+    {
+      "id": "n03",
+      "name": "🔍 Find PENDING Row",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [480, 300],
+      "parameters": {
+        "language": "javaScript",
+        "jsCode": "const rows = $input.all();\nconst row = rows.find(r => (r.json.Status || '').toUpperCase() === 'PENDING');\nif (!row) return [{json: {found: false, topic: null, rowNumber: null}}];\nreturn [{json: {found: true, topic: row.json.Topic, rowNumber: row.json.row_number}}];"
+      }
+    },
+
+    {
+      "id": "n04",
+      "name": "❓ Has Topic?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [720, 300],
+      "parameters": {
+        "conditions": {
+          "boolean": [{ "value1": "={{ $json.found }}", "value2": true }]
+        }
+      }
+    },
+
+    {
+      "id": "n05",
+      "name": "⏸️ No Topic Today",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [720, 520],
+      "parameters": {
+        "values": {
+          "string": [{ "name": "message", "value": "Content queue empty. Add more rows with Status=PENDING to the Google Sheet." }]
+        }
+      }
+    },
+
+    {
+      "id": "n06",
+      "name": "✏️ Mark In Progress",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [960, 300],
+      "parameters": {
+        "operation": "update",
+        "documentId": { "__rl": true, "mode": "id", "value": "={{ $env.CONTENT_SHEET_ID }}" },
+        "sheetName": { "__rl": true, "mode": "name", "value": "Queue" },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": { "row_number": "={{ $('🔍 Find PENDING Row').item(0).json.rowNumber }}", "Status": "IN_PROGRESS" }
+        }
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": { "id": "cred-sheets", "name": "Google Sheets OAuth2" }
+      }
+    },
+
+    {
+      "id": "n07",
+      "name": "🧠 Build Prompt Context",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1200, 300],
+      "parameters": {
+        "language": "javaScript",
+        "jsCode": "const topic = $('🔍 Find PENDING Row').item(0).json.topic;\nconst rowNumber = $('🔍 Find PENDING Row').item(0).json.rowNumber;\n\nconst scriptPrompt = 'Write a kids educational YouTube song for the SnifflePaws channel.\\n\\nTopic: ' + topic + '\\nCharacter: SnifflePaws the friendly orange fox\\nAudience: toddlers and babies ages 1-5\\n\\nWrite 20-25 simple fun rhyming lyric lines. Max 8 words each.\\nEach line teaches one clear concept about the topic.\\nBright, happy, energetic. Include repetition. Kids should be able to sing along.\\nFirst line: \"Hello friends! SnifflePaws is here!\"\\nLast line: \"Great job friends! See you next time!\"\\n\\nReturn ONLY the lyrics. One line per line. No brackets. No stage directions. No headers.';\n\nconst titlePrompt = 'Create the perfect YouTube video title for a kids educational song.\\n\\nTopic: ' + topic + '\\nChannel: SnifflePaws\\n\\nRules:\\n- Include the main concept (e.g. ABC Song, Colors Song, Numbers Song)\\n- Include for Kids or for Babies or Toddler Learning\\n- End with | SnifflePaws\\n- Under 70 characters total\\n- Max search appeal\\n\\nReturn ONLY the title. One line. No quotes. No explanation.';\n\nconst descPrompt = 'Write a YouTube video description for a SnifflePaws kids educational song.\\nTopic: ' + topic + '\\n\\nInclude:\\n1. Two warm sentences welcoming toddlers and parents\\n2. What kids will learn in this video (3 short bullet points with emoji)\\n3. Encourage subscribing and turning on notifications\\n4. End with these hashtags: #KidsLearning #SnifflePaws #ToddlerVideos #NurseryRhymes #EducationalKids\\n\\nUnder 300 words. Keep it warm and friendly.';\n\nconst tagsPrompt = 'Generate exactly 15 YouTube search tags for a kids educational video.\\nTopic: ' + topic + '\\n\\nReturn ONLY a valid JSON array of strings. Nothing else.\\nExample: [\"abc song for kids\",\"learn alphabet\"]\\n\\nMust include: topic keywords, \"for kids\", \"for toddlers\", \"nursery rhyme\", \"kids song\", \"SnifflePaws\", \"educational\", \"babies\", \"toddler learning\".';\n\nconst thumbnailPrompt = 'Children YouTube thumbnail illustration. Cute cartoon orange fox character named SnifflePaws with big friendly eyes and a wide smile, holding a sign that says \\\"' + topic + '\\\". Bright colorful background with stars and sparkles. Bold bubbly text at the top. Style: clean 2D children cartoon, bright primary colors red yellow blue green, no copyright, safe for kids, white outline around character. High energy, fun, engaging for toddlers.';\n\nconst scriptBody = {model:'claude-sonnet-4-20250514', max_tokens:1024, messages:[{role:'user', content:scriptPrompt}]};\nconst titleBody = {model:'claude-sonnet-4-20250514', max_tokens:200, messages:[{role:'user', content:titlePrompt}]};\nconst descBody = {model:'claude-sonnet-4-20250514', max_tokens:700, messages:[{role:'user', content:descPrompt}]};\nconst tagsBody = {model:'claude-sonnet-4-20250514', max_tokens:300, messages:[{role:'user', content:tagsPrompt}]};\n\nreturn [{json:{topic, rowNumber, scriptBody, titleBody, descBody, tagsBody, thumbnailPrompt}}];"
+      }
+    },
+
+    {
+      "id": "n08",
+      "name": "📝 Write Song Script",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1440, 60],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          {"name": "x-api-key", "value": "={{ $env.ANTHROPIC_API_KEY }}"},
+          {"name": "anthropic-version", "value": "2023-06-01"},
+          {"name": "content-type", "value": "application/json"}
+        ]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $('🧠 Build Prompt Context').item(0).json.scriptBody }}"
+      }
+    },
+
+    {
+      "id": "n09",
+      "name": "🏷️ Write SEO Title",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1440, 240],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          {"name": "x-api-key", "value": "={{ $env.ANTHROPIC_API_KEY }}"},
+          {"name": "anthropic-version", "value": "2023-06-01"},
+          {"name": "content-type", "value": "application/json"}
+        ]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $('🧠 Build Prompt Context').item(0).json.titleBody }}"
+      }
+    },
+
+    {
+      "id": "n10",
+      "name": "📄 Write Description",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1440, 420],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          {"name": "x-api-key", "value": "={{ $env.ANTHROPIC_API_KEY }}"},
+          {"name": "anthropic-version", "value": "2023-06-01"},
+          {"name": "content-type", "value": "application/json"}
+        ]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $('🧠 Build Prompt Context').item(0).json.descBody }}"
+      }
+    },
+
+    {
+      "id": "n11",
+      "name": "🔖 Write Tags",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1440, 600],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          {"name": "x-api-key", "value": "={{ $env.ANTHROPIC_API_KEY }}"},
+          {"name": "anthropic-version", "value": "2023-06-01"},
+          {"name": "content-type", "value": "application/json"}
+        ]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $('🧠 Build Prompt Context').item(0).json.tagsBody }}"
+      }
+    },
+
+    {
+      "id": "n12",
+      "name": "🔀 Merge All Copy",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 2,
+      "position": [1680, 330],
+      "parameters": {
+        "mode": "append",
+        "numberInputs": 4
+      }
+    },
+
+    {
+      "id": "n13",
+      "name": "⚙️ Parse & Format Copy",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1920, 330],
+      "parameters": {
+        "language": "javaScript",
+        "jsCode": "const items = $input.all();\n\nfunction getText(item) {\n  const c = item && item.json && item.json.content;\n  if (Array.isArray(c) && c[0] && c[0].text) return c[0].text.trim();\n  return '';\n}\n\nconst script = getText(items[0]);\nconst rawTitle = getText(items[1]);\nconst description = getText(items[2]);\nconst rawTags = getText(items[3]);\n\nconst title = rawTitle.split('\\n')[0].replace(/^[\"'\\s]+|[\"'\\s]+$/g,'').slice(0,100);\n\nlet tags = [];\ntry {\n  const m = rawTags.match(/\\[[\\s\\S]*?\\]/);\n  if (m) tags = JSON.parse(m[0]);\n} catch(e) {\n  tags = rawTags.split(',').map(t => t.trim().replace(/[\"\\[\\]]/g,'')).filter(Boolean);\n}\ntags = tags.slice(0,15);\n\nconst ttsLines = script.split('\\n').filter(l => l.trim() && !l.startsWith('[') && !l.startsWith('('));\nconst ttsText = ttsLines.join(' ').slice(0, 2500);\n\nconst topic = $('🧠 Build Prompt Context').item(0).json.topic;\nconst rowNumber = $('🧠 Build Prompt Context').item(0).json.rowNumber;\nconst thumbnailPrompt = $('🧠 Build Prompt Context').item(0).json.thumbnailPrompt;\n\nreturn [{json:{script, title, description, tags, ttsText, ttsLines, topic, rowNumber, thumbnailPrompt}}];"
+      }
+    },
+
+    {
+      "id": "n14",
+      "name": "🎤 Generate Voiceover",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2160, 330],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.elevenlabs.io/v1/text-to-speech/EXAVITQu4vr4xnSDxMaL",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          {"name": "xi-api-key", "value": "={{ $env.ELEVENLABS_API_KEY }}"},
+          {"name": "Content-Type", "value": "application/json"}
+        ]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { text: $json.ttsText, model_id: 'eleven_monolingual_v1', voice_settings: { stability: 0.75, similarity_boost: 0.85, style: 0.6, use_speaker_boost: true } } }}",
+        "options": {
+          "response": { "response": { "responseFormat": "file" } }
+        }
+      },
+      "notes": "Voice ID EXAVITQu4vr4xnSDxMaL is Bella — warm and friendly. Replace with any ElevenLabs voice ID. Returns binary MP3 audio."
+    },
+
+    {
+      "id": "n15",
+      "name": "☁️ Upload Audio to Drive",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2400, 330],
+      "parameters": {
+        "method": "POST",
+        "url": "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          {"name": "Authorization", "value": "=Bearer {{ $env.GOOGLE_DRIVE_ACCESS_TOKEN }}"}
+        ]},
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": { "parameters": [
+          {"name": "metadata", "value": "={{ JSON.stringify({name: $('⚙️ Parse & Format Copy').item(0).json.topic + '_audio.mp3', mimeType: 'audio/mpeg', parents: [$env.DRIVE_FOLDER_ID]}) }}"},
+          {"parameterType": "formBinaryData", "name": "media", "inputDataFieldName": "data"}
+        ]},
+        "options": {}
+      },
+      "notes": "Uploads the ElevenLabs audio to Google Drive. Set GOOGLE_DRIVE_ACCESS_TOKEN and DRIVE_FOLDER_ID env vars. The folder must exist and be shared publicly."
+    },
+
+    {
+      "id": "n16",
+      "name": "🌐 Make Audio Public",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2640, 330],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://www.googleapis.com/drive/v3/files/{{ $json.id }}/permissions",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          {"name": "Authorization", "value": "=Bearer {{ $env.GOOGLE_DRIVE_ACCESS_TOKEN }}"},
+          {"name": "Content-Type", "value": "application/json"}
+        ]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { role: 'reader', type: 'anyone' } }}"
+      }
+    },
+
+    {
+      "id": "n17",
+      "name": "🎬 Build Video Timeline",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2880, 330],
+      "parameters": {
+        "language": "javaScript",
+        "jsCode": "const copy = $('⚙️ Parse & Format Copy').item(0).json;\nconst driveFileId = $('☁️ Upload Audio to Drive').item(0).json.id;\nconst audioUrl = 'https://drive.google.com/uc?export=download&id=' + driveFileId;\nconst characterUrl = $env.SNIFFLE_PAWS_PNG_URL || 'https://drive.google.com/uc?id=' + ($env.SNIFFLE_PAWS_DRIVE_ID || 'YOUR_CHARACTER_PNG_DRIVE_ID');\n\nconst lines = (copy.ttsLines || []).slice(0, 26);\nconst palette = ['#FF6B6B','#FFE66D','#4ECDC4','#FF9F43','#A29BFE','#FD79A8','#55EFC4','#FDCB6E','#74B9FF','#81ECEC','#FAB1A0','#00B894'];\n\nconst secPerLine = 3.5;\nconst introDur = 3;\nconst outroDur = 4;\nconst totalDur = introDur + (lines.length * secPerLine) + outroDur;\n\nconst bgTrack = [];\nconst textTrack = [];\n\nbgTrack.push({asset:{type:'shape',shape:'rectangle',width:1,height:1,color:'#FFE66D'},start:0,length:introDur});\ntextTrack.push({asset:{type:'html',html:'<p>' + copy.topic + '!</p>',width:960,height:220,css:'p{font-family:Arial Black,Arial,sans-serif;color:#FF6B6B;font-size:90px;font-weight:900;text-align:center;text-shadow:5px 5px 0 #fff,6px 6px 0 rgba(0,0,0,0.1);}'},start:0,length:introDur,position:'center'});\n\nlines.forEach((line, i) => {\n  const start = introDur + (i * secPerLine);\n  const color = palette[i % palette.length];\n  const safe = line.replace(/[<>&\"]/g,'').trim().slice(0,72);\n  bgTrack.push({asset:{type:'shape',shape:'rectangle',width:1,height:1,color},start,length:secPerLine});\n  textTrack.push({asset:{type:'html',html:'<p>' + safe + '</p>',width:900,height:280,css:'p{font-family:Arial Black,Arial,sans-serif;color:#fff;font-size:58px;font-weight:900;text-align:center;text-shadow:3px 3px 0 rgba(0,0,0,0.25);line-height:1.15;}'},start,length:secPerLine,position:'center',offset:{x:0.09,y:0}});\n});\n\nconst outroStart = totalDur - outroDur;\nbgTrack.push({asset:{type:'shape',shape:'rectangle',width:1,height:1,color:'#4ECDC4'},start:outroStart,length:outroDur});\ntextTrack.push({asset:{type:'html',html:'<p>Subscribe!</p>',width:700,height:200,css:'p{font-family:Arial Black,Arial,sans-serif;color:#FFE66D;font-size:82px;font-weight:900;text-align:center;text-shadow:4px 4px 0 rgba(0,0,0,0.2);}'},start:outroStart,length:outroDur,position:'center'});\n\nconst charTrack = [{asset:{type:'image',src:characterUrl},start:0,length:totalDur,position:'bottomLeft',offset:{x:0.02,y:-0.02},scale:0.28,effect:'zoomIn'}];\n\nconst renderBody = {\n  timeline:{\n    background:{color:'#FFE66D'},\n    soundtrack:{src:audioUrl,effect:'fadeInFadeOut',volume:1},\n    tracks:[{clips:textTrack},{clips:charTrack},{clips:bgTrack}]\n  },\n  output:{format:'mp4',resolution:'hd',aspectRatio:'16:9',fps:25}\n};\n\nreturn [{json:{renderBody, totalDur, topic:copy.topic, rowNumber:copy.rowNumber}}];"
+      }
+    },
+
+    {
+      "id": "n18",
+      "name": "🎥 Render Video",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [3120, 330],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.shotstack.io/v1/render",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          {"name": "x-api-key", "value": "={{ $env.SHOTSTACK_API_KEY }}"},
+          {"name": "Content-Type", "value": "application/json"}
+        ]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.renderBody }}"
+      }
+    },
+
+    {
+      "id": "n19",
+      "name": "⏱️ Wait for Render",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [3360, 330],
+      "parameters": {
+        "unit": "seconds",
+        "amount": 90
+      }
+    },
+
+    {
+      "id": "n20",
+      "name": "📊 Check Render Status",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [3600, 330],
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.shotstack.io/v1/render/{{ $('🎥 Render Video').item(0).json.response.id }}",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          {"name": "x-api-key", "value": "={{ $env.SHOTSTACK_API_KEY }}"}
+        ]}
+      }
+    },
+
+    {
+      "id": "n21",
+      "name": "✅ Render Complete?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [3840, 330],
+      "parameters": {
+        "conditions": {
+          "string": [{ "value1": "={{ $json.response.status }}", "operation": "equals", "value2": "done" }]
+        }
+      },
+      "notes": "If status is 'done', continue. If 'failed', stop. Otherwise loops back to Wait."
+    },
+
+    {
+      "id": "n22",
+      "name": "🖼️ Generate Thumbnail",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [4080, 160],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/images/generations",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          {"name": "Authorization", "value": "=Bearer {{ $env.OPENAI_API_KEY }}"},
+          {"name": "Content-Type", "value": "application/json"}
+        ]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { model: 'dall-e-3', prompt: $('⚙️ Parse & Format Copy').item(0).json.thumbnailPrompt, size: '1280x720', quality: 'hd', n: 1 } }}"
+      }
+    },
+
+    {
+      "id": "n23",
+      "name": "📥 Download Video Binary",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [4080, 500],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $('📊 Check Render Status').item(0).json.response.url }}",
+        "options": {
+          "response": { "response": { "responseFormat": "file" } }
+        }
+      }
+    },
+
+    {
+      "id": "n24",
+      "name": "🚀 Init YouTube Upload",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [4320, 500],
+      "parameters": {
+        "method": "POST",
+        "url": "https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          {"name": "Authorization", "value": "=Bearer {{ $env.YOUTUBE_ACCESS_TOKEN }}"},
+          {"name": "Content-Type", "value": "application/json"},
+          {"name": "X-Upload-Content-Type", "value": "video/mp4"}
+        ]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { snippet: { title: $('⚙️ Parse & Format Copy').item(0).json.title, description: $('⚙️ Parse & Format Copy').item(0).json.description, tags: $('⚙️ Parse & Format Copy').item(0).json.tags, categoryId: '27', defaultLanguage: 'en' }, status: { privacyStatus: 'private', selfDeclaredMadeForKids: true } } }}",
+        "options": {
+          "response": { "response": { "fullResponse": true } }
+        }
+      },
+      "notes": "categoryId 27 = Education. selfDeclaredMadeForKids=true required for kids content. Returns Location header with resumable upload URL."
+    },
+
+    {
+      "id": "n25",
+      "name": "📤 Upload Video to YouTube",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [4560, 500],
+      "parameters": {
+        "method": "PUT",
+        "url": "={{ $('🚀 Init YouTube Upload').item(0).json.headers.location }}",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          {"name": "Content-Type", "value": "video/mp4"}
+        ]},
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "data",
+        "options": {}
+      },
+      "notes": "Sends the binary video to the YouTube resumable upload URL. Returns the video ID in the response."
+    },
+
+    {
+      "id": "n26",
+      "name": "🖼️ Download Thumbnail Binary",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [4560, 160],
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $('🖼️ Generate Thumbnail').item(0).json.data[0].url }}",
+        "options": {
+          "response": { "response": { "responseFormat": "file" } }
+        }
+      }
+    },
+
+    {
+      "id": "n27",
+      "name": "🎨 Set YouTube Thumbnail",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [4800, 330],
+      "parameters": {
+        "method": "POST",
+        "url": "=https://www.googleapis.com/upload/youtube/v3/thumbnails/set?videoId={{ $('📤 Upload Video to YouTube').item(0).json.id }}&uploadType=media",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          {"name": "Authorization", "value": "=Bearer {{ $env.YOUTUBE_ACCESS_TOKEN }}"},
+          {"name": "Content-Type", "value": "image/png"}
+        ]},
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "data",
+        "options": {}
+      }
+    },
+
+    {
+      "id": "n28",
+      "name": "📂 Add to Playlist",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [5040, 330],
+      "parameters": {
+        "method": "POST",
+        "url": "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          {"name": "Authorization", "value": "=Bearer {{ $env.YOUTUBE_ACCESS_TOKEN }}"},
+          {"name": "Content-Type", "value": "application/json"}
+        ]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { snippet: { playlistId: $env.YOUTUBE_PLAYLIST_ID, resourceId: { kind: 'youtube#video', videoId: $('📤 Upload Video to YouTube').item(0).json.id } } } }}"
+      }
+    },
+
+    {
+      "id": "n29",
+      "name": "⏰ Calculate Peak Time",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [5280, 330],
+      "parameters": {
+        "language": "javaScript",
+        "jsCode": "const now = new Date();\nconst day = now.getUTCDay();\nconst isWeekend = day === 0 || day === 6;\nconst peakHourEST = isWeekend ? 9 : 15;\nconst peakHourUTC = peakHourEST + 5;\n\nconst publish = new Date(now);\npublish.setUTCHours(peakHourUTC, 0, 0, 0);\n\nif (publish.getTime() <= now.getTime()) {\n  publish.setUTCDate(publish.getUTCDate() + 1);\n  const nextDay = publish.getUTCDay();\n  const nextIsWeekend = nextDay === 0 || nextDay === 6;\n  publish.setUTCHours((nextIsWeekend ? 9 : 15) + 5, 0, 0, 0);\n}\n\nconst publishAt = publish.toISOString().replace('.000Z', '+00:00');\nconst videoId = $('📤 Upload Video to YouTube').item(0).json.id;\n\nreturn [{json:{publishAt, videoId, isWeekend, peakHourEST}}];"
+      }
+    },
+
+    {
+      "id": "n30",
+      "name": "📡 Schedule Video Live",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [5520, 330],
+      "parameters": {
+        "method": "PUT",
+        "url": "https://www.googleapis.com/youtube/v3/videos?part=status",
+        "sendHeaders": true,
+        "headerParameters": { "parameters": [
+          {"name": "Authorization", "value": "=Bearer {{ $env.YOUTUBE_ACCESS_TOKEN }}"},
+          {"name": "Content-Type", "value": "application/json"}
+        ]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ { id: $json.videoId, status: { privacyStatus: 'private', publishAt: $json.publishAt, selfDeclaredMadeForKids: true } } }}",
+        "notes": "Sets the video to go live at the calculated peak time. Uses 'private' + publishAt for scheduled publishing."
+      }
+    },
+
+    {
+      "id": "n31",
+      "name": "📊 Update Content Calendar",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [5760, 330],
+      "parameters": {
+        "operation": "update",
+        "documentId": { "__rl": true, "mode": "id", "value": "={{ $env.CONTENT_SHEET_ID }}" },
+        "sheetName": { "__rl": true, "mode": "name", "value": "Queue" },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $('🧠 Build Prompt Context').item(0).json.rowNumber }}",
+            "Status": "DONE",
+            "Title": "={{ $('⚙️ Parse & Format Copy').item(0).json.title }}",
+            "VideoID": "={{ $('📤 Upload Video to YouTube').item(0).json.id }}",
+            "PublishAt": "={{ $('⏰ Calculate Peak Time').item(0).json.publishAt }}",
+            "Script": "={{ $('⚙️ Parse & Format Copy').item(0).json.script.slice(0,500) }}"
+          }
+        }
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": { "id": "cred-sheets", "name": "Google Sheets OAuth2" }
+      }
+    },
+
+    {
+      "id": "n32",
+      "name": "✨ Workflow Complete",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [6000, 330],
+      "parameters": {
+        "values": {
+          "string": [
+            {"name": "status", "value": "SUCCESS"},
+            {"name": "topic", "value": "={{ $('🧠 Build Prompt Context').item(0).json.topic }}"},
+            {"name": "videoId", "value": "={{ $('📤 Upload Video to YouTube').item(0).json.id }}"},
+            {"name": "scheduledFor", "value": "={{ $('⏰ Calculate Peak Time').item(0).json.publishAt }}"}
+          ]
+        }
+      }
+    }
+
+  ],
+
+  "connections": {
+
+    "🕐 Daily Schedule": {
+      "main": [[{"node": "📋 Read Content Queue", "type": "main", "index": 0}]]
+    },
+
+    "📋 Read Content Queue": {
+      "main": [[{"node": "🔍 Find PENDING Row", "type": "main", "index": 0}]]
+    },
+
+    "🔍 Find PENDING Row": {
+      "main": [[{"node": "❓ Has Topic?", "type": "main", "index": 0}]]
+    },
+
+    "❓ Has Topic?": {
+      "main": [
+        [{"node": "✏️ Mark In Progress", "type": "main", "index": 0}],
+        [{"node": "⏸️ No Topic Today", "type": "main", "index": 0}]
+      ]
+    },
+
+    "✏️ Mark In Progress": {
+      "main": [[{"node": "🧠 Build Prompt Context", "type": "main", "index": 0}]]
+    },
+
+    "🧠 Build Prompt Context": {
+      "main": [[
+        {"node": "📝 Write Song Script", "type": "main", "index": 0},
+        {"node": "🏷️ Write SEO Title", "type": "main", "index": 0},
+        {"node": "📄 Write Description", "type": "main", "index": 0},
+        {"node": "🔖 Write Tags", "type": "main", "index": 0}
+      ]]
+    },
+
+    "📝 Write Song Script":  {"main": [[{"node": "🔀 Merge All Copy", "type": "main", "index": 0}]]},
+    "🏷️ Write SEO Title":   {"main": [[{"node": "🔀 Merge All Copy", "type": "main", "index": 1}]]},
+    "📄 Write Description":  {"main": [[{"node": "🔀 Merge All Copy", "type": "main", "index": 2}]]},
+    "🔖 Write Tags":         {"main": [[{"node": "🔀 Merge All Copy", "type": "main", "index": 3}]]},
+
+    "🔀 Merge All Copy": {
+      "main": [[{"node": "⚙️ Parse & Format Copy", "type": "main", "index": 0}]]
+    },
+
+    "⚙️ Parse & Format Copy": {
+      "main": [[{"node": "🎤 Generate Voiceover", "type": "main", "index": 0}]]
+    },
+
+    "🎤 Generate Voiceover": {
+      "main": [[{"node": "☁️ Upload Audio to Drive", "type": "main", "index": 0}]]
+    },
+
+    "☁️ Upload Audio to Drive": {
+      "main": [[{"node": "🌐 Make Audio Public", "type": "main", "index": 0}]]
+    },
+
+    "🌐 Make Audio Public": {
+      "main": [[{"node": "🎬 Build Video Timeline", "type": "main", "index": 0}]]
+    },
+
+    "🎬 Build Video Timeline": {
+      "main": [[{"node": "🎥 Render Video", "type": "main", "index": 0}]]
+    },
+
+    "🎥 Render Video": {
+      "main": [[{"node": "⏱️ Wait for Render", "type": "main", "index": 0}]]
+    },
+
+    "⏱️ Wait for Render": {
+      "main": [[{"node": "📊 Check Render Status", "type": "main", "index": 0}]]
+    },
+
+    "📊 Check Render Status": {
+      "main": [[{"node": "✅ Render Complete?", "type": "main", "index": 0}]]
+    },
+
+    "✅ Render Complete?": {
+      "main": [
+        [
+          {"node": "🖼️ Generate Thumbnail", "type": "main", "index": 0},
+          {"node": "📥 Download Video Binary", "type": "main", "index": 0}
+        ],
+        [{"node": "⏱️ Wait for Render", "type": "main", "index": 0}]
+      ]
+    },
+
+    "🖼️ Generate Thumbnail": {
+      "main": [[{"node": "🖼️ Download Thumbnail Binary", "type": "main", "index": 0}]]
+    },
+
+    "📥 Download Video Binary": {
+      "main": [[{"node": "🚀 Init YouTube Upload", "type": "main", "index": 0}]]
+    },
+
+    "🚀 Init YouTube Upload": {
+      "main": [[{"node": "📤 Upload Video to YouTube", "type": "main", "index": 0}]]
+    },
+
+    "📤 Upload Video to YouTube": {
+      "main": [[{"node": "🎨 Set YouTube Thumbnail", "type": "main", "index": 0}]]
+    },
+
+    "🖼️ Download Thumbnail Binary": {
+      "main": [[{"node": "🎨 Set YouTube Thumbnail", "type": "main", "index": 1}]]
+    },
+
+    "🎨 Set YouTube Thumbnail": {
+      "main": [[{"node": "📂 Add to Playlist", "type": "main", "index": 0}]]
+    },
+
+    "📂 Add to Playlist": {
+      "main": [[{"node": "⏰ Calculate Peak Time", "type": "main", "index": 0}]]
+    },
+
+    "⏰ Calculate Peak Time": {
+      "main": [[{"node": "📡 Schedule Video Live", "type": "main", "index": 0}]]
+    },
+
+    "📡 Schedule Video Live": {
+      "main": [[{"node": "📊 Update Content Calendar", "type": "main", "index": 0}]]
+    },
+
+    "📊 Update Content Calendar": {
+      "main": [[{"node": "✨ Workflow Complete", "type": "main", "index": 0}]]
+    }
+
+  },
+
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataSuccessExecution": "all",
+    "saveManualExecutions": true,
+    "saveExecutionProgress": true
+  },
+  "meta": {
+    "instanceId": "sniffle-paws-youtube-automation-v1"
+  }
+}
