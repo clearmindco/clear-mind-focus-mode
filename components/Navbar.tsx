@@ -15,6 +15,7 @@ const NAV = [
   { label: "War Room", href: "/market-war-room", match: ["/market-war-room"], icon: "⚔️" },
   { label: "Command", href: "/market-command-center", match: ["/market-command-center"], icon: "📊" },
   { label: "Playbooks", href: "/playbooks", match: ["/playbooks"], icon: "📖" },
+  { label: "Box Method", href: "/box-method", match: ["/box-method"], icon: "📦" },
   { label: "Paper Lab", href: "/paper-lab", match: ["/paper-lab"] },
   { label: "API Setup", href: "/api-setup", match: ["/api-setup"], icon: "⚙️" },
 ];

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import Navbar from "@/components/Navbar";
 
 interface Playbook {
@@ -16,6 +17,7 @@ interface Playbook {
   confirmationChecklist: string[];
   commonMistakes: string[];
   educationalNote: string;
+  interactivePage?: string;
 }
 
 const PLAYBOOKS: Playbook[] = [
@@ -356,6 +358,56 @@ const PLAYBOOKS: Playbook[] = [
     ],
     educationalNote: "Statistical gap fill rates favor fills on smaller, non-catalyst gaps. The thesis: if no new information justified the overnight gap, the same participants who moved overnight will close their position early in the session, filling the gap.",
   },
+  {
+    id: "box-method",
+    name: "Box Method Trading",
+    icon: "📦",
+    type: "Range Box",
+    color: "#00d4ff",
+    interactivePage: "/box-method",
+    bestSessions: ["New York open (ORB confirmation)", "Any session with clear range"],
+    setupRules: [
+      "Identify the box: find the significant high and low of the recent consolidation range",
+      "Box High = the resistance ceiling price has touched multiple times without closing above",
+      "Box Low = the support floor price has touched multiple times without closing below",
+      "Box Midpoint = (High + Low) / 2 — the worst entry zone, avoid trading here",
+      "A displacement candle (strong impulse move) that created the range adds confluence",
+      "The wider the box range relative to ATR, the more meaningful the levels",
+    ],
+    entryFramework: [
+      "Bullish Breakout: wait for a clean close above Box High with volume, enter on first pullback to the level",
+      "Bullish Retest: price broke above Box High, pulled back, enter when the level holds as support",
+      "Reclaim Long: price swept below Box Low (stop hunt), reclaimed back inside, enter long on first confirmation candle",
+      "Short Rejection: price swept above Box High (false breakout), rejected back inside, enter short on confirmation",
+      "Bearish Breakdown: wait for close below Box Low with volume, enter on first bounce back to the level that holds as resistance",
+      "Stop = beyond the level you entered from (if buying Box High retest, stop below Box High)",
+      "Target = the opposite side of the box, then projected box range extension",
+    ],
+    invalidation: [
+      "For longs: close back inside the box after a breakout, or close below Box Low",
+      "For shorts: close back inside the box after a breakdown, or close above Box High",
+      "Multiple failed breakouts at the same level — box is weakening, expansion incoming",
+      "Entering in the middle zone — risk/reward is too poor to justify",
+      "Market (SPY/QQQ) trending strongly against the box direction",
+    ],
+    confirmationChecklist: [
+      "Box High and Low are clearly defined with at least 2 touches each",
+      "Current price is at or near a box extreme (top or bottom) — not in the middle",
+      "Confirmation candle closes in the direction of the trade (not just a wick)",
+      "Volume is above average on the breakout or rejection candle",
+      "Stop is clearly defined before entry",
+      "R:R is at least 2:1 (target = opposite box extreme minimum)",
+    ],
+    commonMistakes: [
+      "Trading the middle of the box — risk is unclear and R:R is poor in both directions",
+      "Entering on the first touch of Box High/Low — wait for rejection or breakout close",
+      "Treating every short-term consolidation as a tradeable box — range needs clear multiple touches",
+      "Chasing a breakout after it has already moved 1+ box range — entry has passed",
+      "Not adjusting stop once price moves in your favor — always trail stop after confirmation",
+      "Ignoring that false breakouts (sweeps) are common — the reclaim is often the real trade",
+    ],
+    educationalNote: "Box Method works because institutional traders and algorithms defend key levels repeatedly — creating observable high-probability zones. The most powerful box setups are sweeps: price briefly spikes through a box boundary to trigger stops, then snaps back. This 'trap move' is followed by the real direction. The middle of the box is dangerous because it is equidistant from both risk points — a common trap for beginner traders who enter without a defined edge.",
+  },
 ];
 
 export default function PlaybooksPage() {
@@ -386,7 +438,7 @@ export default function PlaybooksPage() {
             Strategy <span style={{ color: "#00d4ff" }}>Playbooks</span>
           </h1>
           <p className="text-sm mt-1" style={{ color: "#9aa0b4" }}>
-            8 proven setups · Full entry/exit framework · Common mistakes · Educational only
+            9 proven setups · Full entry/exit framework · Common mistakes · Educational only
           </p>
         </div>
 
@@ -446,14 +498,25 @@ export default function PlaybooksPage() {
                   className="rounded-2xl p-5"
                   style={{ background: "#0f1117", border: `1px solid ${activePlaybook.color}30` }}
                 >
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="text-3xl">{activePlaybook.icon}</span>
-                    <div>
-                      <h2 className="text-xl font-bold" style={{ color: "#e8eaf0" }}>{activePlaybook.name}</h2>
-                      <span className="text-xs px-2 py-0.5 rounded font-medium" style={{ background: `${activePlaybook.color}15`, color: activePlaybook.color }}>
-                        {activePlaybook.type}
-                      </span>
+                  <div className="flex items-start justify-between gap-3 mb-2">
+                    <div className="flex items-center gap-3">
+                      <span className="text-3xl">{activePlaybook.icon}</span>
+                      <div>
+                        <h2 className="text-xl font-bold" style={{ color: "#e8eaf0" }}>{activePlaybook.name}</h2>
+                        <span className="text-xs px-2 py-0.5 rounded font-medium" style={{ background: `${activePlaybook.color}15`, color: activePlaybook.color }}>
+                          {activePlaybook.type}
+                        </span>
+                      </div>
                     </div>
+                    {activePlaybook.interactivePage && (
+                      <Link
+                        href={activePlaybook.interactivePage}
+                        className="text-xs px-3 py-1.5 rounded-lg font-semibold flex-shrink-0 flex items-center gap-1.5"
+                        style={{ background: `${activePlaybook.color}12`, color: activePlaybook.color, border: `1px solid ${activePlaybook.color}30` }}
+                      >
+                        ⚡ Interactive Analyzer
+                      </Link>
+                    )}
                   </div>
                   <div className="flex flex-wrap gap-2 mt-3">
                     {activePlaybook.bestSessions.map(s => (
