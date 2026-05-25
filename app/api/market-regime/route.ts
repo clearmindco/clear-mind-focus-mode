@@ -16,7 +16,7 @@ export interface MarketRegimeData {
   regime: RegimeType;
   label: string;
   description: string;
-  begginerExplanation: string;
+  beginnerExplanation: string;
   confidence: number; // 0–100
   signals: string[];
   tradeImplication: string;
@@ -186,7 +186,7 @@ export async function GET(request: Request) {
       regime: "UNKNOWN",
       label: "Mixed Signals",
       description: "Insufficient data — Finnhub API key required for live regime analysis.",
-      begginerExplanation: "Need live data to classify the market regime.",
+      beginnerExplanation: "Need live data to classify the market regime.",
       confidence: 0,
       signals: ["No live data available"],
       tradeImplication: "Connect Finnhub API for live regime detection.",
@@ -236,7 +236,7 @@ export async function GET(request: Request) {
     regime,
     label: meta.label,
     description: meta.description,
-    begginerExplanation: meta.beginnerExplanation,
+    beginnerExplanation: meta.beginnerExplanation,
     confidence,
     signals,
     tradeImplication: meta.tradeImplication,

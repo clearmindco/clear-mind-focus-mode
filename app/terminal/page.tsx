@@ -4,7 +4,17 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import Navbar from "@/components/Navbar";
 import type { QuoteData } from "@/lib/data-providers";
 
-type StatusType = "BUY WATCH" | "WAIT" | "AVOID";
+// ─── TradingView global type declaration ──────────────────────────────────────
+
+declare global {
+  interface Window {
+    TradingView?: {
+      widget: new (config: Record<string, unknown>) => unknown;
+    };
+  }
+}
+
+// ─── Types ────────────────────────────────────────────────────────────────────
 
 interface TickerConfig {
   ticker: string;
@@ -12,19 +22,28 @@ interface TickerConfig {
   type: string;
   icon: string;
   color: string;
-  status: StatusType;
-  trend: string;
-  catalyst: string;
-  entryZone: string;
-  stop: string;
-  target1: string;
-  target2: string;
-  confidence: string;
   bullCase: string;
   bearCase: string;
   beginnerNote: string;
   tvSymbol: string;
 }
+
+interface LiveSignal {
+  status: string;
+  score: number;
+  trendBias: "Bullish" | "Bearish" | "Neutral";
+  analysisText: string;
+  entryZone: string | null;
+  stopLevel: string | null;
+  target1: string | null;
+  riskLevel: string;
+  riskWarning: string;
+  disclaimer: string;
+  loading: boolean;
+  loaded: boolean;
+}
+
+// ─── Ticker config ────────────────────────────────────────────────────────────
 
 const TICKERS: TickerConfig[] = [
   {
@@ -33,14 +52,6 @@ const TICKERS: TickerConfig[] = [
     type: "Index ETF",
     icon: "📈",
     color: "#00d4ff",
-    status: "WAIT",
-    trend: "— Placeholder",
-    catalyst: "— Placeholder",
-    entryZone: "— Placeholder",
-    stop: "— Placeholder",
-    target1: "— Placeholder",
-    target2: "— Placeholder",
-    confidence: "—",
     bullCase: "Fed signals rate cuts, earnings season beats expectations, and VIX falls below 15 — rotation into equities and broad market rally.",
     bearCase: "CPI prints hot, Fed stays hawkish, yield curve re-inverts, and credit spreads widen — broad market selloff led by tech and growth.",
     beginnerNote: "SPY tracks the 500 largest US companies. It's the 'health of the stock market.' When SPY goes up, most stocks go up with it. When it goes down, almost everything goes down. Beginners should understand SPY's trend before trading individual stocks.",
@@ -52,14 +63,6 @@ const TICKERS: TickerConfig[] = [
     type: "Index ETF",
     icon: "💻",
     color: "#8b5cf6",
-    status: "WAIT",
-    trend: "— Placeholder",
-    catalyst: "— Placeholder",
-    entryZone: "— Placeholder",
-    stop: "— Placeholder",
-    target1: "— Placeholder",
-    target2: "— Placeholder",
-    confidence: "—",
     bullCase: "AI capex cycle continues, NVDA/MSFT/META deliver strong earnings, rates fall — QQQ outperforms as high-multiple tech expands.",
     bearCase: "Rate expectations rise, AI spending faces scrutiny, or a major tech earnings miss — QQQ often falls 2-3x faster than SPY in risk-off moves.",
     beginnerNote: "QQQ holds the 100 biggest Nasdaq companies — mostly tech giants like Apple, Microsoft, Nvidia, and Amazon. It moves more aggressively than SPY: when tech is hot, QQQ rockets; when tech sells off, QQQ falls harder. It's often used as a proxy for 'tech sentiment.'",
@@ -71,14 +74,6 @@ const TICKERS: TickerConfig[] = [
     type: "Index ETF",
     icon: "🔬",
     color: "#f97316",
-    status: "WAIT",
-    trend: "— Placeholder",
-    catalyst: "— Placeholder",
-    entryZone: "— Placeholder",
-    stop: "— Placeholder",
-    target1: "— Placeholder",
-    target2: "— Placeholder",
-    confidence: "—",
     bullCase: "Fed cuts rates, regional bank stability returns, and domestic economy strengthens — small caps lead the next bull leg as cheap money flows to growth.",
     bearCase: "Higher-for-longer rates crush small-cap borrowing costs, credit conditions tighten, and economic slowdown fears rise — IWM underperforms large caps.",
     beginnerNote: "IWM holds 2,000 small US companies — smaller businesses that rely more heavily on cheap borrowing. When interest rates are high, IWM suffers most. When rates fall, IWM often rips higher first. Traders watch IWM as a leading indicator of risk appetite.",
@@ -90,14 +85,6 @@ const TICKERS: TickerConfig[] = [
     type: "Bond ETF",
     icon: "🏛️",
     color: "#06b6d4",
-    status: "WAIT",
-    trend: "— Placeholder",
-    catalyst: "— Placeholder",
-    entryZone: "— Placeholder",
-    stop: "— Placeholder",
-    target1: "— Placeholder",
-    target2: "— Placeholder",
-    confidence: "—",
     bullCase: "Recession fears grow, Fed pivots to cuts, inflation falls toward 2% — TLT rallies as bond prices rise and yields fall.",
     bearCase: "Inflation re-accelerates, government debt issuance surges, and Fed keeps rates elevated — TLT falls as yields rise and bond prices drop.",
     beginnerNote: "TLT moves opposite to interest rates. When rates go up, TLT goes down (and vice versa). Bonds and stocks often move in opposite directions — when fear rises, money flows into bonds (safe haven). Watching TLT helps you understand whether big money is scared or confident.",
@@ -109,14 +96,6 @@ const TICKERS: TickerConfig[] = [
     type: "Sector ETF",
     icon: "⚡",
     color: "#f59e0b",
-    status: "WAIT",
-    trend: "— Placeholder",
-    catalyst: "— Placeholder",
-    entryZone: "— Placeholder",
-    stop: "— Placeholder",
-    target1: "— Placeholder",
-    target2: "— Placeholder",
-    confidence: "—",
     bullCase: "OPEC+ announces supply cuts, geopolitical conflict disrupts oil supply, or cold winter drives gas demand — XLE and energy stocks outperform.",
     bearCase: "Global demand falls, OPEC+ increases supply, or EV adoption accelerates — oil falls, XLE underperforms the broader market.",
     beginnerNote: "XLE holds the largest US energy companies like Exxon, Chevron, and ConocoPhillips. It moves with oil prices. If you see oil spike on the news (war, OPEC cut), XLE usually follows. It's a simple way to trade energy exposure without picking individual oil companies.",
@@ -128,14 +107,6 @@ const TICKERS: TickerConfig[] = [
     type: "Individual Stock",
     icon: "🤖",
     color: "#10b981",
-    status: "WAIT",
-    trend: "— Placeholder",
-    catalyst: "— Placeholder",
-    entryZone: "— Placeholder",
-    stop: "— Placeholder",
-    target1: "— Placeholder",
-    target2: "— Placeholder",
-    confidence: "—",
     bullCase: "Data center AI GPU demand continues to accelerate, earnings beat and raise guidance, new Blackwell architecture drives next upgrade cycle.",
     bearCase: "US expands chip export restrictions to more countries, hyperscaler capex slows, or AMD closes the competitive gap — NVDA multiple contracts sharply.",
     beginnerNote: "NVIDIA makes the graphics chips (GPUs) that power AI systems. Every time a company builds an AI model or data center, they buy NVIDIA chips. NVDA is one of the most important and most volatile stocks in the market. A single earnings beat can move the entire Nasdaq. Beginners: never hold NVDA through earnings without understanding the risk.",
@@ -147,14 +118,6 @@ const TICKERS: TickerConfig[] = [
     type: "Individual Stock",
     icon: "🚗",
     color: "#ef4444",
-    status: "WAIT",
-    trend: "— Placeholder",
-    catalyst: "— Placeholder",
-    entryZone: "— Placeholder",
-    stop: "— Placeholder",
-    target1: "— Placeholder",
-    target2: "— Placeholder",
-    confidence: "—",
     bullCase: "FSD robotaxi launch gains regulatory approval, energy storage business accelerates, and CEO focus returns to Tesla operations — stock rerate higher.",
     bearCase: "EV price wars squeeze margins, competition from BYD and legacy OEMs intensifies, or CEO distraction causes execution misses — multiple compression continues.",
     beginnerNote: "Tesla is far more than just a car company — it's an energy, AI, and robotics story. TSLA is one of the most traded and debated stocks. It moves on Elon Musk tweets, EV delivery data, FSD updates, and macro sentiment. It's highly volatile and often moves 3-5% on news days. Position size carefully.",
@@ -162,11 +125,32 @@ const TICKERS: TickerConfig[] = [
   },
 ];
 
-const STATUS_META = {
-  "BUY WATCH": { color: "#10b981", bg: "rgba(16,185,129,0.1)" },
-  WAIT: { color: "#f59e0b", bg: "rgba(245,158,11,0.1)" },
-  AVOID: { color: "#ef4444", bg: "rgba(239,68,68,0.1)" },
-};
+// ─── Signal status colors ─────────────────────────────────────────────────────
+
+function signalColor(status: string): string {
+  if (status === "Strong Bullish Watch") return "#059669";
+  if (status === "Bullish Watch") return "#10b981";
+  if (status === "Bearish Warning") return "#ef4444";
+  if (status === "Strong Bearish Warning") return "#b91c1c";
+  return "#f59e0b"; // Wait
+}
+
+function signalBg(status: string): string {
+  if (status === "Strong Bullish Watch") return "rgba(5,150,105,0.12)";
+  if (status === "Bullish Watch") return "rgba(16,185,129,0.1)";
+  if (status === "Bearish Warning") return "rgba(239,68,68,0.1)";
+  if (status === "Strong Bearish Warning") return "rgba(185,28,28,0.12)";
+  return "rgba(245,158,11,0.1)"; // Wait
+}
+
+function riskColor(level: string): string {
+  if (level === "Low") return "#10b981";
+  if (level === "Medium") return "#f59e0b";
+  if (level === "High") return "#ef4444";
+  return "#b91c1c"; // Very High
+}
+
+// ─── Formatting helpers ───────────────────────────────────────────────────────
 
 function fmt(n: number | null, prefix = "$"): string {
   if (n === null) return "—";
@@ -197,8 +181,8 @@ function TradingViewChart({ tvSymbol, color }: { tvSymbol: string; color: string
     script.src = "https://s3.tradingview.com/tv.js";
     script.async = true;
     script.onload = () => {
-      if (typeof window !== "undefined" && (window as unknown as Record<string, unknown>).TradingView) {
-        const TV = (window as unknown as Record<string, { widget: new (config: Record<string, unknown>) => void }>).TradingView;
+      if (typeof window !== "undefined" && window.TradingView) {
+        const TV = window.TradingView;
         new TV.widget({
           container_id: containerId,
           symbol: tvSymbol,
@@ -242,6 +226,93 @@ function TradingViewChart({ tvSymbol, color }: { tvSymbol: string; color: string
   );
 }
 
+// ─── Signal result display ────────────────────────────────────────────────────
+
+function SignalResult({ signal, onRefresh }: { signal: LiveSignal; onRefresh: () => void }) {
+  const col = signalColor(signal.status);
+  const bg = signalBg(signal.status);
+  const rCol = riskColor(signal.riskLevel);
+
+  return (
+    <div className="space-y-3 mt-2">
+      {/* Status + Score */}
+      <div className="flex items-center gap-3 flex-wrap">
+        <span
+          className="text-xs px-3 py-1 rounded-full font-bold"
+          style={{ background: bg, color: col, border: `1px solid ${col}40` }}
+        >
+          {signal.status}
+        </span>
+        <span className="text-xs font-semibold" style={{ color: "#9aa0b4" }}>
+          Score: <span style={{ color: col }}>{signal.score}/100</span>
+        </span>
+        <span
+          className="text-xs px-2 py-0.5 rounded-full font-semibold"
+          style={{ background: `${rCol}15`, color: rCol, border: `1px solid ${rCol}30` }}
+        >
+          Risk: {signal.riskLevel}
+        </span>
+      </div>
+
+      {/* Analysis text */}
+      <p className="text-xs leading-relaxed italic" style={{ color: "#9aa0b4" }}>
+        {signal.analysisText}
+      </p>
+
+      {/* Levels */}
+      {(signal.entryZone || signal.stopLevel || signal.target1) && (
+        <div className="space-y-1.5">
+          {signal.entryZone && (
+            <div className="flex items-center justify-between rounded-lg px-3 py-2" style={{ background: "#141720", border: "1px solid #1e2433" }}>
+              <span className="text-xs" style={{ color: "#9aa0b4" }}>Entry Zone</span>
+              <span className="text-xs font-semibold" style={{ color: "#00d4ff" }}>{signal.entryZone}</span>
+            </div>
+          )}
+          {signal.stopLevel && (
+            <div className="flex items-center justify-between rounded-lg px-3 py-2" style={{ background: "#141720", border: "1px solid #1e2433" }}>
+              <span className="text-xs" style={{ color: "#9aa0b4" }}>Stop Level</span>
+              <span className="text-xs font-semibold" style={{ color: "#ef4444" }}>{signal.stopLevel}</span>
+            </div>
+          )}
+          {signal.target1 && (
+            <div className="flex items-center justify-between rounded-lg px-3 py-2" style={{ background: "#141720", border: "1px solid #1e2433" }}>
+              <span className="text-xs" style={{ color: "#9aa0b4" }}>Target 1</span>
+              <span className="text-xs font-semibold" style={{ color: "#10b981" }}>{signal.target1}</span>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Risk warning */}
+      <div className="rounded-lg p-3" style={{ background: `${rCol}08`, border: `1px solid ${rCol}20` }}>
+        <p className="text-xs leading-relaxed" style={{ color: "#9aa0b4" }}>
+          <span className="font-semibold" style={{ color: rCol }}>Risk Note: </span>
+          {signal.riskWarning}
+        </p>
+      </div>
+
+      {/* Disclaimer */}
+      <p className="text-xs leading-relaxed" style={{ color: "#5a6075" }}>
+        {signal.disclaimer}
+      </p>
+
+      {/* Refresh */}
+      <button
+        onClick={onRefresh}
+        className="text-xs px-4 py-2 rounded-xl font-semibold transition-all"
+        style={{
+          background: "rgba(0,212,255,0.08)",
+          color: "#00d4ff",
+          border: "1px solid rgba(0,212,255,0.25)",
+          cursor: "pointer",
+        }}
+      >
+        Refresh →
+      </button>
+    </div>
+  );
+}
+
 // ─── Main terminal component ──────────────────────────────────────────────────
 
 export default function Terminal() {
@@ -251,6 +322,7 @@ export default function Terminal() {
   const [expanded, setExpanded] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
   const [detailTab, setDetailTab] = useState<"levels" | "chart" | "analysis">("levels");
+  const [signals, setSignals] = useState<Record<string, LiveSignal>>({});
 
   const fetchAll = useCallback(async () => {
     setLoading(true);
@@ -266,6 +338,80 @@ export default function Terminal() {
     } finally {
       setLoading(false);
       setFetched(true);
+    }
+  }, []);
+
+  const runSignal = useCallback(async (ticker: string) => {
+    setSignals(prev => ({
+      ...prev,
+      [ticker]: {
+        status: "",
+        score: 0,
+        trendBias: "Neutral",
+        analysisText: "",
+        entryZone: null,
+        stopLevel: null,
+        target1: null,
+        riskLevel: "Medium",
+        riskWarning: "",
+        disclaimer: "",
+        loading: true,
+        loaded: false,
+      },
+    }));
+    try {
+      const res = await fetch(`/api/signal?ticker=${ticker}`);
+      if (res.ok) {
+        const data = await res.json() as {
+          status: string;
+          score: number;
+          trendBias: "Bullish" | "Bearish" | "Neutral";
+          analysisText: string;
+          entryZone: string | null;
+          stopLevel: string | null;
+          target1: string | null;
+          riskLevel: string;
+          riskWarning: string;
+          disclaimer: string;
+        };
+        setSignals(prev => ({
+          ...prev,
+          [ticker]: {
+            status: data.status,
+            score: data.score,
+            trendBias: data.trendBias,
+            analysisText: data.analysisText,
+            entryZone: data.entryZone,
+            stopLevel: data.stopLevel,
+            target1: data.target1,
+            riskLevel: data.riskLevel,
+            riskWarning: data.riskWarning,
+            disclaimer: data.disclaimer,
+            loading: false,
+            loaded: true,
+          },
+        }));
+      } else {
+        throw new Error("Signal API error");
+      }
+    } catch {
+      setSignals(prev => ({
+        ...prev,
+        [ticker]: {
+          status: "Wait",
+          score: 50,
+          trendBias: "Neutral",
+          analysisText: "Could not load signal — check your network connection and try again.",
+          entryZone: null,
+          stopLevel: null,
+          target1: null,
+          riskLevel: "Medium",
+          riskWarning: "Educational placeholder. Not real analysis.",
+          disclaimer: "Educational signal only. Not financial advice.",
+          loading: false,
+          loaded: true,
+        },
+      }));
     }
   }, []);
 
@@ -298,7 +444,7 @@ export default function Terminal() {
               EDGE <span style={{ color: "#10b981" }}>Terminal</span>
             </h1>
             <p className="text-sm mt-1" style={{ color: "#9aa0b4" }}>
-              Market radar · 7 tickers · TradingView charts · Analysis setups
+              Market radar · 7 tickers · TradingView charts · Live signal analysis
             </p>
           </div>
           <button
@@ -316,7 +462,7 @@ export default function Terminal() {
           </button>
         </div>
 
-        {/* Compliance/placeholder warning */}
+        {/* Compliance warning */}
         <div
           className="rounded-xl p-4 flex gap-3 items-start mb-6"
           style={{ background: "rgba(239,68,68,0.04)", border: "1px solid rgba(239,68,68,0.12)" }}
@@ -325,25 +471,13 @@ export default function Terminal() {
           <p className="text-xs leading-relaxed" style={{ color: "#9aa0b4" }}>
             <strong style={{ color: "#ef4444" }}>Educational research only. Not financial advice.</strong>{" "}
             {apiConnected
-              ? "Prices are live from Finnhub. All status, trend, catalyst, entry, stop, target, and confidence fields are "
+              ? "Live prices are from Finnhub. "
               : "All price data is "}
-            <strong style={{ color: "#f59e0b" }}>
-              {apiConnected ? "placeholder values" : "placeholder — API not connected"}
-            </strong>
-            {apiConnected ? " and do not constitute a recommendation to buy or sell." : ". Add FINNHUB_API_KEY to your server environment to see live prices."}
-            {" "}Bull/bear cases and beginner notes are general educational context, not trade signals. Always paper trade first.
+            {!apiConnected && (
+              <strong style={{ color: "#f59e0b" }}>placeholder — API not connected. Add FINNHUB_API_KEY to see live prices.</strong>
+            )}
+            {" "}Signal analysis is a rule-based educational tool — not AI-generated, not a trade recommendation. Bull/bear cases and beginner notes are general educational context. Always paper trade first.
           </p>
-        </div>
-
-        {/* Status legend */}
-        <div className="flex items-center gap-4 mb-6 flex-wrap">
-          <span className="text-xs" style={{ color: "#5a6075" }}>Status key:</span>
-          {(Object.entries(STATUS_META) as [StatusType, typeof STATUS_META["WAIT"]][]).map(([label, s]) => (
-            <span key={label} className="text-xs px-2.5 py-1 rounded-full font-semibold" style={{ background: s.bg, color: s.color }}>
-              {label}
-            </span>
-          ))}
-          <span className="text-xs ml-2" style={{ color: "#5a6075" }}>(All statuses are placeholders — manual analysis not yet connected)</span>
         </div>
 
         {/* Ticker grid */}
@@ -351,7 +485,7 @@ export default function Terminal() {
           {TICKERS.map(t => {
             const q = quotes[t.ticker];
             const isOpen = expanded === t.ticker;
-            const statusMeta = STATUS_META[t.status];
+            const sig = signals[t.ticker];
             const hasLivePrice = q && !q.isPlaceholder;
             const chgColor = hasLivePrice && q.changePercent !== null
               ? q.changePercent >= 0 ? "#10b981" : "#ef4444"
@@ -381,9 +515,19 @@ export default function Terminal() {
                         <div className="text-xs mt-0.5" style={{ color: "#5a6075" }}>{t.fullName}</div>
                       </div>
                     </div>
-                    <span className="text-xs px-2.5 py-1 rounded-full font-bold flex-shrink-0" style={{ background: statusMeta.bg, color: statusMeta.color }}>
-                      {t.status}
-                    </span>
+                    {/* Dynamic status pill */}
+                    {sig?.loaded ? (
+                      <span
+                        className="text-xs px-2.5 py-1 rounded-full font-bold flex-shrink-0"
+                        style={{ background: signalBg(sig.status), color: signalColor(sig.status), border: `1px solid ${signalColor(sig.status)}40` }}
+                      >
+                        {sig.status}
+                      </span>
+                    ) : (
+                      <span className="text-xs flex-shrink-0" style={{ color: "#5a6075" }}>
+                        Tap to analyze
+                      </span>
+                    )}
                   </div>
 
                   {/* Price row */}
@@ -410,13 +554,13 @@ export default function Terminal() {
                     )}
                   </div>
 
-                  {/* Analysis grid */}
+                  {/* Info grid */}
                   <div className="grid grid-cols-2 gap-2 mb-4">
                     {[
-                      { label: "Trend", value: t.trend },
-                      { label: "Catalyst", value: t.catalyst },
-                      { label: "Confidence", value: t.confidence !== "—" ? `${t.confidence}%` : "—" },
                       { label: "Type", value: t.type },
+                      { label: "Trend Bias", value: sig?.loaded ? sig.trendBias : "—" },
+                      { label: "Score", value: sig?.loaded ? `${sig.score}/100` : "—" },
+                      { label: "Risk Level", value: sig?.loaded ? sig.riskLevel : "—" },
                     ].map(row => (
                       <div key={row.label} className="rounded-lg p-2" style={{ background: "#0a0b0d", border: "1px solid #1e2433" }}>
                         <div className="text-xs mb-0.5" style={{ color: "#5a6075" }}>{row.label}</div>
@@ -467,23 +611,42 @@ export default function Terminal() {
                     <div className="px-4 pb-5">
                       {/* Levels tab */}
                       {detailTab === "levels" && (
-                        <div className="space-y-2">
-                          <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: t.color }}>
-                            Trade Levels — All Placeholder
-                          </p>
-                          {[
-                            { label: "Entry Zone", value: t.entryZone, color: "#00d4ff" },
-                            { label: "Stop Loss", value: t.stop, color: "#ef4444" },
-                            { label: "Target 1", value: t.target1, color: "#10b981" },
-                            { label: "Target 2", value: t.target2, color: "#10b981" },
-                          ].map(row => (
-                            <div key={row.label} className="flex items-center justify-between rounded-lg px-3 py-2" style={{ background: "#141720", border: "1px solid #1e2433" }}>
-                              <span className="text-xs" style={{ color: "#9aa0b4" }}>{row.label}</span>
-                              <span className="text-xs font-semibold" style={{ color: row.color }}>{row.value}</span>
+                        <div className="space-y-3">
+                          {!sig || (!sig.loading && !sig.loaded) ? (
+                            /* No signal yet — prompt */
+                            <div className="flex flex-col items-center gap-3 py-6">
+                              <p className="text-xs text-center" style={{ color: "#5a6075" }}>
+                                Run the live signal engine to see entry zone, stop level, and target — educational analysis only.
+                              </p>
+                              <button
+                                onClick={() => runSignal(t.ticker)}
+                                className="px-4 py-2 rounded-xl font-semibold text-sm transition-all"
+                                style={{
+                                  background: "rgba(0,212,255,0.1)",
+                                  color: "#00d4ff",
+                                  border: "1px solid rgba(0,212,255,0.3)",
+                                  cursor: "pointer",
+                                }}
+                              >
+                                Run Live Analysis →
+                              </button>
                             </div>
-                          ))}
+                          ) : sig.loading ? (
+                            /* Loading state */
+                            <div className="flex items-center gap-2 py-6 justify-center">
+                              <span
+                                className="w-3 h-3 rounded-full border-2 animate-spin"
+                                style={{ borderColor: `${t.color}40`, borderTopColor: t.color }}
+                              />
+                              <span className="text-xs" style={{ color: "#9aa0b4" }}>Analyzing…</span>
+                            </div>
+                          ) : (
+                            /* Signal loaded */
+                            <SignalResult signal={sig} onRefresh={() => runSignal(t.ticker)} />
+                          )}
 
-                          {hasLivePrice && (
+                          {/* Live price data rows (always shown if available) */}
+                          {hasLivePrice && sig?.loaded && (
                             <div className="grid grid-cols-2 gap-2 mt-2">
                               {[
                                 { label: "Daily High", value: fmt(q.high) },
@@ -498,12 +661,6 @@ export default function Terminal() {
                               ))}
                             </div>
                           )}
-
-                          <div className="rounded-lg p-3 mt-1" style={{ background: "rgba(245,158,11,0.05)", border: "1px solid rgba(245,158,11,0.15)" }}>
-                            <p className="text-xs" style={{ color: "#f59e0b" }}>
-                              📊 Analysis fields are placeholder values. Manual analysis integration coming in a future update.
-                            </p>
-                          </div>
                         </div>
                       )}
 
@@ -550,10 +707,10 @@ export default function Terminal() {
               <div className="grid sm:grid-cols-2 gap-2 text-xs" style={{ color: "#9aa0b4" }}>
                 <div>✓ Live price + change % via Finnhub</div>
                 <div>✓ Daily high / low / prev close</div>
+                <div>✓ Live signal engine (7-factor scoring)</div>
+                <div>✓ Entry zone / stop / target levels</div>
                 <div>⏳ RSI / technical overlay via Alpha Vantage</div>
                 <div>⏳ Catalyst news feed via Finnhub</div>
-                <div>⏳ Insider activity feed via Finnhub</div>
-                <div>⏳ AI confidence scores (requires OpenAI)</div>
               </div>
             </div>
             <div className="flex-shrink-0">
